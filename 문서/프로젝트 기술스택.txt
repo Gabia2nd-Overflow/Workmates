@@ -209,9 +209,9 @@ External Services (OpenAI, Google Translate, etc.)
 ## 개발 단계별 우선순위
 
 1. **Phase 1**: Spring Boot 기본 API + MySQL + Redis
-2. **Phase 2**: React 기본 UI + 사용자 인증
+2. **Phase 2**: React 기본 UI + 사용자 기능
 3. **Phase 3**: WebSocket 실시간 기능
 4. **Phase 4**: 파일 업로드/S3 연동
-5. **Phase 5**: AI 서비스 통합
+5. **Phase 5**: API 서비스 통합
 6. **Phase 6**: 메일 시스템 및 크롤링 기능
 
