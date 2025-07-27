@@ -36,5 +36,5 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long>{
     //     throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     // }
 
-    //이 4가지가 원래는 생략해도 모두 기본 제공.
+    //이 4가지가 원래는 생략해도 모두 기본 제공. 단 사용하면 에러뜨니 사용하지말것.
 }
