@@ -5,12 +5,14 @@ import com.workmates.backend.repository.ChatroomRepository;
 import com.workmates.backend.web.dto.ChatroomDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChatroomService {
 
     private final ChatroomRepository chatroomRepository;
