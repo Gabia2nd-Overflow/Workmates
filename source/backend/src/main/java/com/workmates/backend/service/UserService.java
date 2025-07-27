@@ -2,7 +2,7 @@ package com.workmates.backend.service;
 
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.UserRepository;
-import com.workmates.backend.web.UserDTO;
+import com.workmates.backend.web.dto.UserDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

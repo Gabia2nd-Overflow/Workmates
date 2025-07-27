@@ -1,4 +1,4 @@
-package com.workmates.backend.web;
+package com.workmates.backend.web.dto;
 
 
 import java.time.LocalDateTime;
