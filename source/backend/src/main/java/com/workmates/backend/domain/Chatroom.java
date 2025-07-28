@@ -42,6 +42,8 @@ public class Chatroom {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
+
+
     /*
      * @PrePersist
      * JPA에서 제공하는 라이프사이클 콜백 어노테이션입니다.
