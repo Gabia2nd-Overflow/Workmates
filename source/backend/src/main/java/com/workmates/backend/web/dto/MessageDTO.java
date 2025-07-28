@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class MessageDTO {
-        // 📩 메시지 전송 요청 DTO
+
+    // 📩 메시지 전송 요청 DTO
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SendMessageRequest {
+
         private Long userId;
         private String content;
     }
@@ -28,6 +30,7 @@ public class MessageDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MessageResponse {
+
         private Long id;
         private String senderName;
         private String content;
@@ -43,4 +46,39 @@ public class MessageDTO {
                     .build();
         }
     }
+    // ---------------------------- WebSocket ------------------------------
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ChatSocketRequest {
+
+        private Long chatroomId;
+        private Long senderId;
+        private String content;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ChatSocketResponse {
+
+        private Long chatroomId;
+        private String senderNickname;
+        private String content;
+        private String timestamp;
+        private LocalDateTime createdAt;
+
+        public static ChatSocketResponse from(Message message) {
+            return ChatSocketResponse.builder()
+                    .chatroomId(message.getChatroom().getId())
+                    .senderNickname(message.getSender().getNickname())
+                    .content(message.getContent())
+                    .createdAt(message.getCreatedAt())
+                    .build();
+        }
+    }
+
 }
