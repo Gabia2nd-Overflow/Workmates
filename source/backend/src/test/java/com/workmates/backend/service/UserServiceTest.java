@@ -1,0 +1,54 @@
+package com.workmates.backend.service;
+
+import com.workmates.backend.domain.User;
+import com.workmates.backend.repository.UserRepository;
+import com.workmates.backend.web.dto.UserDTO.SignUpRequest;
+import com.workmates.backend.web.dto.UserDTO;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+class UserServiceTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    void 회원가입_정상작동_테스트() {
+        // given
+        SignUpRequest request = SignUpRequest.builder()
+                .username("testuser")
+                .email("testuser@example.com")
+                .password("1234")
+                .nickname("테스터")
+                .build();
+
+        // when
+        UserDTO.UserResponse savedUser = userService.signUp(request);
+
+        // then - 1단계: 서비스 응답값 검증
+        assertThat(savedUser.getUsername()).isEqualTo("testuser");
+        assertThat(savedUser.getEmail()).isEqualTo("testuser@example.com");
+
+        // then
+        Optional<User> result = userRepository.findByUsername("testuser");
+        assertThat(result).isPresent();
+        assertThat(result.get().getEmail()).isEqualTo("testuser@example.com");
+        assertThat(result.get().getNickname()).isEqualTo("테스터");
+    }
+
+    @AfterEach
+    void cleanUp() {
+        userRepository.deleteAll();
+    }
+}

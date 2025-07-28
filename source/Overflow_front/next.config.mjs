@@ -9,6 +9,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    appDir: true, // ✅ 여기가 핵심!
+  },
 }
 
 export default nextConfig

@@ -35,4 +35,5 @@ export function AICopilot() {
 
   const quickActions = [
     { icon: Search, label: "문서 검색", description: "업로드된 파일에서 정보 검색" },
-    { icon: Brain, label: "요약 생\
+  ]
+}
