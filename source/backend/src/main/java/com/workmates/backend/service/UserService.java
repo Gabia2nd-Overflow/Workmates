@@ -57,7 +57,7 @@ public class UserService {
                 .build();
     }
 
-    public UserDTO.UserResponse getMemberInfo(String username) {
+    public UserDTO.UserResponse getUserInfo(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         
@@ -65,7 +65,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO.UserResponse updateMember(String username, UserDTO.UpdateRequest request) {
+    public UserDTO.UserResponse updateUser(String username, UserDTO.UpdateRequest request) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
