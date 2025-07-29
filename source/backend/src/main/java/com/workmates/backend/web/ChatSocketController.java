@@ -1,7 +1,6 @@
 package com.workmates.backend.web;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 import com.workmates.backend.service.ChatSocketService;
@@ -15,15 +14,12 @@ public class ChatSocketController {
 
     private final ChatSocketService chatSocketService;
 
-    @MessageMapping("/chat.send") // 클라이언트가 pub/chat.send 로 메시지 전송
-    @SendTo("/sub/chatroom.{chatroomId}") // 구독자들에게 메시지 전송
-    public MessageDTO.ChatSocketResponse handleChatSocket(
-            MessageDTO.ChatSocketRequest request) {
-
-        return chatSocketService.saveAndSend(request);
-    }
     /**
-     * WebSocket으로 메시지를 수신하여 처리.
-     * 클라이언트 → /pub/chat.send 로 메시지 전송 시 실행됨.
+     * 클라이언트가 /pub/chat.send 로 메시지를 전송하면 이 메서드가 실행됨.
+     * 서비스단에서 메시지를 저장하고 구독자에게 직접 전송함.
      */
+    @MessageMapping("/chat.send")
+    public void handleChatSocket(MessageDTO.ChatSocketRequest request) {
+        chatSocketService.saveAndSend(request);
+    }
 }
