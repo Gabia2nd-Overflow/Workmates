@@ -1,0 +1,24 @@
+[33m1d94ab3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: commit: maincommit
+[33m659ef91[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: merge origin/kyu: Merge made by the 'ort' strategy.
+[33mba3b530[m HEAD@{2}: checkout: moving from WebSocket to main
+[33m6915f03[m[33m ([m[1;31morigin/WebSocket[m[33m, [m[1;32mWebSocket[m[33m)[m HEAD@{3}: checkout: moving from main to WebSocket
+[33mba3b530[m HEAD@{4}: merge WebSocket: Merge made by the 'ort' strategy.
+[33m7310154[m HEAD@{5}: checkout: moving from WebSocket to main
+[33m6915f03[m[33m ([m[1;31morigin/WebSocket[m[33m, [m[1;32mWebSocket[m[33m)[m HEAD@{6}: commit: wsstomp
+[33mef2cce7[m HEAD@{7}: commit: websockket 2025-07-28
+[33m504bc52[m[33m ([m[1;31morigin/0725spring[m[33m, [m[1;32m0725MessageFinshed[m[33m)[m HEAD@{8}: checkout: moving from 0725MessageFinshed to WebSocket
+[33m504bc52[m[33m ([m[1;31morigin/0725spring[m[33m, [m[1;32m0725MessageFinshed[m[33m)[m HEAD@{9}: merge main: Fast-forward
+[33ma0ea509[m HEAD@{10}: checkout: moving from WebSocket to 0725MessageFinshed
+[33m504bc52[m[33m ([m[1;31morigin/0725spring[m[33m, [m[1;32m0725MessageFinshed[m[33m)[m HEAD@{11}: checkout: moving from main to WebSocket
+[33m504bc52[m[33m ([m[1;31morigin/0725spring[m[33m, [m[1;32m0725MessageFinshed[m[33m)[m HEAD@{12}: commit: 11
+[33m799e1f5[m HEAD@{13}: commit: Update 2025-07-28.md
+[33ma0ea509[m HEAD@{14}: merge 0725spring: Fast-forward
+[33m40f99a7[m[33m ([m[1;31morigin/yjy01[m[33m)[m HEAD@{15}: checkout: moving from 0725spring to main
+[33ma0ea509[m HEAD@{16}: commit: Message기능 구현
+[33m40f99a7[m[33m ([m[1;31morigin/yjy01[m[33m)[m HEAD@{17}: merge main: Fast-forward
+[33mc1cd6bf[m HEAD@{18}: commit: next 실행
+[33m60413cc[m HEAD@{19}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33m2630299[m HEAD@{20}: commit: 위치이동
+[33m36b35fe[m HEAD@{21}: commit: 회원가입 및 로그인 spring
+[33m50c8d84[m HEAD@{22}: checkout: moving from main to 0725spring
+[33m50c8d84[m HEAD@{23}: clone: from https://github.com/hwShin0727/Workmates.git
