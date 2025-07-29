@@ -47,7 +47,7 @@ const SignUp = () => {
         <div className="text-center">
           {/* 반응형 텍스트 */}
           <h2 className="text-3xl font-bold text-gray-900">
-            🛍️ 쇼핑몰
+            🛍️ workmates
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             새로운 계정을 만드세요

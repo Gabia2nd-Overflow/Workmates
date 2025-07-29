@@ -47,7 +47,7 @@ const Login = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900">
-            🛍️ 쇼핑몰
+            🛍️ Workmates
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             계정에 로그인하세요
