@@ -26,6 +26,7 @@ const Login = () => {
       // 토큰과 사용자 정보 저장
       localStorage.setItem('token', response.data.token); //인증용
       localStorage.setItem('user', JSON.stringify({ //사용자 정보 (문자열)
+        id: response.data.id,
         username: response.data.username,
         email: response.data.email,
         nickname: response.data.nickname,

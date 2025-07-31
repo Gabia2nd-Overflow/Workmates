@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,24 +17,26 @@ import com.workmates.backend.service.MessageService;
 import com.workmates.backend.web.dto.MessageDTO;
 import com.workmates.backend.web.dto.MessageDTO.SendMessageRequest;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chatrooms/{chatroomId}/messages")
-public class MessageController { 
+public class MessageController {
+
     private final MessageService messageService;
 
     @PostMapping
     public ResponseEntity<MessageDTO.MessageResponse> sendMessage(
-        @PathVariable Long chatroomId,
-        @RequestBody SendMessageRequest request) {
+            @PathVariable Long chatroomId,
+            @RequestBody SendMessageRequest request) {
+        System.out.println("받은 userId = " + request.getUserId());
+        System.out.println("받은 content = " + request.getContent());
         Message message = messageService.sendMessage(
-            chatroomId, 
-            request.getUserId(), 
-            request.getContent()
-            );
+                chatroomId,
+                request.getUserId(),
+                request.getContent()
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(MessageDTO.MessageResponse.from(message));
     }
 
