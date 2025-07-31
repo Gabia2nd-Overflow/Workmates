@@ -1,6 +1,8 @@
 // src/pages/Home.jsx
 
 import AuthButtons from '../Components/AuthButtons';
+import ChatroomButton from '../Components/ChatroomButton';
+import Chatroom from './Chatroom';
 
 const Home = () => {
   return (
@@ -18,6 +20,7 @@ const Home = () => {
       {/* 본문 영역 (비워둠) */}
       <main className="p-8 text-center text-gray-400">
         <p>메인 콘텐츠가 여기에 표시됩니다.</p>
+        <ChatroomButton/>
       </main>
     </div>
   );

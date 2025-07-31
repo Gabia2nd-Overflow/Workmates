@@ -19,7 +19,6 @@ public class MessageDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SendMessageRequest {
-
         private Long userId;
         private String content;
     }

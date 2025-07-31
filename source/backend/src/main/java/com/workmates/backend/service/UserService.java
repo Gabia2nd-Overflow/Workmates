@@ -1,13 +1,14 @@
 package com.workmates.backend.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.UserRepository;
 import com.workmates.backend.web.dto.UserDTO;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +51,7 @@ public class UserService {
         }
 
         return UserDTO.LoginResponse.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .nickname(user.getNickname())

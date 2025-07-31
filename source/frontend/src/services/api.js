@@ -46,27 +46,20 @@ export const authAPI = {
   getMyInfo: () => api.get('/auth/me'),
   updateMyInfo: (data) => api.put('/auth/me', data),
 };
-// 상품 관련 API
-export const productAPI = {
-  getProducts: (page = 0, size = 10) => 
-    api.get(`/products?page=${page}&size=${size}`),
-  
-  getProduct: (productId) => 
-    api.get(`/products/${productId}`),
-  
-  searchProducts: (params) => 
-    api.get('/products/search', { params }),
-  
-  getLatestProducts: () => 
-    api.get('/products/latest'),
-  
-  createProduct: (data) => 
-    api.post('/products', data),
-  
-  updateProduct: (productId, data) => 
-    api.put(`/products/${productId}`, data),
-  
-  deleteProduct: (productId) => 
-    api.delete(`/products/${productId}`),
+
+
+export const chatroomAPI = {
+  createChatroom : (data) => api.post('/chatrooms', data),
+
+  getChatrooms: () => api.get('/chatrooms'),
+
+  deleteChatroom: (chatroomId) => api.delete(`/chatrooms/${chatroomId}`),
+}
+
+export const messageAPI = {
+  getMessages: (chatroomId) =>
+    api.get(`/chatrooms/${chatroomId}/messages`),
+  sendMessage: (chatroomId, data) =>
+    api.post(`/chatrooms/${chatroomId}/messages`, data),
 };
 export default api;
