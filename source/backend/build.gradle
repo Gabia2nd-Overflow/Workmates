@@ -44,7 +44,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// Google Translate API
-	implementation 'com.google.cloud:google-cloud-translate:2.61.0'
+    implementation 'com.google.cloud:google-cloud-translate:2.68.0'
 }
 
 tasks.named('test') {
