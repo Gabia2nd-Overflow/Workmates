@@ -44,7 +44,7 @@ public class ChatSocketService {
         MessageDTO.ChatSocketResponse response = MessageDTO.ChatSocketResponse.from(saved);
 
         // 4. WebSocket 구독자에게 전송
-        String destination = "/sub/chatroom." + chatroom.getId(); // 구독 주소
+        String destination = "/sub/chatrooms." + chatroom.getId(); // 구독 주소
         messagingTemplate.convertAndSend(destination, response);
 
         log.info("채팅 메시지 전송 완료: {}", response);

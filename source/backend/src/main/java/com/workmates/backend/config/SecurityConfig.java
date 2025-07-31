@@ -32,8 +32,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
+                .requestMatchers("/api/chatrooms/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                .requestMatchers("/ws-stomp/**", "/ws-stomp").permitAll()  // ✅ WebSocket 허용
+                .requestMatchers(
+                    "/ws-stomp/**",
+                    "/pub/**",
+                    "/sub/**"
+                ).permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             );

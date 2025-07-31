@@ -25,6 +25,9 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     com.product.backend: debug
+     # 👇 WebSocket 디버깅용 로그 레벨 추가
+    org.springframework.web.socket: DEBUG
+    org.springframework.messaging: DEBUG
 
 springdoc:
   api-docs:
