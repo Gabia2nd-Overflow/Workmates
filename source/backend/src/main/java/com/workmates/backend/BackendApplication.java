@@ -13,10 +13,6 @@ public class BackendApplication {
 
 	public static void main(String[] args) throws IOException{
 		ConfigurableApplicationContext context = SpringApplication.run(BackendApplication.class, args);
-
-		OpenAiApiService service = context.getBean(OpenAiApiService.class);
-        String result = service.translate("Hello, Koreans!\nBTS brought me here!\nEndless love from Paris", "English", "Korean");
-        System.out.println(result);
 	}
 
 }
