@@ -45,6 +45,9 @@ dependencies {
 
 	// Google Translate API
     implementation 'com.google.cloud:google-cloud-translate:2.68.0'
+
+	// OpenAI API
+	implementation 'org.springframework.ai:spring-ai-openai'
 }
 
 tasks.named('test') {
