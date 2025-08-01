@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Chatroom from "./pages/Chatroom";
-import ChatroomList from "./pages/ChatroomList";
+import CreateChatroom from './pages/CreateChatroom';
 import ChatroomDetail from "./pages/ChatroomDetail";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/chatroom" element={<Chatroom />} />
-          <Route path="/chatrooms" element={<ChatroomList />} />
+          <Route path="/createchatrooms" element={<CreateChatroom />} />
           <Route path="/chatrooms/:id" element={<ChatroomDetail />} />
         </Routes>
 

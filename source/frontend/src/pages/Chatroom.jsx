@@ -1,14 +1,15 @@
 // src/pages/Chatroom.jsx
 import React from 'react';
-import CreateChatroom from './CreateChatroom';
+
 import { useNavigate } from 'react-router-dom';
+import ChatroomList from './ChatroomList';
 
 function Chatroom() {
     const navigate = useNavigate();
   return (
     <div>
-      <button onClick={() => navigate('/chatrooms')}>채팅방 목록 보기</button>
-      <CreateChatroom/>
+      <button onClick={() => navigate('/createchatrooms')}>채팅방 생성</button>
+      <ChatroomList/>
       
     </div>
   );
