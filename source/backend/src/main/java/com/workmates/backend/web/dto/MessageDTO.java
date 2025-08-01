@@ -2,6 +2,8 @@ package com.workmates.backend.web.dto;
 
 import java.time.LocalDateTime;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.workmates.backend.domain.Message;
 
 import lombok.AllArgsConstructor;
@@ -28,10 +30,11 @@ public class MessageDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Transactional
     public static class MessageResponse {
 
         private Long id;
-        private String senderName;
+        private String senderNickname;
         private String content;
         private LocalDateTime createdAt;
 
@@ -39,7 +42,7 @@ public class MessageDTO {
         public static MessageResponse from(Message message) {
             return MessageResponse.builder()
                     .id(message.getId())
-                    .senderName(message.getSender().getUsername())
+                    .senderNickname(message.getSender().getNickname())
                     .content(message.getContent())
                     .createdAt(message.getCreatedAt())
                     .build();
