@@ -1,11 +1,9 @@
 // src/pages/ChatroomDetail.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
-function ChatroomDetail() {
-  const { id: chatroomId } = useParams();
+function ChatroomDetail({ chatroomId }) {  // 👈 변경됨
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -14,12 +12,14 @@ function ChatroomDetail() {
   const scrollRef = useRef(null);
 
   useEffect(() => {
+    if (!chatroomId) return;
     fetch(`http://localhost:8080/api/chatrooms/${chatroomId}/messages`)
       .then(res => res.json())
       .then(data => setMessages(data));
   }, [chatroomId]);
 
   useEffect(() => {
+    if (!chatroomId) return;
     const client = new Client({
       brokerURL: "ws://localhost:8080/ws-stomp",
       reconnectDelay: 5000,
@@ -43,42 +43,26 @@ function ChatroomDetail() {
     if (!input.trim()) return;
     stompClient.current.publish({
       destination: "/pub/chat.send",
-      body: JSON.stringify({
-        chatroomId,
-        senderId: userId,
-        content: input,
-      }),
+      body: JSON.stringify({ chatroomId, senderId: userId, content: input }),
     });
     setInput("");
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* 헤더 */}
-      <header className="bg-blue-600 text-white px-4 py-3 text-lg font-semibold">
-        워크샵 #{chatroomId}
-      </header>
-
-      {/* 메시지 영역 */}
+    <div className="flex flex-col h-full">
+      <div className="bg-blue-600 text-white px-4 py-2 font-semibold">워크샵 #{chatroomId}</div>
       <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-        {messages.map((msg, index) => (
-          <div key={index} className="mb-3">
-            <span className="font-semibold text-blue-800">
-              {msg.senderNickname || "익명"}
-            </span>
-            <span className="ml-2 text-sm text-gray-500">
-              {new Date(msg.createdAt).toLocaleTimeString()}
-            </span>
-            <div className="ml-1">{msg.content}</div>
+        {messages.map((msg, idx) => (
+          <div key={idx} className="mb-3">
+            <div className="font-semibold text-blue-700">{msg.senderNickname}</div>
+            <div className="text-sm text-gray-600">{msg.content}</div>
           </div>
         ))}
         <div ref={scrollRef} />
       </div>
-
-      {/* 입력창 */}
       <div className="p-3 border-t bg-white flex items-center">
         <textarea
-          className="flex-1 resize-none border rounded p-2 mr-2 text-sm"
+          className="flex-1 border p-2 rounded mr-2"
           rows={2}
           placeholder="메시지를 입력하세요..."
           value={input}
@@ -92,7 +76,7 @@ function ChatroomDetail() {
         />
         <button
           onClick={handleSend}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded"
         >
           전송
         </button>
