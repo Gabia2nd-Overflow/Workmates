@@ -30,7 +30,7 @@ public class MessageDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Transactional
+    @Transactional(readOnly = true)
     public static class MessageResponse {
 
         private Long id;
