@@ -35,3 +35,8 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+google-translate-api:
+  path: C:\Users\soldesk\Desktop\api_resource\grounded-vision-467403-f8-24b49089c814.json
+  google-project-id: grounded-vision-467403-f8
+  location: global
