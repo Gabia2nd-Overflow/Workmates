@@ -5,6 +5,7 @@ import java.net.http.*;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -77,4 +78,5 @@ public class OpenAiApiService {
                 }
         });
     }
+
 }
