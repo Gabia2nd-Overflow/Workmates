@@ -1,13 +1,9 @@
 package com.workmates.backend.external_api.open_ai_api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.*;
 import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,21 +38,13 @@ public class OpenAiApiService {
         return decryptedApiKey;
     }
 
-    public String translate(String text, String sourceLang, String targetLang) throws IOException {
-        URL url = new URL(apiUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Authorization", "Bearer " + getDecryptedApiKey());
-        conn.setDoOutput(true);
-
+    public CompletableFuture<String> translateAsync(String text, String sourceLang, String targetLang) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
-        // JSON 요청 바디 생성
         ObjectNode messageObj = mapper.createObjectNode();
         messageObj.put("role", "user");
-        messageObj.put("content", "Translate the following text from " + sourceLang + " to" + targetLang + ":\n" + text);
+        messageObj.put("content", "Translate the following text from " + sourceLang + " to " + targetLang + ":\n" + text);
 
         ArrayNode messagesArray = mapper.createArrayNode();
         messagesArray.add(messageObj);
@@ -66,32 +54,28 @@ public class OpenAiApiService {
         jsonBody.set("messages", messagesArray);
         jsonBody.put("max_tokens", 100);
 
-        // 요청 바디 스트림에 쓰기
-        try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = mapper.writeValueAsBytes(jsonBody);
-            os.write(input, 0, input.length);
-        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + getDecryptedApiKey())
+                .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
+                .build();
 
-        int responseCode = conn.getResponseCode();
-        InputStream is = (responseCode == 200) ? conn.getInputStream() : conn.getErrorStream();
-
-        // 응답 읽기
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"))) {
-            StringBuilder responseBuilder = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                responseBuilder.append(line.trim());
-            }
-
-            // JSON 파싱
-            JsonNode root = mapper.readTree(responseBuilder.toString());
-            JsonNode choices = root.path("choices");
-            if (choices.isArray() && choices.size() > 0) {
-                JsonNode message = choices.get(0).path("message");
-                return message.path("content").asText();
-            } else {
-                return null;
-            }
-        }
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenApply(HttpResponse::body)
+            .thenApply(response -> {
+                try {
+                    JsonNode root = mapper.readTree(response);
+                    JsonNode choices = root.path("choices");
+                    if (choices.isArray() && choices.size() > 0) {
+                        JsonNode message = choices.get(0).path("message");
+                        return message.path("content").asText();
+                    } else {
+                        return null;
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+        });
     }
 }
