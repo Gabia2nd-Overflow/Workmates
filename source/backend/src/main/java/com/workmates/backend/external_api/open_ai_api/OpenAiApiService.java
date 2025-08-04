@@ -22,12 +22,11 @@ public class OpenAiApiService {
 
     private String decryptedApiKey = null;
 
-    // API URL과 모델명도 분리
-    @Value("${open-ai-api.url}")
-    private String apiUrl;
+    @Value("${open-ai-api.translate.url}")
+    private String translateApiUrl;
 
-    @Value("${open-ai-api.model}")
-    private String model;
+    @Value("${open-ai-api.translate.model}")
+    private String translateModel;
 
     private String getDecryptedApiKey() {
         if(decryptedApiKey != null) return decryptedApiKey;
@@ -50,12 +49,12 @@ public class OpenAiApiService {
         messagesArray.add(messageObj);
 
         ObjectNode jsonBody = mapper.createObjectNode();
-        jsonBody.put("model", model);
+        jsonBody.put("model", translateModel);
         jsonBody.set("messages", messagesArray);
         jsonBody.put("max_tokens", 100);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl))
+                .uri(URI.create(translateApiUrl))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + getDecryptedApiKey())
                 .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
