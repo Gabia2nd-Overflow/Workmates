@@ -5,6 +5,10 @@ import java.net.http.*;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.image.ImageResponse;
+import org.springframework.ai.openai.OpenAiImageModel;
+import org.springframework.ai.openai.OpenAiImageOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 public class OpenAiApiService {
+
+    private final OpenAiImageModel openAiImageModel;
+
+    @Autowired
+    public OpenAiApiService(OpenAiImageModel openAiImageModel) {
+        this.openAiImageModel = openAiImageModel;
+    }
 
     // application.yml에서 base64 인코딩된 키 주입
     @Value("${open-ai-api.encrypted}")
@@ -77,6 +88,25 @@ public class OpenAiApiService {
                     throw new RuntimeException(e);
                 }
         });
+    }
+
+    public CompletableFuture<ImageResponse> generateImageAsync() {
+        CompletableFuture<ImageResponse> futureResponse = openAiImageModel.generateAsync(
+            new ImagePrompt("A light cream colored mini golden doodle",
+            OpenAiImageOptions.builder()
+                    .quality("hd")
+                    .N(4)
+                    .height(1024)
+                    .width(1024).build())
+        );
+
+        // 응답 처리 (예: 첫번째 이미지 URL 출력)
+        futureResponse.thenAccept(response -> {
+            var imageUrl = response.getData().get(0).getUrl();
+            System.out.println("Generated image URL: " + imageUrl);
+        });
+
+
     }
 
 }
