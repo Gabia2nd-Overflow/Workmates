@@ -39,6 +39,7 @@ public class SecurityConfig {
                     "/pub/**",
                     "/sub/**"
                 ).permitAll()
+                .requestMatchers("/api/messages/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             );
