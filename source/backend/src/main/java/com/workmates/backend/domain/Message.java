@@ -42,6 +42,12 @@ public class Message {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "file_url")
+    private String fileUrl;
+    
+    @Column(name = "file_name")
+    private String fileName;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -52,4 +58,5 @@ public class Message {
         this.sender = sender;
         this.content = content;
     }
+
 }

@@ -1,104 +1,124 @@
+// src/pages/ChatroomDetail.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import FileUploadButton from "../Components/FileUploadButton";
 
-function ChatroomDetail() {
-  const { id: chatroomId } = useParams();
+function ChatroomDetail({ chatroomId }) {
+  // 👈 변경됨
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
   const stompClient = useRef(null);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
-    // REST로 기존 메시지 불러오기
+    if (!chatroomId) return;
     fetch(`http://localhost:8080/api/chatrooms/${chatroomId}/messages`)
       .then((res) => res.json())
       .then((data) => setMessages(data));
   }, [chatroomId]);
 
   useEffect(() => {
+    if (!chatroomId) return;
     const client = new Client({
       brokerURL: "ws://localhost:8080/ws-stomp",
-      debug: console.log,
       reconnectDelay: 5000,
       onConnect: () => {
-        console.log("✅ WebSocket Connected");
-
-        // ✅ 구독 경로 설정
         client.subscribe(`/sub/chatrooms.${chatroomId}`, (message) => {
           const newMsg = JSON.parse(message.body);
-          console.log("📩 새 메시지 수신:", newMsg);
           setMessages((prev) => [...prev, newMsg]);
         });
       },
-      onStompError: (frame) => {
-        console.error("❌ STOMP Error", frame);
-      },
     });
-
     client.activate();
-    stompClient.current = client; // ✅ 이거 중요합니다!
-
-    return () => {
-      client.deactivate();
-    };
+    stompClient.current = client;
+    return () => client.deactivate();
   }, [chatroomId]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSend = () => {
     if (!input.trim()) return;
     stompClient.current.publish({
       destination: "/pub/chat.send",
-      body: JSON.stringify({
-        chatroomId: chatroomId,
-        senderId: userId,
-        content: input,
-      }),
+      body: JSON.stringify({ chatroomId, senderId: userId, content: input }),
     });
     setInput("");
   };
-  const formatDate = (str) => {
-    if (!str) return "";
-    const date = new Date(str);
-    return date.toLocaleString(); // → 예: 2025. 7. 31. 오후 5:37:01
-  };
+
   return (
-    <div>
-      <h2>채팅방 {chatroomId} 메시지</h2>
-      <div
-        style={{
-          minHeight: "300px",
-          border: "1px solid #eee",
-          marginBottom: 12,
-        }}
-      >
-        {messages.map((msg, i) => (
-          <div key={i}>
-            <b>{msg.senderNickname || msg.senderName || "익명"}</b>:{" "}
-            {msg.content}
-            <span style={{ color: "#aaa", marginLeft: 8, fontSize: 12 }}>
-              {formatDate(msg.createdAt)}
-            </span>
+    <div className="flex flex-col h-full">
+      {/* 헤더 */}
+      <div className="bg-blue-600 text-white px-4 py-2 font-semibold">
+        워크샵 #{chatroomId}
+      </div>
+
+      {/* 메시지 출력 영역 */}
+      <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+        {messages.map((msg, idx) => (
+          <div key={idx} className="mb-3">
+            <div className="font-semibold text-blue-700">
+              {msg.senderNickname}
+            </div>
+
+            {msg.type === "FILE" ? (
+              <>
+                <div className="text-sm text-gray-600">
+                  📎 파일 업로드가 완료되었습니다.
+                </div>
+                <a
+                  href={msg.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline text-sm"
+                >
+                  {msg.fileName || "파일 열기"}
+                </a>
+              </>
+            ) : (
+              <div className="text-sm text-gray-600">{msg.content}</div>
+            )}
           </div>
         ))}
+        <div ref={scrollRef} />
       </div>
-      <textarea
-        style={{ width: "80%" }}
-        rows={2}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-          }
-        }}
-        placeholder="메시지를 입력하세요..."
-      />
-      <button onClick={handleSend} style={{ marginLeft: 8 }}>
-        전송
-      </button>
+
+      {/* 입력창 + 파일 버튼 */}
+      <div className="p-3 border-t bg-white flex items-center">
+        {/* 📎 파일 버튼은 여기 */}
+        <FileUploadButton
+          chatroomId={chatroomId}
+          userId={userId}
+          stompClient={stompClient}
+        />
+
+        {/* 메시지 입력 */}
+        <textarea
+          className="flex-1 border p-2 rounded mr-2"
+          rows={2}
+          placeholder="메시지를 입력하세요..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+        />
+
+        {/* 전송 버튼 */}
+        <button
+          onClick={handleSend}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          전송
+        </button>
+      </div>
     </div>
   );
 }

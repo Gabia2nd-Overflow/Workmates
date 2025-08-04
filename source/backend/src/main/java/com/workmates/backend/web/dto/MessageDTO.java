@@ -59,6 +59,9 @@ public class MessageDTO {
         private Long chatroomId;
         private Long senderId;
         private String content;
+        private String type;        // TEXT or FILE
+        private String fileUrl;     // ✅ 추가
+        private String fileName;    // ✅ 추가
     }
 
     @Data
@@ -83,4 +86,21 @@ public class MessageDTO {
         }
     }
 
+    //-------------------------------
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class FileUploadResponse {
+
+        private String fileUrl;
+        private String fileName;
+
+        public static FileUploadResponse from(String fileUrl, String fileName) {
+            return FileUploadResponse.builder()
+                    .fileUrl(fileUrl)
+                    .fileName(fileName)
+                    .build();
+        }
+    }
 }

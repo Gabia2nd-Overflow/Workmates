@@ -62,4 +62,13 @@ export const messageAPI = {
   sendMessage: (chatroomId, data) =>
     api.post(`/chatrooms/${chatroomId}/messages`, data),
 };
+
+export const fileAPI = {
+  upload: (formData) =>
+    api.post('/messages/files', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }),
+};
 export default api;
