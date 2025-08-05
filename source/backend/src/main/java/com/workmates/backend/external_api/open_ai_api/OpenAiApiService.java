@@ -107,7 +107,6 @@ public class OpenAiApiService {
                 try {
                     JsonNode root = mapper.readTree(response);
                     JsonNode data = root.get("data");
-                    System.out.println("data : " + data);
                     if(data.isArray() && data.size() > 0) {
                         String url = data.get(0).get("url").asText();
                         return url;
