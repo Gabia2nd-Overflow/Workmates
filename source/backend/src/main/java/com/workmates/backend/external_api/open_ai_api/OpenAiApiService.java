@@ -5,11 +5,6 @@ import java.net.http.*;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.ai.image.ImagePrompt;
-import org.springframework.ai.image.ImageResponse;
-import org.springframework.ai.openai.OpenAiImageModel;
-import org.springframework.ai.openai.OpenAiImageOptions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +16,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Service
 public class OpenAiApiService {
 
-    private final OpenAiImageModel openAiImageModel;
-
-    @Autowired
-    public OpenAiApiService(OpenAiImageModel openAiImageModel) {
-        this.openAiImageModel = openAiImageModel;
-    }
-
     // application.yml에서 base64 인코딩된 키 주입
     @Value("${open-ai-api.encrypted}")
     private String encryptedApiKey;
@@ -37,8 +25,14 @@ public class OpenAiApiService {
     @Value("${open-ai-api.translate.url}")
     private String translateApiUrl;
 
+    @Value("${open-ai-api.image-generate.url}")
+    private String imageGenerateApiUrl;
+
     @Value("${open-ai-api.translate.model}")
     private String translateModel;
+
+    @Value("${open-ai-api.image-generate.model}")
+    private String imageGenerateModel;
 
     private String getDecryptedApiKey() {
         if(decryptedApiKey != null) return decryptedApiKey;
@@ -89,24 +83,40 @@ public class OpenAiApiService {
                 }
         });
     }
+    // size 값은 '1024x1024', '1024x1792', '1792x1024'만 가능
+    public CompletableFuture<String> generateImageAsync(String prompt, String size) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
 
-    public CompletableFuture<ImageResponse> generateImageAsync() {
-        CompletableFuture<ImageResponse> futureResponse = openAiImageModel.generateAsync(
-            new ImagePrompt("A light cream colored mini golden doodle",
-            OpenAiImageOptions.builder()
-                    .quality("hd")
-                    .N(4)
-                    .height(1024)
-                    .width(1024).build())
-        );
+        ObjectNode jsonBody = mapper.createObjectNode();
+        jsonBody.put("model", imageGenerateModel);
+        jsonBody.put("prompt", prompt);
+        jsonBody.put("n", 1); // dall-e-3는 1장 고정
+        jsonBody.put("size", size);
 
-        // 응답 처리 (예: 첫번째 이미지 URL 출력)
-        futureResponse.thenAccept(response -> {
-            var imageUrl = response.getData().get(0).getUrl();
-            System.out.println("Generated image URL: " + imageUrl);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(imageGenerateApiUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + getDecryptedApiKey())
+                .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
+                .build();
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenApply(HttpResponse::body)
+            .thenApply(response -> {
+                try {
+                    JsonNode root = mapper.readTree(response);
+                    JsonNode data = root.get("data");
+                    System.out.println("data : " + data);
+                    if(data.isArray() && data.size() > 0) {
+                        String url = data.get(0).get("url").asText();
+                        return url;
+                    } else {
+                        return null;
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
         });
-
-
     }
-
 }

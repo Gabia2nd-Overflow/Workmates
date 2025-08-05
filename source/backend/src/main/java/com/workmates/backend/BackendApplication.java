@@ -18,15 +18,16 @@ public class BackendApplication {
 
 		OpenAiApiService service = context.getBean(OpenAiApiService.class);
 
-		CompletableFuture<String> ans = service.translateAsync("hello", "English", "Korean")
-		.thenApply(result -> {
-			System.out.println(result);
-			return result;
-		})
-		.exceptionally(err -> {
-			err.printStackTrace();
-			return null;
-		});
+		// CompletableFuture<String> ans;
 
+		// ans = service.generateImageAsync("바닷속을 헤엄치는 귀여운 한 마리의 해달", "1024x1024")
+		// .thenApply(result -> {
+		// 	System.out.println("result : " + result);
+		// 	return result;
+		// })
+		// .exceptionally(err -> {
+		// 	err.printStackTrace();
+		// 	return null;
+		// });
 	}
 }
