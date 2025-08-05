@@ -6,6 +6,7 @@ import com.workmates.backend.web.dto.SchedularDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,12 +16,12 @@ public class SchedularService {
 
     private final SchedularRepository schedularRepository;
 
-    public SchedularDTO createSchedule(SchedularDTO dto) {
+    public SchedularDTO.Response createSchedule(SchedularDTO.CreateRequest dto) {
         Schedular entity = toEntity(dto);
-        return toDTO(schedularRepository.save(entity));
+        return SchedularDTO.Response.from(schedularRepository.save(entity));
     }
 
-    public SchedularDTO updateSchedule(Long id, SchedularDTO dto) {
+    public SchedularDTO.Response updateSchedule(Long id, SchedularDTO.UpdateRequest dto) {
         return schedularRepository.findById(id).map(sched -> {
             sched.setTitle(dto.getTitle());
             sched.setContext(dto.getContext());
@@ -29,7 +30,7 @@ public class SchedularService {
             sched.setLocation(dto.getLocation());
             sched.setImportancy(dto.getImportancy());
             sched.setCompleted(dto.getCompleted());
-            return toDTO(schedularRepository.save(sched));
+            return SchedularDTO.Response.from(schedularRepository.save(sched));
         }).orElseThrow(() -> new NoSuchElementException("Schedule not found"));
     }
 
@@ -37,20 +38,16 @@ public class SchedularService {
         schedularRepository.deleteById(id);
     }
 
-    public List<SchedularDTO> getAllSchedules() {
+    public List<SchedularDTO.Response> getAllSchedules() {
         return schedularRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(SchedularDTO.Response::from)
                 .collect(Collectors.toList());
     }
 
     public Map<String, Long> getScheduleStats() {
         long total = schedularRepository.count();
         long completed = schedularRepository.countByCompleted(true);
-
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, 7);
-        Date oneWeekLater = cal.getTime();
-        long dueSoon = schedularRepository.findByDueDateBefore(oneWeekLater)
+        long dueSoon = schedularRepository.findByDueDateBefore(LocalDateTime.now().plusDays(7))
                                           .stream()
                                           .filter(s -> !s.getCompleted())
                                           .count();
@@ -62,21 +59,7 @@ public class SchedularService {
         return stats;
     }
 
-    private SchedularDTO toDTO(Schedular s) {
-        return SchedularDTO.builder()
-                .id(s.getId())
-                .title(s.getTitle())
-                .context(s.getContext())
-                .startDate(s.getStartDate())
-                .dueDate(s.getDueDate())
-                .location(s.getLocation())
-                .importancy(s.getImportancy())
-                .completed(s.getCompleted())
-                .createdAt(java.sql.Timestamp.valueOf(s.getCreatedAt()))
-                .build();
-    }
-
-    private Schedular toEntity(SchedularDTO dto) {
+    private Schedular toEntity(SchedularDTO.CreateRequest dto) {
         return Schedular.builder()
                 .title(dto.getTitle())
                 .context(dto.getContext())
@@ -84,7 +67,7 @@ public class SchedularService {
                 .dueDate(dto.getDueDate())
                 .location(dto.getLocation())
                 .importancy(dto.getImportancy())
-                .completed(dto.getCompleted() != null && dto.getCompleted())
+                .completed(false) // 새 일정은 기본적으로 미완료
                 .build();
     }
 }

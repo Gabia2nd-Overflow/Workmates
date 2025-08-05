@@ -17,13 +17,14 @@ public class SchedularController {
     private final SchedularService schedularService;
 
     @PostMapping
-    public ResponseEntity<SchedularDTO> create(@RequestBody SchedularDTO schedular) {
-        return ResponseEntity.ok(schedularService.createSchedule(schedular));
+    public ResponseEntity<SchedularDTO.Response> create(@RequestBody SchedularDTO.CreateRequest request) {
+        return ResponseEntity.ok(schedularService.createSchedule(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SchedularDTO> update(@PathVariable Long id, @RequestBody SchedularDTO updated) {
-        return ResponseEntity.ok(schedularService.updateSchedule(id, updated));
+    public ResponseEntity<SchedularDTO.Response> update(@PathVariable Long id,
+                                                        @RequestBody SchedularDTO.UpdateRequest request) {
+        return ResponseEntity.ok(schedularService.updateSchedule(id, request));
     }
 
     @DeleteMapping("/{id}")
@@ -33,7 +34,7 @@ public class SchedularController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SchedularDTO>> getAll() {
+    public ResponseEntity<List<SchedularDTO.Response>> getAll() {
         return ResponseEntity.ok(schedularService.getAllSchedules());
     }
 

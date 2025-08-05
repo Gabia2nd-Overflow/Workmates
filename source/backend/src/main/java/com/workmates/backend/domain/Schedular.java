@@ -2,8 +2,6 @@
 package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +11,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class Schedular {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SCHEDULE_ID")
@@ -26,10 +26,10 @@ public class Schedular {
     private String context;
 
     @Column(name = "SCHEDULE_STARTDATE", nullable = false)
-    private Date startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "SCHEDULE_DUEDATE", nullable = false)
-    private Date dueDate;
+    private LocalDateTime dueDate;
 
     @Column(name = "SCHEDULE_LOCATION", length = 50)
     private String location;
