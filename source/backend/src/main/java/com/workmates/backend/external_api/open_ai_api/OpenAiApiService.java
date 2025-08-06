@@ -22,14 +22,14 @@ public class OpenAiApiService {
 
     private String decryptedApiKey = null;
 
-    @Value("${open-ai-api.translate.url}")
-    private String translateApiUrl;
+    @Value("${open-ai-api.chat.url}")
+    private String chatApiUrl;
 
     @Value("${open-ai-api.image-generate.url}")
     private String imageGenerateApiUrl;
 
-    @Value("${open-ai-api.translate.model}")
-    private String translateModel;
+    @Value("${open-ai-api.chat.model}")
+    private String chatModel;
 
     @Value("${open-ai-api.image-generate.model}")
     private String imageGenerateModel;
@@ -55,12 +55,12 @@ public class OpenAiApiService {
         messagesArray.add(messageObj);
 
         ObjectNode jsonBody = mapper.createObjectNode();
-        jsonBody.put("model", translateModel);
+        jsonBody.put("model", chatModel);
         jsonBody.set("messages", messagesArray);
         jsonBody.put("max_tokens", 100);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(translateApiUrl))
+                .uri(URI.create(chatApiUrl))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + getDecryptedApiKey())
                 .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
@@ -84,7 +84,7 @@ public class OpenAiApiService {
         });
     }
     // size 값은 '1024x1024', '1024x1792', '1792x1024'만 가능
-    public CompletableFuture<String> generateImageAsync(String prompt, String size) throws Exception {
+    public CompletableFuture<String> generateImageAsync(String prompt) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -92,7 +92,7 @@ public class OpenAiApiService {
         jsonBody.put("model", imageGenerateModel);
         jsonBody.put("prompt", prompt);
         jsonBody.put("n", 1); // dall-e-3는 1장 고정
-        jsonBody.put("size", size);
+        jsonBody.put("size", "1024x1024"); // 1024*1024로 고정
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(imageGenerateApiUrl))
