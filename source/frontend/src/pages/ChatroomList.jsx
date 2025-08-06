@@ -22,7 +22,7 @@ const ChatroomList = () => {
           <h2 className="text-lg font-bold">워크샵</h2>
           <button
             className="bg-blue-500 text-white px-2 py-1 text-sm rounded"
-            onClick={() => (window.location.href = "/chatrooms/create")}
+            onClick={() => (window.location.href = "/createchatrooms")}
           >
             + 생성
           </button>

@@ -69,7 +69,7 @@ public class MessageDTO {
     @AllArgsConstructor
     @Builder
     public static class ChatSocketResponse {
-
+        private Long id;
         private Long chatroomId;
         private String senderNickname;
         private String content;
@@ -78,6 +78,7 @@ public class MessageDTO {
 
         public static ChatSocketResponse from(Message message) {
             return ChatSocketResponse.builder()
+                    .id(message.getId())                          // ✅ 메시지 ID 추가
                     .chatroomId(message.getChatroom().getId())
                     .senderNickname(message.getSender().getNickname())
                     .content(message.getContent())
@@ -102,5 +103,25 @@ public class MessageDTO {
                     .fileName(fileName)
                     .build();
         }
+    }
+
+    // -----------------------------------Edit Delete----------------------------------------------
+     // ✏️ 메시지 수정 요청 DTO
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class EditMessageRequest {
+        private Long senderId;
+        private String content;
+    }
+
+    // 🗑️ 메시지 삭제 요청 DTO
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class DeleteMessageRequest {
+        private Long senderId;
     }
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,10 +49,33 @@ public class Message {
     @Column(name = "file_name")
     private String fileName;
 
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
+    private boolean deleted = false;
+
+    private LocalDateTime deletedAt;
+    private LocalDateTime updatedAt; 
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
+    
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void markAsDeleted() {
+        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
+
+
 
     public Message(Chatroom chatroom, User sender, String content) {
         this.chatroom = chatroom;
