@@ -44,6 +44,10 @@ google-translate-api:
 open-ai-api:
   encrypted: c2stcHJvai1WY1FtbjFCZUZZeklHYVpQTGx6Y3BrSmpaQlV5Wk9BWFhqR0txaTRJeEhGWHM0cmoxRXkySndWUzQzVTRFTVJZMDA0blF5aVY5cFQzQmxia0ZKN1lRdk54UFFaUDd3eFRlTVdFTUp0S3J1Y1hHcWhnbmxZMDJ5WkszU0FpVS1RVUtCVGFfR1JDeVRxS183aVlhTTZfVDdyY2JZd0E=
   
-  translate:
-    url: "https://api.openai.com/v1/chat/completions"
-    model: "gpt-4o"
+  chat:
+    url: https://api.openai.com/v1/chat/completions
+    model: gpt-4o
+
+  image-generate:
+    url: https://api.openai.com/v1/images/generations
+    model: dall-e-3 
