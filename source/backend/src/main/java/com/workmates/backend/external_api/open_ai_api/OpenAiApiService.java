@@ -3,6 +3,7 @@ package com.workmates.backend.external_api.open_ai_api;
 import java.net.URI;
 import java.net.http.*;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -119,7 +120,7 @@ public class OpenAiApiService {
         });
     }
 
-    public CompletableFuture<String> sentimentAnalysisAsync(String text, String sourceLang, String targetLang) throws Exception {
+    public CompletableFuture<String> sentimentAnalysisAsync(List<Comment> commentList) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
