@@ -22,7 +22,7 @@ public class ChatSocketService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final ChatroomRepository chatroomRepository;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final MessageBroadcastService broadcastService; // ✅ 주입
 
     public MessageDTO.ChatSocketResponse saveAndSend(MessageDTO.ChatSocketRequest request) {
 
@@ -43,9 +43,7 @@ public class ChatSocketService {
         // 3. 응답 DTO 생성
         MessageDTO.ChatSocketResponse response = MessageDTO.ChatSocketResponse.from(saved);
 
-        // 4. WebSocket 구독자에게 전송
-        String destination = "/sub/chatrooms." + chatroom.getId(); // 구독 주소
-        messagingTemplate.convertAndSend(destination, response);
+        broadcastService.sendCreated(response); // ✅ 여기로 위임
 
         log.info("채팅 메시지 전송 완료: {}", response);
         return response;

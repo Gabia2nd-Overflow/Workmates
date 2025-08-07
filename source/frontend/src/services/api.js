@@ -61,6 +61,12 @@ export const messageAPI = {
     api.get(`/chatrooms/${chatroomId}/messages`),
   sendMessage: (chatroomId, data) =>
     api.post(`/chatrooms/${chatroomId}/messages`, data),
+  editMessage: (chatroomId, messageId, data) =>
+    api.patch(`/chatrooms/${chatroomId}/messages/${messageId}`, data),
+  deleteMessage: (chatroomId, messageId, data) =>
+    api.delete(`/chatrooms/${chatroomId}/messages/${messageId}`, {
+      data, // DELETE에 body 보낼 땐 'data' 키로 감싸야 함!
+    }),
 };
 
 export const fileAPI = {

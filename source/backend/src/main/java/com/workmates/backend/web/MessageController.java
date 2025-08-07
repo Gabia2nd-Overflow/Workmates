@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.workmates.backend.domain.Message;
 import com.workmates.backend.service.MessageService;
 import com.workmates.backend.web.dto.MessageDTO;
+import com.workmates.backend.web.dto.MessageDTO.DeleteMessageRequest;
+import com.workmates.backend.web.dto.MessageDTO.EditMessageRequest;
 import com.workmates.backend.web.dto.MessageDTO.SendMessageRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -46,5 +50,25 @@ public class MessageController {
                 .map(MessageDTO.MessageResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(messages);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MessageDTO.ChatSocketResponse> editMessage(
+            @PathVariable("id") Long messageId,
+            @RequestBody EditMessageRequest request
+    ) {
+        MessageDTO.ChatSocketResponse updated =
+                messageService.editMessage(messageId, request.getSenderId(), request.getContent());
+
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMessage(
+            @PathVariable("id") Long messageId,
+            @RequestBody DeleteMessageRequest request
+    ) {
+        messageService.deleteMessage(messageId, request.getSenderId());
+        return ResponseEntity.noContent().build();
     }
 }

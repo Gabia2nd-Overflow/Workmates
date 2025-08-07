@@ -1,13 +1,14 @@
 // src/pages/ChatroomDetail.jsx
 import React, { useEffect, useState, useRef } from "react";
-import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import FileUploadButton from "../Components/FileUploadButton";
+import { messageAPI } from "../services/api";
 
 function ChatroomDetail({ chatroomId }) {
-  // 👈 변경됨
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const [editInput, setEditInput] = useState("");
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
   const stompClient = useRef(null);
@@ -22,18 +23,26 @@ function ChatroomDetail({ chatroomId }) {
 
   useEffect(() => {
     if (!chatroomId) return;
+
     const client = new Client({
       brokerURL: "ws://localhost:8080/ws-stomp",
       reconnectDelay: 5000,
       onConnect: () => {
         client.subscribe(`/sub/chatrooms.${chatroomId}`, (message) => {
           const newMsg = JSON.parse(message.body);
-          setMessages((prev) => [...prev, newMsg]);
+
+          // ✅ 중복 방지
+          setMessages((prev) => {
+            const exists = prev.some((msg) => msg.id === newMsg.id);
+            return exists ? prev : [...prev, newMsg];
+          });
         });
       },
     });
+
     client.activate();
     stompClient.current = client;
+
     return () => client.deactivate();
   }, [chatroomId]);
 
@@ -50,6 +59,36 @@ function ChatroomDetail({ chatroomId }) {
     setInput("");
   };
 
+  const handleEdit = async (messageId) => {
+    try {
+      await messageAPI.editMessage(chatroomId, messageId, {
+        senderId: userId,
+        content: editInput,
+      });
+
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId ? { ...msg, content: editInput } : msg
+        )
+      );
+      setEditingMessageId(null);
+      setEditInput("");
+    } catch (error) {
+      console.error("메시지 수정 실패", error);
+    }
+  };
+
+  const handleDelete = async (messageId) => {
+    try {
+      await messageAPI.deleteMessage(chatroomId, messageId, {
+        senderId: userId,
+      });
+      setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+    } catch (error) {
+      console.error("메시지 삭제 실패", error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* 헤더 */}
@@ -59,13 +98,54 @@ function ChatroomDetail({ chatroomId }) {
 
       {/* 메시지 출력 영역 */}
       <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-        {messages.map((msg, idx) => (
-          <div key={idx} className="mb-3">
-            <div className="font-semibold text-blue-700">
-              {msg.senderNickname}
+        {messages.map((msg) => (
+          <div key={`${msg.id}-${msg.updatedAt || ""}`} className="mb-3">
+            <div className="font-semibold text-blue-700 flex justify-between">
+              <span>
+                {msg.senderNickname}
+                {msg.senderNickname === user.nickname && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingMessageId(msg.id);
+                        setEditInput(msg.content);
+                      }}
+                      className="ml-2 text-xs text-gray-500 hover:underline"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => handleDelete(msg.id)}
+                      className="ml-1 text-xs text-red-500 hover:underline"
+                    >
+                      🗑️
+                    </button>
+                  </>
+                )}
+              </span>
+              <span className="text-xs text-gray-400">
+                {new Date(msg.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
 
-            {msg.type === "FILE" ? (
+            {editingMessageId === msg.id ? (
+              <div>
+                <textarea
+                  value={editInput}
+                  onChange={(e) => setEditInput(e.target.value)}
+                  className="w-full border rounded p-1"
+                />
+                <button
+                  onClick={() => handleEdit(msg.id)}
+                  className="mt-1 text-sm text-white bg-green-500 px-2 py-1 rounded"
+                >
+                  수정 완료
+                </button>
+              </div>
+            ) : msg.type === "FILE" ? (
               <>
                 <div className="text-sm text-gray-600">
                   📎 파일 업로드가 완료되었습니다.
@@ -89,14 +169,12 @@ function ChatroomDetail({ chatroomId }) {
 
       {/* 입력창 + 파일 버튼 */}
       <div className="p-3 border-t bg-white flex items-center">
-        {/* 📎 파일 버튼은 여기 */}
         <FileUploadButton
           chatroomId={chatroomId}
           userId={userId}
           stompClient={stompClient}
         />
 
-        {/* 메시지 입력 */}
         <textarea
           className="flex-1 border p-2 rounded mr-2"
           rows={2}
@@ -111,7 +189,6 @@ function ChatroomDetail({ chatroomId }) {
           }}
         />
 
-        {/* 전송 버튼 */}
         <button
           onClick={handleSend}
           className="bg-blue-600 text-white px-4 py-2 rounded"
