@@ -83,7 +83,7 @@ public class OpenAiApiService {
                 }
         });
     }
-    // size 값은 '1024x1024', '1024x1792', '1792x1024'만 가능
+    // dall-e-3의 size 값은 '1024x1024', '1024x1792', '1792x1024'만 가능
     public CompletableFuture<String> generateImageAsync(String prompt) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
@@ -110,6 +110,47 @@ public class OpenAiApiService {
                     if(data.isArray() && data.size() > 0) {
                         String url = data.get(0).get("url").asText();
                         return url;
+                    } else {
+                        return null;
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+        });
+    }
+
+    public CompletableFuture<String> sentimentAnalysisAsync(String text, String sourceLang, String targetLang) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode messageObj = mapper.createObjectNode();
+        messageObj.put("role", "user");
+        messageObj.put("content", "Translate the following text from " + sourceLang + " to " + targetLang + ":\n" + text);
+
+        ArrayNode messagesArray = mapper.createArrayNode();
+        messagesArray.add(messageObj);
+
+        ObjectNode jsonBody = mapper.createObjectNode();
+        jsonBody.put("model", chatModel);
+        jsonBody.set("messages", messagesArray);
+        jsonBody.put("max_tokens", 100);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(chatApiUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + getDecryptedApiKey())
+                .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
+                .build();
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenApply(HttpResponse::body)
+            .thenApply(response -> {
+                try {
+                    JsonNode root = mapper.readTree(response);
+                    JsonNode choices = root.path("choices");
+                    if (choices.isArray() && choices.size() > 0) {
+                        JsonNode message = choices.get(0).path("message");
+                        return message.path("content").asText();
                     } else {
                         return null;
                     }
