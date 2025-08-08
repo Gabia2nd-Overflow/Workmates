@@ -4,6 +4,9 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8080/api';
 
+//백엔드 실제 엔드포인트: "/api/schedules"
+const SCHEDULAR_PATH = '/schedules';
+
 // axios 인스턴스 생성
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -77,4 +80,19 @@ export const fileAPI = {
       },
     }),
 };
+
+// 스케줄러 API 래퍼 추가 - yjy
+export const schedularAPI = {
+  // list
+  getAll: () => api.get(SCHEDULAR_PATH),
+  // create
+  create: (data) => api.post(SCHEDULAR_PATH, data),
+  // update
+  update: (id, data) => api.put(`${SCHEDULAR_PATH}/${id}`, data),
+  // delete
+  remove: (id) => api.delete(`${SCHEDULAR_PATH}/${id}`),
+  // stats
+  getStats: () => api.get(`${SCHEDULAR_PATH}/stats`),
+};
+
 export default api;
