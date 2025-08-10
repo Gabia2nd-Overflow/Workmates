@@ -1,7 +1,7 @@
 package com.workmates.backend.web.dto;
 
 import java.time.LocalDateTime;
-import com.workmates.backend.domain.Schedular;
+import com.workmates.backend.domain.Schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,7 +57,7 @@ public class SchedularDTO {
         private Boolean completed;
         private LocalDateTime createdAt;
 
-        public static Response from(Schedular entity) {
+        public static Response from(Schedule entity) {
             return Response.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())

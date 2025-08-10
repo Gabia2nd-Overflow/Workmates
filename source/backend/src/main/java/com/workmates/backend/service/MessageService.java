@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.workmates.backend.domain.Chatroom;
+import com.workmates.backend.domain.Lounge;
 import com.workmates.backend.domain.Message;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.ChatroomRepository;
@@ -25,7 +25,7 @@ public class MessageService {
     private final MessageBroadcastService broadcastService;
     @Transactional
     public Message sendMessage(Long chatroomId, Long userId, String content) {
-        Chatroom chatroom = chatroomRepository.findById(chatroomId)
+        Lounge chatroom = chatroomRepository.findById(chatroomId)
                 .orElseThrow(() -> new IllegalArgumentException("채팅방이 없습니다."));
 
         User sender = userRepository.findById(userId)

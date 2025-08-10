@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.workmates.backend.domain.Chatroom;
+import com.workmates.backend.domain.Lounge;
 import com.workmates.backend.domain.Message;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.ChatroomRepository;
@@ -36,7 +36,7 @@ public class MessageServiceTest {
 @Test
     void 메시지_전송_성공() {
         // given
-        Chatroom chatroom = chatroomRepository.save(Chatroom.builder()
+        Lounge chatroom = chatroomRepository.save(Lounge.builder()
                 .name("개발방")
                 .description("Spring 개발 채팅방")
                 .build());
@@ -62,7 +62,7 @@ public class MessageServiceTest {
     @Test
     void 채팅방의_메시지_조회_성공() {
         // given
-        Chatroom chatroom = chatroomRepository.save(Chatroom.builder()
+        Lounge chatroom = chatroomRepository.save(Lounge.builder()
                 .name("개발방")
                 .description("Spring 개발 채팅방")
                 .build());

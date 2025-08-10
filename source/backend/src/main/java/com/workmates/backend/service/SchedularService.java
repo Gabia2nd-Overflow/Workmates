@@ -1,6 +1,6 @@
 package com.workmates.backend.service;
 
-import com.workmates.backend.domain.Schedular;
+import com.workmates.backend.domain.Schedule;
 import com.workmates.backend.repository.SchedularRepository;
 import com.workmates.backend.web.dto.SchedularDTO;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class SchedularService {
     private final SchedularRepository schedularRepository;
 
     public SchedularDTO.Response createSchedule(SchedularDTO.CreateRequest dto) {
-        Schedular entity = toEntity(dto);
+        Schedule entity = toEntity(dto);
         return SchedularDTO.Response.from(schedularRepository.save(entity));
     }
 
@@ -59,8 +59,8 @@ public class SchedularService {
         return stats;
     }
 
-    private Schedular toEntity(SchedularDTO.CreateRequest dto) {
-        return Schedular.builder()
+    private Schedule toEntity(SchedularDTO.CreateRequest dto) {
+        return Schedule.builder()
                 .title(dto.getTitle())
                 .context(dto.getContext())
                 .startDate(dto.getStartDate())

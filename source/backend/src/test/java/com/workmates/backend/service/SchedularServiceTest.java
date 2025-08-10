@@ -1,6 +1,6 @@
 package com.workmates.backend.service;
 
-import com.workmates.backend.domain.Schedular;
+import com.workmates.backend.domain.Schedule;
 import com.workmates.backend.repository.SchedularRepository;
 import com.workmates.backend.web.dto.SchedularDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,20 +31,20 @@ class SchedularServiceTest {
     @Test
     void createSchedule_shouldSaveAndReturnDto() {
         SchedularDTO.CreateRequest dto = new SchedularDTO.CreateRequest("회의", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "회의실", "HIGH");
-        Schedular entity = new Schedular(); entity.setTitle("회의");
+        Schedule entity = new Schedule(); entity.setTitle("회의");
 
-        when(schedularRepository.save(any(Schedular.class))).thenReturn(entity);
+        when(schedularRepository.save(any(Schedule.class))).thenReturn(entity);
 
         SchedularDTO.Response result = schedularService.createSchedule(dto);
 
         assertEquals("회의", result.getTitle());
-        verify(schedularRepository, times(1)).save(any(Schedular.class));
+        verify(schedularRepository, times(1)).save(any(Schedule.class));
     }
 
     @Test
     void updateSchedule_shouldUpdateExistingEntity() {
         Long id = 1L;
-        Schedular existing = new Schedular(); existing.setId(id); existing.setTitle("원본");
+        Schedule existing = new Schedule(); existing.setId(id); existing.setTitle("원본");
         SchedularDTO.UpdateRequest dto = new SchedularDTO.UpdateRequest("수정", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "회의실B", "LOW", true);
 
         when(schedularRepository.findById(id)).thenReturn(Optional.of(existing));
@@ -74,8 +74,8 @@ class SchedularServiceTest {
 
     @Test
     void getAllSchedules_shouldReturnListOfDto() {
-        Schedular s1 = new Schedular(); s1.setTitle("일정1");
-        Schedular s2 = new Schedular(); s2.setTitle("일정2");
+        Schedule s1 = new Schedule(); s1.setTitle("일정1");
+        Schedule s2 = new Schedule(); s2.setTitle("일정2");
         when(schedularRepository.findAll()).thenReturn(Arrays.asList(s1, s2));
 
         List<SchedularDTO.Response> result = schedularService.getAllSchedules();
@@ -89,7 +89,7 @@ class SchedularServiceTest {
         when(schedularRepository.count()).thenReturn(5L);
         when(schedularRepository.countByCompleted(true)).thenReturn(2L);
         when(schedularRepository.findByDueDateBefore(any(LocalDateTime.class)))
-                .thenReturn(Collections.singletonList(new Schedular()));
+                .thenReturn(Collections.singletonList(new Schedule()));
 
         Map<String, Long> stats = schedularService.getScheduleStats();
 

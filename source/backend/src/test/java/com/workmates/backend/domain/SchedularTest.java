@@ -15,7 +15,7 @@ class SchedularTest {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime due = start.plusDays(2);
 
-        Schedular schedular = new Schedular();
+        Schedule schedular = new Schedule();
         schedular.setId(1L);
         schedular.setTitle("팀 회의");
         schedular.setContext("주간 회의");
@@ -41,7 +41,7 @@ class SchedularTest {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime due = start.plusDays(1);
 
-        Schedular schedular = Schedular.builder()
+        Schedule schedular = Schedule.builder()
                 .title("단위 테스트 일정")
                 .context("Builder 테스트")
                 .startDate(start)
@@ -66,7 +66,7 @@ class SchedularTest {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime due = start.plusDays(1);
 
-        Schedular s1 = Schedular.builder()
+        Schedule s1 = Schedule.builder()
                 .id(1L)
                 .title("동등성 일정")
                 .context("테스트")
@@ -77,7 +77,7 @@ class SchedularTest {
                 .completed(false)
                 .build();
 
-        Schedular s2 = Schedular.builder()
+        Schedule s2 = Schedule.builder()
                 .id(1L)
                 .title("동등성 일정")
                 .context("테스트")

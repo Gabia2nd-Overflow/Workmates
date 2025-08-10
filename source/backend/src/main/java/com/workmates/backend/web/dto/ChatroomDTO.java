@@ -1,6 +1,6 @@
 package com.workmates.backend.web.dto;
 
-import com.workmates.backend.domain.Chatroom;
+import com.workmates.backend.domain.Lounge;
 import lombok.*;
 
 public class ChatroomDTO {
@@ -17,7 +17,7 @@ public class ChatroomDTO {
         private String name; // 보낸 유저 이름 
         private String description; // 내용.
 
-        public static Response fromEntity(Chatroom chatroom) {
+        public static Response fromEntity(Lounge chatroom) {
             return Response.builder()
                     .id(chatroom.getId())
                     .name(chatroom.getName())

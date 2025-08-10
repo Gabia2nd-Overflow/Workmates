@@ -1,6 +1,6 @@
 package com.workmates.backend.service;
 
-import com.workmates.backend.domain.Chatroom;
+import com.workmates.backend.domain.Lounge;
 import com.workmates.backend.repository.ChatroomRepository;
 import com.workmates.backend.web.dto.ChatroomDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ChatroomService {
 
     //생성
     public ChatroomDTO.Response create(ChatroomDTO.CreateRequest request) {
-        Chatroom chatroom = Chatroom.builder()
+        Lounge chatroom = Lounge.builder()
                 .name(request.getName())
                 .description(request.getDescription())
                 .build();
