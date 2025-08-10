@@ -1,10 +1,10 @@
-package com.workmates.backend.web;
+package com.workmates.backend.web.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
 import com.workmates.backend.service.ChatSocketService;
-import com.workmates.backend.web.dto.MessageDTO;
+import com.workmates.backend.web.dto.MessageDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ public class ChatSocketController {
      * 서비스단에서 메시지를 저장하고 구독자에게 직접 전송함.
      */
     @MessageMapping("/chat.send")
-    public void handleChatSocket(MessageDTO.ChatSocketRequest request) {
+    public void handleChatSocket(MessageDto.ChatSocketRequest request) {
         chatSocketService.saveAndSend(request);
     }
 }

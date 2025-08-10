@@ -1,72 +1,55 @@
 package com.workmates.backend.domain;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@Entity //데이터베이스와 매핑(영속성 컨텍스트 - EntityManager)
+@Entity
+@Table(name = "USER")
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor //기본 생성자
-@AllArgsConstructor //모든 필드를 매개변수로 받는 생성자
-public class User {
+@NoArgsConstructor
+@AllArgsConstructor
+public class User { // 사용자
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
-    private Long id;
-    //unique = true 중복안됨, nullable : false : NOT NULL
-    @Column(name = "USERNAME", unique = true, nullable = false, length = 50)
-    private String username;
-    
-    @Column(name = "EMAIL", unique = true, nullable = false, length = 100)
-    private String email;
-    
-    @Column(name = "PASSWORD", nullable = false, length = 255)
-    private String password;
-    
-    @Column(name = "NICKNAME", length = 50)
-    private String nickname;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ROLE", nullable = false)
-    private Role role;
+    @Column(name = "id", length = DomainConstants.ID_MAX_LEN)
+    private String id; // 사용자 아이디
 
-    // 엔티티 생성일자.,
-    @Column(name = "CREATED_AT", nullable = false)
-    private LocalDateTime createdAt;
-    //엔티티 수정일자
-    @Column(name = "UPDATED_AT")
-    private LocalDateTime updatedAt;
-    // 저장전 동작 (insert into 전에 자동실행.)
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        if (role == null) {
-            role = Role.USER;
-        }
-    }
-    //수정전 동작.
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    @Column(name = "nickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    private String nickname; // 사용자 닉네임
+    
+    @Column(name = "password", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    private String password; // 사용자 비밀번호
+    
+    @Column(name = "bio", length = DomainConstants.COMMENT_MAX_LEN)
+    private String bio; // 사용자 프로필 소개
+    
+    @Column(name = "imageUrl", unique = true)
+    @Builder.Default
+    private String imageUrl = null; // 사용자의 프로필 이미지가 저장된 url. 기본적으로 null
 
-     public enum Role {
-        USER, ADMIN
-    }
+    @Column(name = "language", nullable = false)
+    @Builder.Default
+    private String language = DomainConstants.DEFAULT_LANGUAGE; // 사용자가 사용하는 언어. 기본적으로 한국어
+
+    @Column(name = "email", unique = true, length = DomainConstants.COMMENT_MAX_LEN)
+    private String email; // 이메일 계정 주소
+
+    @Column(name = "emailPassword", length = DomainConstants.COMMENT_MAX_LEN)
+    private String emailPassword; // 이메일 계정이 사용하는 비밀번호
+    
+    @Column(name = "isDeleted", nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false; // 사용자 탈퇴 여부. 기본적으로 false
 }

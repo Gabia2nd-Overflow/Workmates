@@ -1,38 +1,29 @@
 package com.workmates.backend.repository;
 
-import java.util.Optional;
-
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.workmates.backend.domain.Chatroom;
+import com.workmates.backend.domain.Lounge;
 
 @Repository
-public interface ChatroomRepository extends JpaRepository<Chatroom, Long>{
+public interface LoungeRepository extends JpaRepository<Lounge, Long>{
     // @Override
     // default <S extends Chatroom> S save(S entity) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'save'");
     // }
 
     // @Override
     // default <S extends Chatroom> Page<S> findAll(Example<S> example, Pageable pageable) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     // }
 
     // @Override
     // default Optional<Chatroom> findById(Long id) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'findById'");
     // }
 
     // @Override
     // default void deleteById(Long id) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     // }
 

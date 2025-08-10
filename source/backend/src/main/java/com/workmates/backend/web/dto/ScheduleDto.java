@@ -1,7 +1,7 @@
 package com.workmates.backend.web.dto;
 
 import java.time.LocalDateTime;
-import com.workmates.backend.domain.Schedular;
+import com.workmates.backend.domain.Schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class SchedularDTO {
+public class ScheduleDto {
 
     @Data
     @Builder
@@ -21,10 +21,9 @@ public class SchedularDTO {
     @AllArgsConstructor
     public static class CreateRequest {
         private String title;
-        private String context;
+        private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String location;
         private String importancy;
     }
 
@@ -34,12 +33,11 @@ public class SchedularDTO {
     @AllArgsConstructor
     public static class UpdateRequest {
         private String title;
-        private String context;
+        private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String location;
         private String importancy;
-        private Boolean completed;
+        private Boolean isCompleted;
     }
 
     @Data
@@ -49,25 +47,21 @@ public class SchedularDTO {
     public static class Response {
         private Long id;
         private String title;
-        private String context;
+        private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String location;
         private String importancy;
-        private Boolean completed;
-        private LocalDateTime createdAt;
+        private Boolean isCompleted;
 
-        public static Response from(Schedular entity) {
+        public static Response from(Schedule entity) {
             return Response.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
-                .context(entity.getContext())
+                .content(entity.getContent())
                 .startDate(entity.getStartDate())
                 .dueDate(entity.getDueDate())
-                .location(entity.getLocation())
                 .importancy(entity.getImportancy())
-                .completed(entity.getCompleted())
-                .createdAt(entity.getCreatedAt())
+                .isCompleted(entity.getIsCompleted())
                 .build();
         }
     }

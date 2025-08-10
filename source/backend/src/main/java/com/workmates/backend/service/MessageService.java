@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.workmates.backend.domain.Chatroom;
+import com.workmates.backend.domain.Lounge;
 import com.workmates.backend.domain.Message;
 import com.workmates.backend.domain.User;
-import com.workmates.backend.repository.ChatroomRepository;
+import com.workmates.backend.repository.LoungeRepository;
 import com.workmates.backend.repository.MessageRepository;
 import com.workmates.backend.repository.UserRepository;
-import com.workmates.backend.web.dto.MessageDTO;
+import com.workmates.backend.web.dto.MessageDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,16 +20,16 @@ import lombok.RequiredArgsConstructor;
 public class MessageService {
 
     private final MessageRepository messageRepository;
-    private final ChatroomRepository chatroomRepository;
+    private final LoungeRepository loungeRepository;
     private final UserRepository userRepository;
     private final MessageBroadcastService broadcastService;
     @Transactional
-    public Message sendMessage(Long chatroomId, Long userId, String content) {
-        Chatroom chatroom = chatroomRepository.findById(chatroomId)
-                .orElseThrow(() -> new IllegalArgumentException("채팅방이 없습니다."));
+    public Message sendMessage(Long chatroomId, String userId, String content) {
+        Lounge lounge = loungeRepository.findById(chatroomId)
+                .orElseThrow(() -> new IllegalArgumentException("라운지가 존재하지 않습니다."));
 
         User sender = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
 
         Message message = new Message(chatroom, sender, content);
         return messageRepository.save(message);
@@ -42,7 +42,7 @@ public class MessageService {
     }
 
     @Transactional
-    public MessageDTO.ChatSocketResponse editMessage(Long messageId, Long editorId, String newContent) {
+    public MessageDto.ChatSocketResponse editMessage(Long messageId, Long editorId, String newContent) {
         Message message = messageRepository.findByIdAndDeletedFalse(messageId)
             .orElseThrow(() -> new IllegalArgumentException("삭제할 메시지를 찾을 수 없습니다."));
 
@@ -51,7 +51,7 @@ public class MessageService {
         }
 
         message.updateContent(newContent); // content 필드 수정
-        MessageDTO.ChatSocketResponse dto = MessageDTO.ChatSocketResponse.from(message);
+        MessageDto.ChatSocketResponse dto = MessageDto.ChatSocketResponse.from(message);
         broadcastService.sendUpdated(dto); // WebSocket 전송
 
         return dto;

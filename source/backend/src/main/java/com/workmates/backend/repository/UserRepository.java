@@ -10,15 +10,16 @@ import org.springframework.stereotype.Repository;
 import com.workmates.backend.domain.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
-    Optional<User> findByUsername(String username);
+public interface UserRepository extends JpaRepository<User, String>{
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findById(String id);
+
+    Optional<User> findByNickname(String nickname);
  
-    boolean existsByUsername(String username);
+    boolean existsByNickname(String nickname);
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT m FROM User m WHERE m.username = :username OR m.email = :email")
-    Optional<User> findByUsernameOrEmail(@Param("username") String username, @Param("email") String email);
+    @Query("SELECT m FROM User m WHERE m.nickname = :nickname OR m.email = :email")
+    Optional<User> findByNicknameOrEmail(@Param("nickname") String nickname, @Param("email") String email);
 }

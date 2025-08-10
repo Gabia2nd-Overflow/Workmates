@@ -1,7 +1,7 @@
-package com.workmates.backend.web;
+package com.workmates.backend.web.controller;
 
-import com.workmates.backend.service.ChatroomService;
-import com.workmates.backend.web.dto.ChatroomDTO;
+import com.workmates.backend.service.LoungeService;
+import com.workmates.backend.web.dto.LoungeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +13,15 @@ import java.util.List;
 @RequestMapping("/api/chatrooms")
 public class ChatroomController {
 
-    private final ChatroomService chatroomService;
+    private final LoungeService chatroomService;
 
     @PostMapping
-    public ResponseEntity<ChatroomDTO.Response> create(@RequestBody ChatroomDTO.CreateRequest request) {
+    public ResponseEntity<LoungeDto.Response> create(@RequestBody LoungeDto.CreateRequest request) {
         return ResponseEntity.ok(chatroomService.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatroomDTO.Response>> findAll() {
+    public ResponseEntity<List<LoungeDto.Response>> findAll() {
         return ResponseEntity.ok(chatroomService.findAll());
     }
 
