@@ -28,35 +28,35 @@ public class Message { // 메세지
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MESSAGE_ID")
-    private Long message_id; // 메세지 아이디
+    @Column(name = "id")
+    private Long id; // 메세지 아이디
 
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "CHATROOM_ID")
-    @Column(name = "MESSAGE_CONTENT", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
-    private String message_content; // 메세지 내용
+    @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    private String content; // 메세지 내용
 
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "USER_ID")
-    @Column(name = "MESSAGE_ATTACHMENT_URL", unique = true)
+    @Column(name = "attachmentUrl", unique = true)
     @Builder.Default
-    private String message_attachment_url = null; // 메세지 첨부파일들의 url. 기본적으로 null
+    private String attachmentUrl = null; // 메세지 첨부파일들의 url. 기본적으로 null
 
-    @Column(name = "MESSAGE_WRITTEN_AT", nullable = false)
+    @Column(name = "writtenAt", nullable = false)
     @Builder.Default
-    private LocalDateTime message_written_at = LocalDateTime.now(); // 메세지 작성일시. 기본적으로 LocalDateTime.now()
+    private LocalDateTime writtenAt = LocalDateTime.now(); // 메세지 작성일시. 기본적으로 LocalDateTime.now()
 
-    @Column(name = "MESSAGE_WRITTEN_IN", nullable = false)
+    @Column(name = "writtenIn", nullable = false)
     @Builder.Default
-    private String message_written_in = DomainConstants.DEFAULT_LANGUAGE; // 메세지가 작성된 언어. 기본적으로 한국어
+    private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 메세지가 작성된 언어. 기본적으로 한국어
 
-    @Column(name = "MESSAGE_IS_DELETED", nullable = false)
+    @Column(name = "isDeleted", nullable = false)
     @Builder.Default
-    private Boolean message_is_deleted = false; // 메세지 삭제 여부. 기본적으로 false
+    private Boolean isDeleted = false; // 메세지 삭제 여부. 기본적으로 false
 
-    @Column(name = "MESSAGE_WRITER_ID", nullable = false, length = DomainConstants.ID_MAX_LEN)
-    private String message_writer_id; // 메세지를 작성한 사용자 아이디
+    @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    private String writerId; // 메세지를 작성한 사용자 아이디
 
-    @Column(name = "MESSAGE_ROOT_LOUNGE_ID", nullable = false)
-    private Long message_root_lounge_id; // 메세지가 작성된 라운지 아이디
+    @Column(name = "loungeId", nullable = false)
+    private Long loungeId; // 메세지가 작성된 라운지 아이디
 }

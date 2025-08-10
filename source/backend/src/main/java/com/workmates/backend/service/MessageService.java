@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.workmates.backend.domain.Lounge;
 import com.workmates.backend.domain.Message;
 import com.workmates.backend.domain.User;
-import com.workmates.backend.repository.ChatroomRepository;
+import com.workmates.backend.repository.LoungeRepository;
 import com.workmates.backend.repository.MessageRepository;
 import com.workmates.backend.repository.UserRepository;
-import com.workmates.backend.web.dto.MessageDTO;
+import com.workmates.backend.web.dto.MessageDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class MessageService {
 
     private final MessageRepository messageRepository;
-    private final ChatroomRepository chatroomRepository;
+    private final LoungeRepository chatroomRepository;
     private final UserRepository userRepository;
     private final MessageBroadcastService broadcastService;
     @Transactional
@@ -42,7 +42,7 @@ public class MessageService {
     }
 
     @Transactional
-    public MessageDTO.ChatSocketResponse editMessage(Long messageId, Long editorId, String newContent) {
+    public MessageDto.ChatSocketResponse editMessage(Long messageId, Long editorId, String newContent) {
         Message message = messageRepository.findByIdAndDeletedFalse(messageId)
             .orElseThrow(() -> new IllegalArgumentException("삭제할 메시지를 찾을 수 없습니다."));
 
@@ -51,7 +51,7 @@ public class MessageService {
         }
 
         message.updateContent(newContent); // content 필드 수정
-        MessageDTO.ChatSocketResponse dto = MessageDTO.ChatSocketResponse.from(message);
+        MessageDto.ChatSocketResponse dto = MessageDto.ChatSocketResponse.from(message);
         broadcastService.sendUpdated(dto); // WebSocket 전송
 
         return dto;

@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class WorkshopDTO {
+public class WorkshopDto {
 
     @Data
     @Builder

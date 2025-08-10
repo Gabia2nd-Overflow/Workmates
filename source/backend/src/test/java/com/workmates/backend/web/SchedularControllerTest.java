@@ -2,7 +2,8 @@ package com.workmates.backend.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workmates.backend.service.SchedularService;
-import com.workmates.backend.web.dto.SchedularDTO;
+import com.workmates.backend.web.controller.SchedularController;
+import com.workmates.backend.web.dto.ScheduleDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,11 +37,11 @@ class SchedularControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private SchedularDTO.Response sampleResponse;
+    private ScheduleDto.Response sampleResponse;
 
     @BeforeEach
     void setUp() {
-        sampleResponse = SchedularDTO.Response.builder()
+        sampleResponse = ScheduleDto.Response.builder()
                 .id(1L)
                 .title("회의")
                 .context("테스트 내용")
@@ -60,7 +61,7 @@ class SchedularControllerTest {
         mockMvc.perform(post("/api/schedules")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
-                                new SchedularDTO.CreateRequest("회의", "테스트 내용",
+                                new ScheduleDto.CreateRequest("회의", "테스트 내용",
                                         LocalDateTime.now(), LocalDateTime.now().plusDays(1),
                                         "회의실", "HIGH")
                         )))
@@ -74,7 +75,7 @@ class SchedularControllerTest {
     void update_shouldReturnUpdatedSchedule() throws Exception {
         when(schedularService.updateSchedule(eq(1L), any())).thenReturn(sampleResponse);
 
-        SchedularDTO.UpdateRequest updateRequest = new SchedularDTO.UpdateRequest(
+        ScheduleDto.UpdateRequest updateRequest = new ScheduleDto.UpdateRequest(
                 "회의", "수정된 내용", LocalDateTime.now(),
                 LocalDateTime.now().plusDays(2), "회의실B", "LOW", true
         );

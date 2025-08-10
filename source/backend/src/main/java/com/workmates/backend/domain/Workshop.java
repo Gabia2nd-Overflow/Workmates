@@ -23,20 +23,20 @@ public class Workshop { // 워크샵
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "WORKSHOP_ID")
-    private Long workshop_id; // 워크샵 아이디
+    @Column(name = "id")
+    private Long id; // 워크샵 아이디
 
-    @Column(name = "WORKSHOP_NAME", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
-    private String workshop_name; // 워크샵 이름
+    @Column(name = "name", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    private String name; // 워크샵 이름
 
-    @Column(name = "WORKSHOP_ICON_IMAGE_URL", unique = true)
+    @Column(name = "imageUrl", unique = true)
     @Builder.Default
-    private String workshop_icon_image_url = null; // 워크샵 아이콘 이미지 url. 기본적으로 null
+    private String imageUrl = null; // 워크샵 아이콘 이미지 url. 기본적으로 null
 
-    @Column(name = "WORKSHOP_DESCRIPTION", length = DomainConstants.COMMENT_MAX_LEN)
-    private String workshop_description; // 워크샵 설명
+    @Column(name = "description", length = DomainConstants.COMMENT_MAX_LEN)
+    private String description; // 워크샵 설명
 
-    @Column(name = "WORKSHOP_IS_DELETED", nullable = false)
+    @Column(name = "isDeleted", nullable = false)
     @Builder.Default
-    private Boolean workshop_is_deleted = false; // 워크샵 폐쇄 여부. 기본적으로 false
+    private Boolean isDeleted = false; // 워크샵 폐쇄 여부. 기본적으로 false
 }

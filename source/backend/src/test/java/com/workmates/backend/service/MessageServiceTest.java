@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.workmates.backend.domain.Lounge;
 import com.workmates.backend.domain.Message;
 import com.workmates.backend.domain.User;
-import com.workmates.backend.repository.ChatroomRepository;
+import com.workmates.backend.repository.LoungeRepository;
 import com.workmates.backend.repository.MessageRepository;
 import com.workmates.backend.repository.UserRepository;
 
@@ -28,7 +28,7 @@ public class MessageServiceTest {
     MessageRepository messageRepository;
 
     @Autowired
-    ChatroomRepository chatroomRepository;
+    LoungeRepository chatroomRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -38,12 +38,10 @@ public class MessageServiceTest {
         // given
         Lounge chatroom = chatroomRepository.save(Lounge.builder()
                 .name("개발방")
-                .description("Spring 개발 채팅방")
                 .build());
 
         User sender = userRepository.save(User.builder()
-                .username("sender")
-                .email("sender@test.com")
+                .id("sender")
                 .password("test1234")
                 .nickname("보내는사람")
                 .build());

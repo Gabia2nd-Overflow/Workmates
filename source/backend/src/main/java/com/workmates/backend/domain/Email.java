@@ -23,12 +23,12 @@ public class Email { // 웹메일 기능에서 사용할 이메일
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EMAIL_ADDRESS", length = DomainConstants.COMMENT_MAX_LEN)
-    private String email_address; // 이메일 계정 주소
+    @Column(name = "address", length = DomainConstants.COMMENT_MAX_LEN)
+    private String address; // 이메일 계정 주소
 
-    @Column(name = "EMAIL_PASSWORD", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
-    private String email_password; // 이메일 계정이 사용하는 비밀번호
+    @Column(name = "password", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    private String password; // 이메일 계정이 사용하는 비밀번호
 
-    @Column(name = "EMAIL_OWNER_ID", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
-    private String email_owner_id; // 이메일을 연결한 사용자 아이디
+    @Column(name = "ownerId", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    private String ownerId; // 이메일을 연결한 사용자 아이디
 }

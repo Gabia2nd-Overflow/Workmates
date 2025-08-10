@@ -1,8 +1,8 @@
 package com.workmates.backend.service;
 
 import com.workmates.backend.domain.Schedule;
-import com.workmates.backend.repository.SchedularRepository;
-import com.workmates.backend.web.dto.SchedularDTO;
+import com.workmates.backend.repository.ScheduleRepository;
+import com.workmates.backend.web.dto.ScheduleDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,10 +15,10 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class SchedularServiceTest {
+class ScheduleServiceTest {
 
     @Mock
-    private SchedularRepository schedularRepository;
+    private ScheduleRepository schedularRepository;
 
     @InjectMocks
     private SchedularService schedularService;
@@ -30,12 +30,12 @@ class SchedularServiceTest {
 
     @Test
     void createSchedule_shouldSaveAndReturnDto() {
-        SchedularDTO.CreateRequest dto = new SchedularDTO.CreateRequest("회의", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "회의실", "HIGH");
+        ScheduleDto.CreateRequest dto = new ScheduleDto.CreateRequest("회의", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "회의실", "HIGH");
         Schedule entity = new Schedule(); entity.setTitle("회의");
 
         when(schedularRepository.save(any(Schedule.class))).thenReturn(entity);
 
-        SchedularDTO.Response result = schedularService.createSchedule(dto);
+        ScheduleDto.Response result = schedularService.createSchedule(dto);
 
         assertEquals("회의", result.getTitle());
         verify(schedularRepository, times(1)).save(any(Schedule.class));
@@ -45,12 +45,12 @@ class SchedularServiceTest {
     void updateSchedule_shouldUpdateExistingEntity() {
         Long id = 1L;
         Schedule existing = new Schedule(); existing.setId(id); existing.setTitle("원본");
-        SchedularDTO.UpdateRequest dto = new SchedularDTO.UpdateRequest("수정", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "회의실B", "LOW", true);
+        ScheduleDto.UpdateRequest dto = new ScheduleDto.UpdateRequest("수정", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "회의실B", "LOW", true);
 
         when(schedularRepository.findById(id)).thenReturn(Optional.of(existing));
         when(schedularRepository.save(existing)).thenReturn(existing);
 
-        SchedularDTO.Response result = schedularService.updateSchedule(id, dto);
+        ScheduleDto.Response result = schedularService.updateSchedule(id, dto);
 
         assertEquals("수정", result.getTitle());
         verify(schedularRepository, times(1)).save(existing);
@@ -60,7 +60,7 @@ class SchedularServiceTest {
     void updateSchedule_shouldThrowExceptionWhenNotFound() {
         when(schedularRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> schedularService.updateSchedule(99L, mock(SchedularDTO.UpdateRequest.class)));
+        assertThrows(NoSuchElementException.class, () -> schedularService.updateSchedule(99L, mock(ScheduleDto.UpdateRequest.class)));
     }
 
     @Test
@@ -78,7 +78,7 @@ class SchedularServiceTest {
         Schedule s2 = new Schedule(); s2.setTitle("일정2");
         when(schedularRepository.findAll()).thenReturn(Arrays.asList(s1, s2));
 
-        List<SchedularDTO.Response> result = schedularService.getAllSchedules();
+        List<ScheduleDto.Response> result = schedularService.getAllSchedules();
 
         assertEquals(2, result.size());
         assertEquals("일정1", result.get(0).getTitle());

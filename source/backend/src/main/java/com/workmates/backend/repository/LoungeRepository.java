@@ -1,17 +1,12 @@
 package com.workmates.backend.repository;
 
-import java.util.Optional;
-
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.workmates.backend.domain.Lounge;
 
 @Repository
-public interface ChatroomRepository extends JpaRepository<Lounge, Long>{
+public interface LoungeRepository extends JpaRepository<Lounge, Long>{
     // @Override
     // default <S extends Chatroom> S save(S entity) {
     //     // TODO Auto-generated method stub

@@ -1,8 +1,8 @@
 package com.workmates.backend.service;
 
 import com.workmates.backend.domain.Schedule;
-import com.workmates.backend.repository.SchedularRepository;
-import com.workmates.backend.web.dto.SchedularDTO;
+import com.workmates.backend.repository.ScheduleRepository;
+import com.workmates.backend.web.dto.ScheduleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SchedularService {
 
-    private final SchedularRepository schedularRepository;
+    private final ScheduleRepository schedularRepository;
 
-    public SchedularDTO.Response createSchedule(SchedularDTO.CreateRequest dto) {
+    public ScheduleDto.Response createSchedule(ScheduleDto.CreateRequest dto) {
         Schedule entity = toEntity(dto);
-        return SchedularDTO.Response.from(schedularRepository.save(entity));
+        return ScheduleDto.Response.from(schedularRepository.save(entity));
     }
 
-    public SchedularDTO.Response updateSchedule(Long id, SchedularDTO.UpdateRequest dto) {
+    public ScheduleDto.Response updateSchedule(Long id, ScheduleDto.UpdateRequest dto) {
         return schedularRepository.findById(id).map(sched -> {
             sched.setTitle(dto.getTitle());
             sched.setContext(dto.getContext());
@@ -30,7 +30,7 @@ public class SchedularService {
             sched.setLocation(dto.getLocation());
             sched.setImportancy(dto.getImportancy());
             sched.setCompleted(dto.getCompleted());
-            return SchedularDTO.Response.from(schedularRepository.save(sched));
+            return ScheduleDto.Response.from(schedularRepository.save(sched));
         }).orElseThrow(() -> new NoSuchElementException("Schedule not found"));
     }
 
@@ -38,9 +38,9 @@ public class SchedularService {
         schedularRepository.deleteById(id);
     }
 
-    public List<SchedularDTO.Response> getAllSchedules() {
+    public List<ScheduleDto.Response> getAllSchedules() {
         return schedularRepository.findAll().stream()
-                .map(SchedularDTO.Response::from)
+                .map(ScheduleDto.Response::from)
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +59,7 @@ public class SchedularService {
         return stats;
     }
 
-    private Schedule toEntity(SchedularDTO.CreateRequest dto) {
+    private Schedule toEntity(ScheduleDto.CreateRequest dto) {
         return Schedule.builder()
                 .title(dto.getTitle())
                 .context(dto.getContext())

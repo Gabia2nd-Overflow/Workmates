@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class SchedularDTO {
+public class ScheduleDto {
 
     @Data
     @Builder

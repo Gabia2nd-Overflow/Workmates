@@ -10,15 +10,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class UserDTO {
+public class UserDto {
+
     //회원가입
     @Data //@GETTER, @SETTER, @TOSTRING @EqualsAndHashCode @RequiredArgsConstructor
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SignUpRequest {
-        private String username;
-        private String email;
+        private String id;
         private String password;
         private String nickname;
     }
@@ -29,7 +29,7 @@ public class UserDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginRequest {
-        private String username;
+        private String id;
         private String password;
     }
 
@@ -39,25 +39,19 @@ public class UserDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginResponse {
-        private Long id;
+        private String id;
         private String token;
-        private String username;
-        private String email;
         private String nickname;
-        private User.Role role;
     }
+
      //회원 상세 조회.
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserResponse {
-        private Long id;
-        private String username;
-        private String email;
+        private String id;
         private String nickname;
-        private User.Role role;
-        private LocalDateTime createdAt;
         
         public static UserResponse from(User user) {
             return UserResponse.builder()
@@ -77,6 +71,5 @@ public class UserDTO {
     @AllArgsConstructor
     public static class UpdateRequest {
         private String nickname;
-        private String email;
     }
 }

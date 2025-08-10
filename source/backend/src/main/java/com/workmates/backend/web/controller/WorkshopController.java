@@ -1,4 +1,4 @@
-package com.workmates.backend.web;
+package com.workmates.backend.web.controller;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.workmates.backend.service.WorkshopService;
-import com.workmates.backend.web.dto.WorkshopDTO;
+import com.workmates.backend.web.dto.WorkshopDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,24 +30,24 @@ public class WorkshopController {
     private final WorkshopService workshopService;
 
     @PostMapping
-    public WorkshopDTO.Response create(@RequestBody @Valid WorkshopDTO.CreateRequest req) {
+    public WorkshopDto.Response create(@RequestBody @Valid WorkshopDto.CreateRequest req) {
         return workshopService.create(req);
     }
 
     @GetMapping
-    public List<WorkshopDTO.Response> list() {
+    public List<WorkshopDto.Response> list() {
         return workshopService.list();
     }
 
     @GetMapping("/{id}")
-    public WorkshopDTO.Response get(@PathVariable Long id) {
+    public WorkshopDto.Response get(@PathVariable Long id) {
         return workshopService.get(id);
     }
 
     @PatchMapping("/{id}")
-    public WorkshopDTO.Response update(
+    public WorkshopDto.Response update(
             @PathVariable Long id,
-            @RequestBody WorkshopDTO.UpdateRequest req) {
+            @RequestBody WorkshopDto.UpdateRequest req) {
         return workshopService.update(id, req);
     }
 

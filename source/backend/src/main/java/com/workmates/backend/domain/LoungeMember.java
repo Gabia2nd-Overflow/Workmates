@@ -23,11 +23,11 @@ public class LoungeMember { // 채팅방 참가자
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LOUNGE_MEMBER_ID", length = DomainConstants.ID_MAX_LEN)
-    private String lounge_member_id; // 채팅방에 참가한 사용자의 아이디
+    @Column(name = "memberId", length = DomainConstants.ID_MAX_LEN)
+    private String memberId; // 채팅방에 참가한 사용자의 아이디
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LOUNGE_MEMBER_LOUNGE_ID")
-    private Long lounge_member_lounge_id; // 사용자가 참가한 채팅방의 아이디
+    @Column(name = "loungeId")
+    private Long loungeId; // 사용자가 참가한 채팅방의 아이디
 }

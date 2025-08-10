@@ -23,16 +23,16 @@ public class Lounge { // 채팅방
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "LOUNGE_ID")
-    private Long lounge_id; // 채팅방 아이디
+    @Column(name = "id")
+    private Long id; // 채팅방 아이디
 
-    @Column(name = "LOUNGE_NAME", nullable = false, length = DomainConstants.ID_MAX_LEN)
-    private String lounge_name; // 채팅방 이름
+    @Column(name = "name", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    private String name; // 채팅방 이름
 
-    @Column(name = "LOUNGE_IS_DELETED", nullable = false)
+    @Column(name = "isDeleted", nullable = false)
     @Builder.Default
-    private Boolean lounge_is_deleted = false; // 채팅방 폐쇄 여부. 기본적으로 false
+    private Boolean isDeleted = false; // 채팅방 폐쇄 여부. 기본적으로 false
 
-    @Column(name = "LOUNGE_ROOT_WORKSHOP_ID", nullable = false)
-    private Long lounge_root_workshop_id; // 채팅방이 등록된 워크샵 아이디 
+    @Column(name = "workshopId", nullable = false)
+    private Long workshopId; // 채팅방이 등록된 워크샵 아이디 
 }

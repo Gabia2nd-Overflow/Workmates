@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class MessageDTO {
+public class MessageDto {
 
     // 📩 메시지 전송 요청 DTO
     @Data

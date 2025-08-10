@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import com.workmates.backend.web.dto.MessageDTO;
+import com.workmates.backend.web.dto.MessageDto;
 
 @Component
 @RequiredArgsConstructor
@@ -17,12 +17,12 @@ public class MessageBroadcastService {
         return "/sub/chatrooms." + chatroomId;
     }
 
-    public void sendCreated(MessageDTO.ChatSocketResponse response) {
+    public void sendCreated(MessageDto.ChatSocketResponse response) {
         String destination = "/sub/chatrooms." + response.getChatroomId();
         messagingTemplate.convertAndSend(destination, response);
     }
 
-    public void sendUpdated(MessageDTO.ChatSocketResponse response) {
+    public void sendUpdated(MessageDto.ChatSocketResponse response) {
         String destination = "/sub/chatrooms." + response.getChatroomId();
         messagingTemplate.convertAndSend(destination, response);
     }

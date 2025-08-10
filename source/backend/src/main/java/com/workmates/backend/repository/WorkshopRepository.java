@@ -11,7 +11,7 @@ import com.workmates.backend.domain.Workshop;
 @Repository
 public interface WorkshopRepository extends JpaRepository<Workshop, Long> {
     // 소프트 삭제 제외 목록
-    List<Workshop> findAllByIsDeletedFalseOrderByIdDesc();
+    List<Workshop> findAllByIsDeletedFalse();
 
     // 상세 조회(삭제 제외)
     Optional<Workshop> findByIdAndIsDeletedFalse(Long id);

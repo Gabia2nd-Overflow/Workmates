@@ -8,8 +8,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface SchedularRepository extends JpaRepository<Schedule, Long> {
-    List<Schedule> findByCompleted(boolean completed);
-    long countByCompleted(boolean completed);
-    List<Schedule> findByDueDateBefore(LocalDateTime date);
+public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
+    List<Schedule> findByIsCompleted(boolean isCompleted);
+
+    long countByIsCompleted(boolean isCompleted);
+
+    List<Schedule> findByDueDateBefore(LocalDateTime dueDate);
 }

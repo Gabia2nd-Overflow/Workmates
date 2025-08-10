@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.workmates.backend.web.dto.MessageDTO.FileUploadResponse;
+import com.workmates.backend.web.dto.MessageDto.FileUploadResponse;
 
 import lombok.RequiredArgsConstructor;
 

@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import com.workmates.backend.domain.Lounge;
 import com.workmates.backend.domain.Message;
 import com.workmates.backend.domain.User;
-import com.workmates.backend.repository.ChatroomRepository;
+import com.workmates.backend.repository.LoungeRepository;
 import com.workmates.backend.repository.MessageRepository;
 import com.workmates.backend.repository.UserRepository;
-import com.workmates.backend.web.dto.MessageDTO;
+import com.workmates.backend.web.dto.MessageDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +21,10 @@ public class ChatSocketService {
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
-    private final ChatroomRepository chatroomRepository;
+    private final LoungeRepository chatroomRepository;
     private final MessageBroadcastService broadcastService; // ✅ 주입
 
-    public MessageDTO.ChatSocketResponse saveAndSend(MessageDTO.ChatSocketRequest request) {
+    public MessageDto.ChatSocketResponse saveAndSend(MessageDto.ChatSocketRequest request) {
 
         // 1. 유저, 채팅방 조회
         User sender = userRepository.findById(request.getSenderId())
@@ -41,7 +41,7 @@ public class ChatSocketService {
         Message saved = messageRepository.save(message);
         
         // 3. 응답 DTO 생성
-        MessageDTO.ChatSocketResponse response = MessageDTO.ChatSocketResponse.from(saved);
+        MessageDto.ChatSocketResponse response = MessageDto.ChatSocketResponse.from(saved);
 
         broadcastService.sendCreated(response); // ✅ 여기로 위임
 

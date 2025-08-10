@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.UserRepository;
-import com.workmates.backend.web.dto.UserDTO;
+import com.workmates.backend.web.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserDTO.UserResponse signUp(UserDTO.SignUpRequest request) {
+    public UserDto.UserResponse signUp(UserDto.SignUpRequest request) {
         // 중복 검사
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("이미 존재하는 사용자명입니다.");
@@ -39,10 +39,10 @@ public class UserService {
                 .build();
 
         User savedUser = userRepository.save(user);
-        return UserDTO.UserResponse.from(savedUser);
+        return UserDto.UserResponse.from(savedUser);
     }
 
-    public UserDTO.LoginResponse login(UserDTO.LoginRequest request) {
+    public UserDto.LoginResponse login(UserDto.LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -50,7 +50,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        return UserDTO.LoginResponse.builder()
+        return UserDto.LoginResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
@@ -59,15 +59,15 @@ public class UserService {
                 .build();
     }
 
-    public UserDTO.UserResponse getUserInfo(String username) {
+    public UserDto.UserResponse getUserInfo(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         
-        return UserDTO.UserResponse.from(user);
+        return UserDto.UserResponse.from(user);
     }
 
     @Transactional
-    public UserDTO.UserResponse updateUser(String username, UserDTO.UpdateRequest request) {
+    public UserDto.UserResponse updateUser(String username, UserDto.UpdateRequest request) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -79,6 +79,6 @@ public class UserService {
             user.setEmail(request.getEmail());
         }
 
-        return UserDTO.UserResponse.from(user);
+        return UserDto.UserResponse.from(user);
     }
 }
