@@ -44,7 +44,7 @@ public class MessageDto {
                     .id(message.getId())
                     .senderNickname(message.getSender().getNickname())
                     .content(message.getContent())
-                    .createdAt(message.getCreatedAt())
+                    .createdAt(message.getWrittenAt())
                     .build();
         }
     }
@@ -112,8 +112,9 @@ public class MessageDto {
     @AllArgsConstructor
     @Builder
     public static class EditMessageRequest {
-        private Long senderId;
+        private Long messageId;
         private String content;
+        private String fileUrl;
     }
 
     // 🗑️ 메시지 삭제 요청 DTO
@@ -122,6 +123,6 @@ public class MessageDto {
     @AllArgsConstructor
     @Builder
     public static class DeleteMessageRequest {
-        private Long senderId;
+        private Long messageId;
     }
 }

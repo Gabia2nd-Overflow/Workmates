@@ -9,25 +9,21 @@ import com.workmates.backend.domain.Lounge;
 public interface LoungeRepository extends JpaRepository<Lounge, Long>{
     // @Override
     // default <S extends Chatroom> S save(S entity) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'save'");
     // }
 
     // @Override
     // default <S extends Chatroom> Page<S> findAll(Example<S> example, Pageable pageable) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     // }
 
     // @Override
     // default Optional<Chatroom> findById(Long id) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'findById'");
     // }
 
     // @Override
     // default void deleteById(Long id) {
-    //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     // }
 

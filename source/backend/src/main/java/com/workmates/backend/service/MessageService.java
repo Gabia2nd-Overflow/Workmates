@@ -20,16 +20,16 @@ import lombok.RequiredArgsConstructor;
 public class MessageService {
 
     private final MessageRepository messageRepository;
-    private final LoungeRepository chatroomRepository;
+    private final LoungeRepository loungeRepository;
     private final UserRepository userRepository;
     private final MessageBroadcastService broadcastService;
     @Transactional
-    public Message sendMessage(Long chatroomId, Long userId, String content) {
-        Lounge chatroom = chatroomRepository.findById(chatroomId)
-                .orElseThrow(() -> new IllegalArgumentException("채팅방이 없습니다."));
+    public Message sendMessage(Long chatroomId, String userId, String content) {
+        Lounge lounge = loungeRepository.findById(chatroomId)
+                .orElseThrow(() -> new IllegalArgumentException("라운지가 존재하지 않습니다."));
 
         User sender = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
 
         Message message = new Message(chatroom, sender, content);
         return messageRepository.save(message);

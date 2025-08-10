@@ -20,7 +20,7 @@ public class UserService {
     @Transactional
     public UserDto.UserResponse signUp(UserDto.SignUpRequest request) {
         // 중복 검사
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByNickname(request.getNickname())) {
             throw new IllegalArgumentException("이미 존재하는 사용자명입니다.");
         }
         
@@ -31,11 +31,9 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
-                .username(request.getUsername())
+                .nickname(request.getNickname())
                 .email(request.getEmail())
                 .password(encodedPassword)
-                .nickname(request.getNickname())
-                .role(User.Role.USER)
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -43,7 +41,7 @@ public class UserService {
     }
 
     public UserDto.LoginResponse login(UserDto.LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
+        User user = userRepository.findById(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -52,23 +50,21 @@ public class UserService {
 
         return UserDto.LoginResponse.builder()
                 .id(user.getId())
-                .username(user.getUsername())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
-                .role(user.getRole())
                 .build();
     }
 
-    public UserDto.UserResponse getUserInfo(String username) {
-        User user = userRepository.findByUsername(username)
+    public UserDto.UserResponse getUserInfo(String id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         
         return UserDto.UserResponse.from(user);
     }
 
     @Transactional
-    public UserDto.UserResponse updateUser(String username, UserDto.UpdateRequest request) {
-        User user = userRepository.findByUsername(username)
+    public UserDto.UserResponse updateUser(String id, UserDto.UpdateRequest request) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         if (request.getNickname() != null) {

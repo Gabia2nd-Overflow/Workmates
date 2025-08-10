@@ -28,7 +28,7 @@ public class MessageServiceTest {
     MessageRepository messageRepository;
 
     @Autowired
-    LoungeRepository chatroomRepository;
+    LoungeRepository loungeRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -36,7 +36,7 @@ public class MessageServiceTest {
 @Test
     void 메시지_전송_성공() {
         // given
-        Lounge chatroom = chatroomRepository.save(Lounge.builder()
+        Lounge lounge = loungeRepository.save(Lounge.builder()
                 .name("개발방")
                 .build());
 
@@ -47,7 +47,7 @@ public class MessageServiceTest {
                 .build());
 
         // when
-        Message message = messageService.sendMessage(chatroom.getId(), sender.getId(), "안녕하세요!");
+        Message message = messageService.sendMessage(lounge.getId(), sender.getId(), "안녕하세요!");
 
         // then
         assertNotNull(message.getId());

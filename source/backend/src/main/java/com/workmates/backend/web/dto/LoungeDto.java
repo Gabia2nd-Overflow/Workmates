@@ -12,8 +12,8 @@ public class LoungeDto {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class Response {
-        private Long id; //chatroom id
-        private String name; // 보낸 유저 이름 
+        private Long id; // 라운지 아이디
+        private String name; // 라운지 이름 
 
         public static Response fromEntity(Lounge lounge) {
             return Response.builder()

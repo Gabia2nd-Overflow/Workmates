@@ -21,10 +21,9 @@ public class ScheduleDto {
     @AllArgsConstructor
     public static class CreateRequest {
         private String title;
-        private String context;
+        private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String location;
         private String importancy;
     }
 
@@ -34,12 +33,11 @@ public class ScheduleDto {
     @AllArgsConstructor
     public static class UpdateRequest {
         private String title;
-        private String context;
+        private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String location;
         private String importancy;
-        private Boolean completed;
+        private Boolean isCompleted;
     }
 
     @Data
@@ -49,25 +47,21 @@ public class ScheduleDto {
     public static class Response {
         private Long id;
         private String title;
-        private String context;
+        private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String location;
         private String importancy;
-        private Boolean completed;
-        private LocalDateTime createdAt;
+        private Boolean isCompleted;
 
         public static Response from(Schedule entity) {
             return Response.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
-                .context(entity.getContext())
+                .content(entity.getContent())
                 .startDate(entity.getStartDate())
                 .dueDate(entity.getDueDate())
-                .location(entity.getLocation())
                 .importancy(entity.getImportancy())
-                .completed(entity.getCompleted())
-                .createdAt(entity.getCreatedAt())
+                .isCompleted(entity.getIsCompleted())
                 .build();
         }
     }

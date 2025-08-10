@@ -46,7 +46,7 @@ public class User { // 사용자
     @Column(name = "email", unique = true, length = DomainConstants.COMMENT_MAX_LEN)
     private String email; // 이메일 계정 주소
 
-    @Column(name = "emailPassword", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "emailPassword", length = DomainConstants.COMMENT_MAX_LEN)
     private String emailPassword; // 이메일 계정이 사용하는 비밀번호
     
     @Column(name = "isDeleted", nullable = false)
