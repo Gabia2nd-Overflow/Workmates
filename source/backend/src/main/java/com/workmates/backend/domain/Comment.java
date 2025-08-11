@@ -58,6 +58,9 @@ public class Comment { // 댓글
     @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String writerId; // 댓글 작성자 아이디
 
+    @Column(name = "writerNickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    private String writerNickname; // 댓글 작성자 닉네임
+
     @Column(name = "postId", nullable = false)
     private Long postId; // 댓글이 작성된 게시글 아이디
 }

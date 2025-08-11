@@ -43,6 +43,9 @@ public class Post { // 게시글
     @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String writerId; // 게시글을 작성한 사용자 아이디
 
+    @Column(name = "writerNickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    private String writerNickname; // 게시글을 작성한 사용자의 닉네임
+
     @Column(name = "threadId", nullable = false)
     private Long threadId; // 게시글이 작성된 스레드 아이디
 }
