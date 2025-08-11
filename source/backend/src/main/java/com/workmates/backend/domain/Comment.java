@@ -1,20 +1,63 @@
 package com.workmates.backend.domain;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity // 데이터베이스와 매핑(영속성 컨텍스트 - EntityManager)
+@Entity
+@Table(name = "COMMENT")
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor // 기본 생성자
-@AllArgsConstructor // 모든 필드를 매개변수로 받는 생성자
-public class Comment { // 댓글 엔티티
+@NoArgsConstructor
+@AllArgsConstructor
+public class Comment { // 댓글
     
-    String content;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id; // 댓글 식별 번호
 
+    @Column(name = "rootId")
+    @Builder.Default
+    private Long rootId = null; // 현재 댓글이 대댓글이라면 원댓글의 comment_id. 기본적으로 null
+
+    @Column(name = "depth", nullable = false)
+    @Builder.Default
+    private Integer depth = 0; // 현재 댓글이 달린 깊이(대댓글이라면 값이 1 이상). 기본적으로 0
+
+    @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    private String content; // 댓글 내용
+
+    @Column(name = "writtenAt", nullable = false)
+    @Builder.Default
+    private LocalDateTime writtenAt = LocalDateTime.now(); // 댓글 작성일시. 기본적으로 LocalDateTime.now()
+
+    @Column(name = "writtenIn", nullable = false)
+    @Builder.Default
+    private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 댓글이 작성된 언어. 기본적으로 한국어
+
+    @Column(name = "attachmentUrl", unique = true)
+    @Builder.Default
+    private String attachmentUrl = null; // 댓글 첨부파일들이 저장된 url. 기본적으로 null 
+
+    @Column(name = "isDeleted", nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false; // 댓글 삭제 여부. 기본적으로 false
+
+    @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    private String writerId; // 댓글 작성자 아이디
+
+    @Column(name = "postId", nullable = false)
+    private Long postId; // 댓글이 작성된 게시글 아이디
 }

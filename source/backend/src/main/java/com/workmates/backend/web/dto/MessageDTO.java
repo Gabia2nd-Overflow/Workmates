@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class MessageDTO {
+public class MessageDto {
 
     // 📩 메시지 전송 요청 DTO
     @Data
@@ -44,7 +44,7 @@ public class MessageDTO {
                     .id(message.getId())
                     .senderNickname(message.getSender().getNickname())
                     .content(message.getContent())
-                    .createdAt(message.getCreatedAt())
+                    .createdAt(message.getWrittenAt())
                     .build();
         }
     }
@@ -112,8 +112,9 @@ public class MessageDTO {
     @AllArgsConstructor
     @Builder
     public static class EditMessageRequest {
-        private Long senderId;
+        private Long messageId;
         private String content;
+        private String fileUrl;
     }
 
     // 🗑️ 메시지 삭제 요청 DTO
@@ -122,6 +123,6 @@ public class MessageDTO {
     @AllArgsConstructor
     @Builder
     public static class DeleteMessageRequest {
-        private Long senderId;
+        private Long messageId;
     }
 }
