@@ -4,14 +4,13 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+// import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+// import jakarta.persistence.JoinColumn;
+// import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,68 +18,51 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "MESSAGE")
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor //기본 생성자
-@AllArgsConstructor //모든 필드를 매개변수로 받는 생성자
-public class Message {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Message { // 메세지
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Long id; // 메세지 아이디
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CHATROOM_ID")
-    private Chatroom chatroom;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "CHATROOM_ID")
+    @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    private String content; // 메세지 내용
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
-    private User sender;
-
-    @Column(nullable = false, length = 1000)
-    private String content;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "file_url")
-    private String fileUrl;
-    
-    @Column(name = "file_name")
-    private String fileName;
-
-    @Column(name = "is_deleted", nullable = false)
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "USER_ID")
+    @Column(name = "attachmentUrl", unique = true)
     @Builder.Default
-    private boolean deleted = false;
+    private String attachmentUrl = null; // 메세지 첨부파일들의 url. 기본적으로 null
 
-    private LocalDateTime deletedAt;
-    private LocalDateTime updatedAt; 
+    @Column(name = "writtenAt", nullable = false)
+    @Builder.Default
+    private LocalDateTime writtenAt = LocalDateTime.now(); // 메세지 작성일시. 기본적으로 LocalDateTime.now()
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    @Column(name = "writtenIn", nullable = false)
+    @Builder.Default
+    private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 메세지가 작성된 언어. 기본적으로 한국어
 
-    public void updateContent(String content) {
+    @Column(name = "isDeleted", nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false; // 메세지 삭제 여부. 기본적으로 false
+
+    @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    private String writerId; // 메세지를 작성한 사용자 아이디
+
+    @Column(name = "loungeId", nullable = false)
+    private Long loungeId; // 메세지가 작성된 라운지 아이디
+
+    public Message(Long loungeId, String writerId, String content) {
+        this.loungeId = loungeId;
+        this.writerId = writerId;
         this.content = content;
     }
-
-    public void markAsDeleted() {
-        this.deleted = true;
-        this.deletedAt = LocalDateTime.now();
-    }
-
-
-
-    public Message(Chatroom chatroom, User sender, String content) {
-        this.chatroom = chatroom;
-        this.sender = sender;
-        this.content = content;
-    }
-
 }

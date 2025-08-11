@@ -1,75 +1,73 @@
 package com.workmates.backend.web.dto;
 
-
-import java.time.LocalDateTime;
-
 import com.workmates.backend.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public class UserDTO {
+public class UserDto {
+
     //회원가입
-    @Data //@GETTER, @SETTER, @TOSTRING @EqualsAndHashCode @RequiredArgsConstructor
+    @Data 
+    @Getter 
+    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SignUpRequest {
-        private String username;
-        private String email;
+        private String id;
         private String password;
         private String nickname;
+        private String email;
     }
 
     //로그인 요청
     @Data
     @Builder
+    @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginRequest {
-        private String username;
+        private String id;
         private String password;
     }
 
     //로그인 응답.
     @Data
     @Builder
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginResponse {
-        private Long id;
+        private String id;
         private String token;
-        private String username;
         private String email;
         private String nickname;
-        private User.Role role;
     }
-     //회원 상세 조회.
+
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserResponse {
-        private Long id;
-        private String username;
-        private String email;
+        private String id;
         private String nickname;
-        private User.Role role;
-        private LocalDateTime createdAt;
+        private String email;
         
         public static UserResponse from(User user) {
             return UserResponse.builder()
                     .id(user.getId())
-                    .username(user.getUsername())
                     .email(user.getEmail())
                     .nickname(user.getNickname())
-                    .role(user.getRole())
-                    .createdAt(user.getCreatedAt())
                     .build();
         }
     }
+
     // 마이 페이지 정보 수정
     @Data
     @Builder

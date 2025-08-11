@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class WorkshopDTO {
+public class WorkshopDto {
 
     @Data
     @Builder
@@ -46,9 +46,9 @@ public class WorkshopDTO {
             return Response.builder()
                 .workshopId(w.getId())
                 .workshopName(w.getName())
-                .workshopIconImage(w.getIconImage())
+                .workshopIconImage(w.getImageUrl())
                 .workshopDescription(w.getDescription())
-                .workshopIsDeleted(w.isDeleted())
+                .workshopIsDeleted(w.getIsDeleted())
                 .build();
         }
     }

@@ -36,11 +36,6 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
 
-google-translate-api:
-  path: C:\Users\soldesk\Desktop\api_resource\grounded-vision-467403-f8-24b49089c814.json
-  google-project-id: grounded-vision-467403-f8
-  location: global
-
 open-ai-api:
   encrypted: c2stcHJvai1WY1FtbjFCZUZZeklHYVpQTGx6Y3BrSmpaQlV5Wk9BWFhqR0txaTRJeEhGWHM0cmoxRXkySndWUzQzVTRFTVJZMDA0blF5aVY5cFQzQmxia0ZKN1lRdk54UFFaUDd3eFRlTVdFTUp0S3J1Y1hHcWhnbmxZMDJ5WkszU0FpVS1RVUtCVGFfR1JDeVRxS183aVlhTTZfVDdyY2JZd0E=
   

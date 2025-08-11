@@ -1,7 +1,7 @@
-package com.workmates.backend.web;
+package com.workmates.backend.web.controller;
 
-import com.workmates.backend.web.dto.SchedularDTO;
-import com.workmates.backend.service.SchedularService;
+import com.workmates.backend.web.dto.ScheduleDto;
+import com.workmates.backend.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,18 +12,18 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/schedules")
 @RequiredArgsConstructor
-public class SchedularController {
+public class ScheduleController {
 
-    private final SchedularService schedularService;
+    private final ScheduleService schedularService;
 
     @PostMapping
-    public ResponseEntity<SchedularDTO.Response> create(@RequestBody SchedularDTO.CreateRequest request) {
+    public ResponseEntity<ScheduleDto.Response> create(@RequestBody ScheduleDto.CreateRequest request) {
         return ResponseEntity.ok(schedularService.createSchedule(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SchedularDTO.Response> update(@PathVariable Long id,
-                                                        @RequestBody SchedularDTO.UpdateRequest request) {
+    public ResponseEntity<ScheduleDto.Response> update(@PathVariable Long id,
+                                                        @RequestBody ScheduleDto.UpdateRequest request) {
         return ResponseEntity.ok(schedularService.updateSchedule(id, request));
     }
 
@@ -34,7 +34,7 @@ public class SchedularController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SchedularDTO.Response>> getAll() {
+    public ResponseEntity<List<ScheduleDto.Response>> getAll() {
         return ResponseEntity.ok(schedularService.getAllSchedules());
     }
 

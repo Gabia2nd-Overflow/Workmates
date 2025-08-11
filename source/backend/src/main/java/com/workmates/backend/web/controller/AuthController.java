@@ -1,9 +1,9 @@
 // ✅ 기존 UserDTO 기준으로 변경된 AuthController
-package com.workmates.backend.web;
+package com.workmates.backend.web.controller;
 
 import com.workmates.backend.config.JwtTokenProvider;
 import com.workmates.backend.service.UserService;
-import com.workmates.backend.web.dto.UserDTO;
+import com.workmates.backend.web.dto.UserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +18,20 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDTO.UserResponse> signUp(@Valid @RequestBody UserDTO.SignUpRequest request) {
+    public ResponseEntity<UserDto.UserResponse> signUp(@Valid @RequestBody UserDto.SignUpRequest request) {
         return ResponseEntity.ok(userService.signUp(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO.LoginResponse> login(@Valid @RequestBody UserDTO.LoginRequest request) {
-        UserDTO.LoginResponse loginResponse = userService.login(request);
-        String token = jwtTokenProvider.generateToken(loginResponse.getUsername());
+    public ResponseEntity<UserDto.LoginResponse> login(@Valid @RequestBody UserDto.LoginRequest request) {
+        UserDto.LoginResponse loginResponse = userService.login(request);
+        String token = jwtTokenProvider.generateToken(loginResponse.getId());
         loginResponse.setToken(token);
         return ResponseEntity.ok(loginResponse);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO.UserResponse> getMyInfo(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<UserDto.UserResponse> getMyInfo(@RequestHeader("Authorization") String token) {
         if (token != null && token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
             if (jwtTokenProvider.validateToken(jwt)) {
@@ -43,9 +43,9 @@ public class AuthController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserDTO.UserResponse> updateMyInfo(
+    public ResponseEntity<UserDto.UserResponse> updateMyInfo(
             @RequestHeader("Authorization") String token,
-            @Valid @RequestBody UserDTO.UpdateRequest request) {
+            @Valid @RequestBody UserDto.UpdateRequest request) {
         if (token != null && token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
             if (jwtTokenProvider.validateToken(jwt)) {
