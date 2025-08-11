@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "WORKTHREAD")
+@Table(name = "THREAD")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkThread { // 게시판
+public class Thread { // 게시판
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

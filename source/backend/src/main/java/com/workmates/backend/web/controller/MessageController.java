@@ -25,28 +25,28 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/chatrooms/{chatroomId}/messages")
+@RequestMapping("/api/chatrooms/{loungeId}/messages")
 public class MessageController {
 
     private final MessageService messageService;
 
     @PostMapping
     public ResponseEntity<MessageDto.MessageResponse> sendMessage(
-            @PathVariable Long chatroomId,
+            @PathVariable Long loungeId,
             @RequestBody SendMessageRequest request) {
-        System.out.println("받은 userId = " + request.getUserId());
+        System.out.println("받은 writerId = " + request.getWriterId());
         System.out.println("받은 content = " + request.getContent());
         Message message = messageService.sendMessage(
-                chatroomId,
-                request.getUserId(),
+                loungeId,
+                request.getWriterId(),
                 request.getContent()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(MessageDto.MessageResponse.from(message));
     }
 
     @GetMapping
-    public ResponseEntity<List<MessageDto.MessageResponse>> getMessages(@PathVariable Long chatroomId) {
-        List<MessageDto.MessageResponse> messages = messageService.getMessages(chatroomId).stream()
+    public ResponseEntity<List<MessageDto.MessageResponse>> getMessages(@PathVariable Long loungeId) {
+        List<MessageDto.MessageResponse> messages = messageService.getMessages(loungeId).stream()
                 .map(MessageDto.MessageResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(messages);
@@ -58,7 +58,7 @@ public class MessageController {
             @RequestBody EditMessageRequest request
     ) {
         MessageDto.ChatSocketResponse updated =
-                messageService.editMessage(messageId, request.getSenderId(), request.getContent());
+                messageService.editMessage(messageId, request.getWriterId(), request.getContent());
 
         return ResponseEntity.ok(updated);
     }
@@ -68,7 +68,7 @@ public class MessageController {
             @PathVariable("id") Long messageId,
             @RequestBody DeleteMessageRequest request
     ) {
-        messageService.deleteMessage(messageId, request.getSenderId());
+        messageService.deleteMessage(messageId, request.getWriterId());
         return ResponseEntity.noContent().build();
     }
 }

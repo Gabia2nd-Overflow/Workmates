@@ -21,21 +21,21 @@ public class ChatSocketService {
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
-    private final LoungeRepository chatroomRepository;
+    private final LoungeRepository loungeRepository;
     private final MessageBroadcastService broadcastService; // ✅ 주입
 
     public MessageDto.ChatSocketResponse saveAndSend(MessageDto.ChatSocketRequest request) {
 
         // 1. 유저, 채팅방 조회
-        User sender = userRepository.findById(request.getSenderId())
+        User writer = userRepository.findById(request.getWriterId())
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        Lounge chatroom = chatroomRepository.findById(request.getChatroomId())
+        Lounge lounge = loungeRepository.findById(request.getLoungeId())
                 .orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
 
         // 2. 메시지 저장
         Message message = Message.builder()
-                .chatroom(chatroom)
-                .sender(sender)
+                .loungeId(lounge.getId())
+                .writerId(writer.getId())
                 .content(request.getContent())
                 .build();
         Message saved = messageRepository.save(message);

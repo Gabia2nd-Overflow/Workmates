@@ -1,7 +1,7 @@
 package com.workmates.backend.web.controller;
 
 import com.workmates.backend.web.dto.ScheduleDto;
-import com.workmates.backend.service.SchedularService;
+import com.workmates.backend.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/schedules")
 @RequiredArgsConstructor
-public class SchedularController {
+public class ScheduleController {
 
-    private final SchedularService schedularService;
+    private final ScheduleService schedularService;
 
     @PostMapping
     public ResponseEntity<ScheduleDto.Response> create(@RequestBody ScheduleDto.CreateRequest request) {

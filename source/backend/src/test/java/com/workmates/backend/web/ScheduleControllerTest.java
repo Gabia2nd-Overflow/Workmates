@@ -1,7 +1,7 @@
 package com.workmates.backend.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workmates.backend.service.SchedularService;
+import com.workmates.backend.service.ScheduleService;
 import com.workmates.backend.web.controller.SchedularController;
 import com.workmates.backend.web.dto.ScheduleDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,13 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @WebMvcTest(SchedularController.class)
 @AutoConfigureMockMvc(addFilters = false) // 🔥 보안 필터 비활성화하여 테스트 단순화
-class SchedularControllerTest {
+class ScheduleControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private SchedularService schedularService;
+    private ScheduleService scheduleService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,40 +44,38 @@ class SchedularControllerTest {
         sampleResponse = ScheduleDto.Response.builder()
                 .id(1L)
                 .title("회의")
-                .context("테스트 내용")
+                .content("테스트 내용")
                 .startDate(LocalDateTime.now())
                 .dueDate(LocalDateTime.now().plusDays(1))
-                .location("회의실")
                 .importancy("HIGH")
-                .completed(false)
-                .createdAt(LocalDateTime.now())
+                .isCompleted(false)
                 .build();
     }
 
     @Test
     void create_shouldReturnCreatedSchedule() throws Exception {
-        when(schedularService.createSchedule(any())).thenReturn(sampleResponse);
+        when(scheduleService.createSchedule(any())).thenReturn(sampleResponse);
 
         mockMvc.perform(post("/api/schedules")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 new ScheduleDto.CreateRequest("회의", "테스트 내용",
                                         LocalDateTime.now(), LocalDateTime.now().plusDays(1),
-                                        "회의실", "HIGH")
+                                "HIGH")
                         )))
                 .andDo(print()) // 🔥 응답 JSON 디버깅
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("회의"))
-                .andExpect(jsonPath("$.completed").value(false));
+                .andExpect(jsonPath("$.isCompleted").value(false));
     }
 
     @Test
     void update_shouldReturnUpdatedSchedule() throws Exception {
-        when(schedularService.updateSchedule(eq(1L), any())).thenReturn(sampleResponse);
+        when(scheduleService.updateSchedule(eq(1L), any())).thenReturn(sampleResponse);
 
         ScheduleDto.UpdateRequest updateRequest = new ScheduleDto.UpdateRequest(
                 "회의", "수정된 내용", LocalDateTime.now(),
-                LocalDateTime.now().plusDays(2), "회의실B", "LOW", true
+                LocalDateTime.now().plusDays(2), "LOW", true
         );
 
         mockMvc.perform(put("/api/schedules/1")
@@ -86,23 +84,23 @@ class SchedularControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("회의"))
-                .andExpect(jsonPath("$.completed").value(false)); // ✅ service mock이 반환하는 값 기준
+                .andExpect(jsonPath("$.isCompleted").value(false)); // ✅ service mock이 반환하는 값 기준
     }
 
     @Test
     void delete_shouldReturnNoContent() throws Exception {
-        Mockito.doNothing().when(schedularService).deleteSchedule(1L);
+        Mockito.doNothing().when(scheduleService).deleteSchedule(1L);
 
         mockMvc.perform(delete("/api/schedules/1"))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        verify(schedularService, times(1)).deleteSchedule(1L);
+        verify(scheduleService, times(1)).deleteSchedule(1L);
     }
 
     @Test
     void getAll_shouldReturnListOfSchedules() throws Exception {
-        when(schedularService.getAllSchedules()).thenReturn(Collections.singletonList(sampleResponse));
+        when(scheduleService.getAllSchedules()).thenReturn(Collections.singletonList(sampleResponse));
 
         mockMvc.perform(get("/api/schedules"))
                 .andDo(print())
@@ -114,16 +112,16 @@ class SchedularControllerTest {
     void getStats_shouldReturnStats() throws Exception {
         Map<String, Long> stats = new HashMap<>();
         stats.put("total", 5L);
-        stats.put("completed", 2L);
+        stats.put("isCompleted", 2L);
         stats.put("dueSoon", 1L);
 
-        when(schedularService.getScheduleStats()).thenReturn(stats);
+        when(scheduleService.getScheduleStats()).thenReturn(stats);
 
         mockMvc.perform(get("/api/schedules/stats"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(5))
-                .andExpect(jsonPath("$.completed").value(2))
+                .andExpect(jsonPath("$.isCompleted").value(2))
                 .andExpect(jsonPath("$.dueSoon").value(1));
     }
 }

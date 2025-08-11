@@ -36,10 +36,10 @@ class UserServiceTest {
         UserDto.UserResponse savedUser = userService.signUp(request);
 
         // then - 1단계: 서비스 응답값 검증
-        assertThat(savedUser.getUsername()).isEqualTo("testuser");
+        assertThat(savedUser.getId()).isEqualTo("testuser");
 
         // then
-        Optional<User> result = userRepository.findByUsername("testuser");
+        Optional<User> result = userRepository.findById("testuser");
         assertThat(result).isPresent();
         assertThat(result.get().getNickname()).isEqualTo("테스터");
     }
