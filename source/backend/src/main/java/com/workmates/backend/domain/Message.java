@@ -59,4 +59,10 @@ public class Message { // 메세지
 
     @Column(name = "loungeId", nullable = false)
     private Long loungeId; // 메세지가 작성된 라운지 아이디
+
+    public Message(Long loungeId, String writerId, String content) {
+        this.loungeId = loungeId;
+        this.writerId = writerId;
+        this.content = content;
+    }
 }

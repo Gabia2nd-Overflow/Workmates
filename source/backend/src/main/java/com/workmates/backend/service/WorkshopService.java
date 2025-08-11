@@ -1,10 +1,8 @@
 package com.workmates.backend.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.workmates.backend.domain.User;
 import com.workmates.backend.domain.Workshop;
 import com.workmates.backend.repository.WorkshopRepository;
 import com.workmates.backend.web.dto.WorkshopDto;
@@ -24,7 +22,7 @@ public class WorkshopService {
     public WorkshopDto.Response create(WorkshopDto.CreateRequest req) {
         Workshop w = Workshop.builder()
                 .name(req.getWorkshopName())
-                .iconImage(req.getWorkshopIconImage())
+                .imageUrl(req.getWorkshopIconImage())
                 .description(req.getWorkshopDescription())
                 .build();
             
@@ -34,7 +32,7 @@ public class WorkshopService {
 
     @Transactional(readOnly = true)
     public List<WorkshopDto.Response> list() {
-        return workshopRepository.findAllByIsDeletedFalseOrderByIdDesc()
+        return workshopRepository.findAllByIsDeletedFalse()
                 .stream().map(WorkshopDto.Response::from).toList();
     }
 
@@ -49,7 +47,7 @@ public class WorkshopService {
         Workshop w = workshopRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NoSuchElementException("Workshop not found"));
         if (req.getWorkshopName() != null) w.setName(req.getWorkshopName());
-        if (req.getWorkshopIconImage() != null) w.setIconImage(req.getWorkshopIconImage());
+        if (req.getWorkshopIconImage() != null) w.setImageUrl(req.getWorkshopIconImage());
         if (req.getWorkshopDescription() != null) w.setDescription(req.getWorkshopDescription());
         return WorkshopDto.Response.from(w); // 더티체킹
     }
@@ -57,6 +55,6 @@ public class WorkshopService {
     public void softDelete(Long id) {
         Workshop w = workshopRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NoSuchElementException("Workshop not found"));
-        w.setDeleted(true);
+        w.setIsDeleted(true);
     }
 }

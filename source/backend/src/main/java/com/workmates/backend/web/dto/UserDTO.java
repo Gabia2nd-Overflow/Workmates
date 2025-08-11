@@ -12,7 +12,9 @@ import lombok.Setter;
 public class UserDto {
 
     //회원가입
-    @Data //@GETTER, @SETTER, @TOSTRING @EqualsAndHashCode @RequiredArgsConstructor
+    @Data 
+    @Getter 
+    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -20,6 +22,7 @@ public class UserDto {
         private String id;
         private String password;
         private String nickname;
+        private String email;
     }
 
     //로그인 요청
@@ -43,6 +46,7 @@ public class UserDto {
     public static class LoginResponse {
         private String id;
         private String token;
+        private String email;
         private String nickname;
     }
 

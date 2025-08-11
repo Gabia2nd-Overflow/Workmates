@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SchedularService {
+public class ScheduleService {
 
     private final ScheduleRepository schedularRepository;
 
@@ -24,12 +24,11 @@ public class SchedularService {
     public ScheduleDto.Response updateSchedule(Long id, ScheduleDto.UpdateRequest dto) {
         return schedularRepository.findById(id).map(sched -> {
             sched.setTitle(dto.getTitle());
-            sched.setContext(dto.getContext());
+            sched.setContent(dto.getContent());
             sched.setStartDate(dto.getStartDate());
             sched.setDueDate(dto.getDueDate());
-            sched.setLocation(dto.getLocation());
             sched.setImportancy(dto.getImportancy());
-            sched.setCompleted(dto.getCompleted());
+            sched.setIsCompleted(dto.getIsCompleted());
             return ScheduleDto.Response.from(schedularRepository.save(sched));
         }).orElseThrow(() -> new NoSuchElementException("Schedule not found"));
     }
@@ -46,15 +45,15 @@ public class SchedularService {
 
     public Map<String, Long> getScheduleStats() {
         long total = schedularRepository.count();
-        long completed = schedularRepository.countByCompleted(true);
+        long completed = schedularRepository.countByIsCompleted(true);
         long dueSoon = schedularRepository.findByDueDateBefore(LocalDateTime.now().plusDays(7))
                                           .stream()
-                                          .filter(s -> !s.getCompleted())
+                                          .filter(s -> !s.getIsCompleted())
                                           .count();
 
         Map<String, Long> stats = new HashMap<>();
         stats.put("total", total);
-        stats.put("completed", completed);
+        stats.put("isCompleted", completed);
         stats.put("dueSoon", dueSoon);
         return stats;
     }
@@ -62,12 +61,11 @@ public class SchedularService {
     private Schedule toEntity(ScheduleDto.CreateRequest dto) {
         return Schedule.builder()
                 .title(dto.getTitle())
-                .context(dto.getContext())
+                .content(dto.getContent())
                 .startDate(dto.getStartDate())
                 .dueDate(dto.getDueDate())
-                .location(dto.getLocation())
                 .importancy(dto.getImportancy())
-                .completed(false) // 새 일정은 기본적으로 미완료
+                .isCompleted(false) // 새 일정은 기본적으로 미완료
                 .build();
     }
 }
