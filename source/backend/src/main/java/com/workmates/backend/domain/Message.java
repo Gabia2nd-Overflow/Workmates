@@ -57,6 +57,9 @@ public class Message { // 메세지
     @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String writerId; // 메세지를 작성한 사용자 아이디
 
+    @Column(name = "writerNickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    private String writerNickname; // 메세지를 작성한 사용자의 닉네임
+
     @Column(name = "loungeId", nullable = false)
     private Long loungeId; // 메세지가 작성된 라운지 아이디
 

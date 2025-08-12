@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.workmates.backend.domain.Comment;
 
 @Service
 public class OpenAiApiService {
@@ -120,44 +121,44 @@ public class OpenAiApiService {
         });
     }
 
-    public CompletableFuture<String> sentimentAnalysisAsync(List<Comment> commentList) throws Exception {
-        HttpClient client = HttpClient.newHttpClient();
-        ObjectMapper mapper = new ObjectMapper();
+    // public CompletableFuture<String> sentimentAnalysisAsync(List<Comment> commentList) throws Exception {
+    //     HttpClient client = HttpClient.newHttpClient();
+    //     ObjectMapper mapper = new ObjectMapper();
 
-        ObjectNode messageObj = mapper.createObjectNode();
-        messageObj.put("role", "user");
-        messageObj.put("content", "Translate the following text from " + sourceLang + " to " + targetLang + ":\n" + text);
+    //     ObjectNode messageObj = mapper.createObjectNode();
+    //     messageObj.put("role", "user");
+    //     messageObj.put("content", "Translate the following text from " + sourceLang + " to " + targetLang + ":\n" + text);
 
-        ArrayNode messagesArray = mapper.createArrayNode();
-        messagesArray.add(messageObj);
+    //     ArrayNode messagesArray = mapper.createArrayNode();
+    //     messagesArray.add(messageObj);
 
-        ObjectNode jsonBody = mapper.createObjectNode();
-        jsonBody.put("model", chatModel);
-        jsonBody.set("messages", messagesArray);
-        jsonBody.put("max_tokens", 100);
+    //     ObjectNode jsonBody = mapper.createObjectNode();
+    //     jsonBody.put("model", chatModel);
+    //     jsonBody.set("messages", messagesArray);
+    //     jsonBody.put("max_tokens", 100);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(chatApiUrl))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + getDecryptedApiKey())
-                .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
-                .build();
+    //     HttpRequest request = HttpRequest.newBuilder()
+    //             .uri(URI.create(chatApiUrl))
+    //             .header("Content-Type", "application/json")
+    //             .header("Authorization", "Bearer " + getDecryptedApiKey())
+    //             .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
+    //             .build();
 
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenApply(response -> {
-                try {
-                    JsonNode root = mapper.readTree(response);
-                    JsonNode choices = root.path("choices");
-                    if (choices.isArray() && choices.size() > 0) {
-                        JsonNode message = choices.get(0).path("message");
-                        return message.path("content").asText();
-                    } else {
-                        return null;
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-        });
-    }
+    //     return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+    //         .thenApply(HttpResponse::body)
+    //         .thenApply(response -> {
+    //             try {
+    //                 JsonNode root = mapper.readTree(response);
+    //                 JsonNode choices = root.path("choices");
+    //                 if (choices.isArray() && choices.size() > 0) {
+    //                     JsonNode message = choices.get(0).path("message");
+    //                     return message.path("content").asText();
+    //                 } else {
+    //                     return null;
+    //                 }
+    //             } catch (Exception e) {
+    //                 throw new RuntimeException(e);
+    //             }
+    //     });
+    // }
 }

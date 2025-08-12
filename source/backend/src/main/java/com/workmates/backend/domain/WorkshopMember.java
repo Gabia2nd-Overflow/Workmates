@@ -26,6 +26,9 @@ public class WorkshopMember { // 채팅방 참가자
     @Column(name = "memberId", length = DomainConstants.ID_MAX_LEN)
     private String memberId; // 워크샵에 참가한 사용자의 아이디
 
+    @Column(name = "memberNickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    private String memberNickname; // 워크샵에 참가한 사용자의 닉네임
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "workshopId")
