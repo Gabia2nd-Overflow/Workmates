@@ -2,7 +2,7 @@ package com.workmates.backend.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workmates.backend.service.ScheduleService;
-import com.workmates.backend.web.controller.SchedularController;
+import com.workmates.backend.web.controller.ScheduleController;
 import com.workmates.backend.web.dto.ScheduleDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@WebMvcTest(SchedularController.class)
+@WebMvcTest(ScheduleController.class)
 @AutoConfigureMockMvc(addFilters = false) // 🔥 보안 필터 비활성화하여 테스트 단순화
 class ScheduleControllerTest {
 
