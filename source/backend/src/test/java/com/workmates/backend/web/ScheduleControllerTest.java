@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workmates.backend.service.ScheduleService;
 import com.workmates.backend.web.controller.ScheduleController;
 import com.workmates.backend.web.dto.ScheduleDto;
+import com.workmates.backend.web.controller.ScheduleController;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

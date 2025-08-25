@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form'; //검증관리, 폼관리
-import { Eye, EyeOff, Lock, User, Mail, UserCheck } from 'lucide-react';
-import { authAPI } from '../services/api';
-import Button from '../Components/Button';
-import Input from '../Components/Input';
-import toast from 'react-hot-toast'; //알림 
-
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form"; //검증관리, 폼관리
+import { Eye, EyeOff, Lock, User, Mail, UserCheck } from "lucide-react";
+import { authAPI } from "../services/api";
+import Button from "../Components/Button";
+import Input from "../Components/Input";
+import toast from "react-hot-toast"; //알림
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -39,42 +38,40 @@ const SignUp = () => {
     }
   };
 
-  return(
+  return (
     // 반응형 패딩
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* 반응형 너비 */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           {/* 반응형 텍스트 */}
-          <h2 className="text-3xl font-bold text-gray-900">
-            🛍️ workmates
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            새로운 계정을 만드세요
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900">🛍️ workmates</h2>
+          <p className="mt-2 text-sm text-gray-600">새로운 계정을 만드세요</p>
         </div>
       </div>
-       {/* 반응형 간격 */}
+      {/* 반응형 간격 */}
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="card py-8 px-4 sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <Input
-                label="사용자명"
+                label="아이디"
                 type="text"
-                placeholder="사용자명을 입력하세요"
-                {...register('username', {
-                  required: '사용자명을 입력해주세요.',
+                placeholder="아이디를 입력하세요"
+                {...register("id", {
+                  // ✅ username → id 로 변경
+                  required: "아이디를 입력해주세요.",
                   minLength: {
                     value: 3,
-                    message: '사용자명은 최소 3자 이상이어야 합니다.',
+                    message: "아이디는 최소 3자 이상이어야 합니다.",
                   },
                   pattern: {
                     value: /^[a-zA-Z0-9_]+$/,
-                    message: '사용자명은 영문, 숫자, 언더스코어만 사용 가능합니다.',
+                    message:
+                      "아이디는 영문, 숫자, 언더스코어만 사용 가능합니다.",
                   },
                 })}
-                error={errors.username?.message}
+                error={errors.id?.message}
                 icon={<User className="w-4 h-4" />}
               />
             </div>
@@ -84,11 +81,11 @@ const SignUp = () => {
                 label="이메일"
                 type="email"
                 placeholder="이메일을 입력하세요"
-                {...register('email', {
-                  required: '이메일을 입력해주세요.',
+                {...register("email", {
+                  required: "이메일을 입력해주세요.",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: '올바른 이메일 형식을 입력해주세요.',
+                    message: "올바른 이메일 형식을 입력해주세요.",
                   },
                 })}
                 error={errors.email?.message}
@@ -101,11 +98,11 @@ const SignUp = () => {
                 label="닉네임"
                 type="text"
                 placeholder="닉네임을 입력하세요"
-                {...register('nickname', {
-                  required: '닉네임을 입력해주세요.',
+                {...register("nickname", {
+                  required: "닉네임을 입력해주세요.",
                   minLength: {
                     value: 2,
-                    message: '닉네임은 최소 2자 이상이어야 합니다.',
+                    message: "닉네임은 최소 2자 이상이어야 합니다.",
                   },
                 })}
                 error={errors.nickname?.message}
@@ -117,13 +114,13 @@ const SignUp = () => {
               <div className="relative">
                 <Input
                   label="비밀번호"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="비밀번호를 입력하세요"
-                  {...register('password', {
-                    required: '비밀번호를 입력해주세요.',
+                  {...register("password", {
+                    required: "비밀번호를 입력해주세요.",
                     minLength: {
                       value: 6,
-                      message: '비밀번호는 최소 6자 이상이어야 합니다.',
+                      message: "비밀번호는 최소 6자 이상이어야 합니다.",
                     },
                   })}
                   error={errors.password?.message}
@@ -147,12 +144,12 @@ const SignUp = () => {
               <div className="relative">
                 <Input
                   label="비밀번호 확인"
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="비밀번호를 다시 입력하세요"
-                  {...register('confirmPassword', {
-                    required: '비밀번호 확인을 입력해주세요.',
+                  {...register("confirmPassword", {
+                    required: "비밀번호 확인을 입력해주세요.",
                     validate: (value) =>
-                      value === password || '비밀번호가 일치하지 않습니다.',
+                      value === password || "비밀번호가 일치하지 않습니다.",
                   })}
                   error={errors.confirmPassword?.message}
                   icon={<Lock className="w-4 h-4" />}
@@ -172,12 +169,8 @@ const SignUp = () => {
             </div>
 
             <div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-              >
-                {loading ? '회원가입 중...' : '회원가입'}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "회원가입 중..." : "회원가입"}
               </Button>
             </div>
           </form>
