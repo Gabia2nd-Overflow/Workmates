@@ -20,8 +20,11 @@ public class UserService {
     @Transactional
     public UserDto.UserResponse signUp(UserDto.SignUpRequest request) {
         // 중복 검사
+        if (userRepository.existsById(request.getId())) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
         if (userRepository.existsByNickname(request.getNickname())) {
-            throw new IllegalArgumentException("이미 존재하는 사용자명입니다.");
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
         }
         
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -31,6 +34,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
+                .id(request.getId())
                 .nickname(request.getNickname())
                 .email(request.getEmail())
                 .password(encodedPassword)

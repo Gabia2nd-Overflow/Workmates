@@ -1,14 +1,16 @@
 package com.workmates.backend.service;
 
-import com.workmates.backend.domain.Lounge;
-import com.workmates.backend.repository.LoungeRepository;
-import com.workmates.backend.web.dto.LoungeDto;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.workmates.backend.domain.Lounge;
+import com.workmates.backend.repository.LoungeRepository;
+import com.workmates.backend.web.dto.LoungeDto;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

@@ -27,10 +27,8 @@ const Login = () => {
       localStorage.setItem('token', response.data.token); //인증용
       localStorage.setItem('user', JSON.stringify({ //사용자 정보 (문자열)
         id: response.data.id,
-        username: response.data.username,
         email: response.data.email,
         nickname: response.data.nickname,
-        role: response.data.role,
       }));
       
       toast.success('로그인에 성공했습니다!');
@@ -64,10 +62,10 @@ const Login = () => {
                 label="사용자명"
                 type="text"
                 placeholder="사용자명을 입력하세요"
-                {...register('username', {
+                {...register('id', {
                   required: '사용자명을 입력해주세요.',
                 })}
-                error={errors.username?.message}
+                error={errors.id?.message}
                 icon={<User className="w-4 h-4" />}
               />
             </div>
