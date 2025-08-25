@@ -47,6 +47,15 @@ export const authAPI = {
   updateMyInfo: (data) => api.put('/auth/me', data),
 };
 
+// ===== 여기 추가 =====
+export const workshopAPI = {
+  create: (data) => api.post('/workshops', data),
+  list:   () => api.get('/workshops'),
+  get:    (id) => api.get(`/workshops/${id}`),
+  update: (id, data) => api.patch(`/workshops/${id}`, data),
+  remove: (id) => api.delete(`/workshops/${id}`),
+};
+// ====================
 
 export const chatroomAPI = {
   createChatroom : (data) => api.post('/chatrooms', data),
