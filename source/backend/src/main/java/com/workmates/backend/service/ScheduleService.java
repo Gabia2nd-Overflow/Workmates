@@ -14,39 +14,39 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ScheduleService {
 
-    private final ScheduleRepository schedularRepository;
+    private final ScheduleRepository scheduleRepository;
 
     public ScheduleDto.Response createSchedule(ScheduleDto.CreateRequest dto) {
         Schedule entity = toEntity(dto);
-        return ScheduleDto.Response.from(schedularRepository.save(entity));
+        return ScheduleDto.Response.from(scheduleRepository.save(entity));
     }
 
     public ScheduleDto.Response updateSchedule(Long id, ScheduleDto.UpdateRequest dto) {
-        return schedularRepository.findById(id).map(sched -> {
+        return scheduleRepository.findById(id).map(sched -> {
             sched.setTitle(dto.getTitle());
             sched.setContent(dto.getContent());
             sched.setStartDate(dto.getStartDate());
             sched.setDueDate(dto.getDueDate());
             sched.setImportancy(dto.getImportancy());
             sched.setIsCompleted(dto.getIsCompleted());
-            return ScheduleDto.Response.from(schedularRepository.save(sched));
+            return ScheduleDto.Response.from(scheduleRepository.save(sched));
         }).orElseThrow(() -> new NoSuchElementException("Schedule not found"));
     }
 
     public void deleteSchedule(Long id) {
-        schedularRepository.deleteById(id);
+        scheduleRepository.deleteById(id);
     }
 
     public List<ScheduleDto.Response> getAllSchedules() {
-        return schedularRepository.findAll().stream()
+        return scheduleRepository.findAll().stream()
                 .map(ScheduleDto.Response::from)
                 .collect(Collectors.toList());
     }
 
     public Map<String, Long> getScheduleStats() {
-        long total = schedularRepository.count();
-        long completed = schedularRepository.countByIsCompleted(true);
-        long dueSoon = schedularRepository.findByDueDateBefore(LocalDateTime.now().plusDays(7))
+        long total = scheduleRepository.count();
+        long completed = scheduleRepository.countByIsCompleted(true);
+        long dueSoon = scheduleRepository.findByDueDateBefore(LocalDateTime.now().plusDays(7))
                                           .stream()
                                           .filter(s -> !s.getIsCompleted())
                                           .count();

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ScheduleTest {
 
     @Test
-    @DisplayName("Schedular 엔티티 생성 및 Getter/Setter 동작 테스트")
+    @DisplayName("Schedule 엔티티 생성 및 Getter/Setter 동작 테스트")
     void testScheduleCreation() {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime due = start.plusDays(2);

@@ -14,32 +14,32 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ScheduleController {
 
-    private final ScheduleService schedularService;
+    private final ScheduleService scheduleService;
 
     @PostMapping
     public ResponseEntity<ScheduleDto.Response> create(@RequestBody ScheduleDto.CreateRequest request) {
-        return ResponseEntity.ok(schedularService.createSchedule(request));
+        return ResponseEntity.ok(scheduleService.createSchedule(request));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleDto.Response> update(@PathVariable Long id,
                                                         @RequestBody ScheduleDto.UpdateRequest request) {
-        return ResponseEntity.ok(schedularService.updateSchedule(id, request));
+        return ResponseEntity.ok(scheduleService.updateSchedule(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        schedularService.deleteSchedule(id);
+        scheduleService.deleteSchedule(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
     public ResponseEntity<List<ScheduleDto.Response>> getAll() {
-        return ResponseEntity.ok(schedularService.getAllSchedules());
+        return ResponseEntity.ok(scheduleService.getAllSchedules());
     }
 
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStats() {
-        return ResponseEntity.ok(schedularService.getScheduleStats());
+        return ResponseEntity.ok(scheduleService.getScheduleStats());
     }
 }

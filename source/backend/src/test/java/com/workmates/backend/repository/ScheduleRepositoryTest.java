@@ -30,6 +30,8 @@ class ScheduleRepositoryTest {
                 .dueDate(LocalDateTime.now().plusDays(1))
                 .importancy("HIGH")
                 .isCompleted(false)
+                .isDeleted(false)
+                .workshopId(1L)
                 .build();
     }
 
