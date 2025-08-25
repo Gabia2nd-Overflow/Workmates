@@ -4,6 +4,7 @@ import Header from '../Components/Header';
 import AuthButtons from '../Components/AuthButtons';
 import WorkshopButton from '../Components/WorkshopButton';
 import Chatroom from './Chatroom';
+import UserFooter from '../Components/UserFooter';
 
 const Home = () => {
   return (
@@ -17,6 +18,9 @@ const Home = () => {
         <p>메인 콘텐츠가 여기에 표시됩니다.</p>
         <WorkshopButton/>
       </main>
+
+    {/* 하단바 영역 */}
+    <UserFooter />
     </div>
   );
 };
