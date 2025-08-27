@@ -57,12 +57,12 @@ export const workshopAPI = {
 };
 // ====================
 
-export const chatroomAPI = {
-  createChatroom : (data) => api.post('/chatrooms', data),
-
-  getChatrooms: () => api.get('/chatrooms'),
-
-  deleteChatroom: (chatroomId) => api.delete(`/chatrooms/${chatroomId}`),
+export const loungeAPI = {
+  list:   (wId)                => api.get(`/workshops/${wId}/lounges`),
+  get:    (wId, lId)           => api.get(`/workshops/${wId}/lounges/${lId}`),
+  create: (wId, data)          => api.post(`/workshops/${wId}/lounges`, data),
+  update: (wId, lId, data)     => api.patch(`/workshops/${wId}/lounges/${lId}`, data),
+  remove: (wId, lId)           => api.delete(`/workshops/${wId}/lounges/${lId}`),
 }
 
 export const messageAPI = {
