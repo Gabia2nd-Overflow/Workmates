@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 
-const ChatroomButton = () => {
+const WorkshopButton = () => {
   const navigate = useNavigate();
   const handleRoom = () =>{
-    navigate('/chatroom');
+    navigate('/Workshop');
   }
 
   return (
     <div>
-        <button onClick={handleRoom}>Chatroom</button>
+        <button onClick={handleRoom}>Workshop</button>
     </div>
   );
 };
 
-export default ChatroomButton;
+export default WorkshopButton;
