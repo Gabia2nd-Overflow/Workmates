@@ -17,7 +17,17 @@ public class AuthController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/signup")
+    @PostMapping("/signup/check_userid") // 회원가입 - 아이디 중복확인
+    public ResponseEntity<UserDto.CheckUserid> checkUserId() {
+        return ResponseEntity.ok();
+    }
+    
+    @PostMapping("/signup/auth_email") // 회원가입 - 이메일 중복확인 및 인증
+    public ResponseEntity<UserDto.AuthEmail> authEmail() {
+        return ResponseEntity.ok();
+    }
+
+    @PostMapping("/signup") // 회원가입
     public ResponseEntity<UserDto.UserResponse> signUp(@Valid @RequestBody UserDto.SignUpRequest request) {
         return ResponseEntity.ok(userService.signUp(request));
     }

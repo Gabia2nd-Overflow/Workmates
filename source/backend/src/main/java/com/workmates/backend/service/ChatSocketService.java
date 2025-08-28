@@ -38,9 +38,18 @@ public class ChatSocketService {
             throw new IllegalArgumentException("라운지가 요청한 워크샵에 속하지 않습니다.");
         }
 
-        // 메시지 저장
+        // 메시지 저장 (★ writerNickname 반드시 주입)
         Message saved = messageRepository.save(
-                new Message(lounge.getId(), writer.getId(), req.getContent())
+                Message.builder()
+                        .loungeId(lounge.getId())
+                        .writerId(writer.getId())
+                        .writerNickname(
+                                writer.getNickname() != null && !writer.getNickname().isBlank()
+                                        ? writer.getNickname()
+                                        : String.valueOf(writer.getId())   // 닉네임 없을 때 안전 대체
+                        )
+                        .content(req.getContent())
+                        .build()
         );
 
         // 응답 DTO + 브로드캐스트
