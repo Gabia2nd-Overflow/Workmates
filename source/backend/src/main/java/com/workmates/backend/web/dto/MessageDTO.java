@@ -2,8 +2,6 @@ package com.workmates.backend.web.dto;
 
 import java.time.LocalDateTime;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.workmates.backend.domain.Message;
 
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +26,7 @@ public class MessageDto {
     public static class MessageResponse {
         private Long id;
         private String writerId;
+        private String writerNickname; // ✅ 추가
         private String content;
         private LocalDateTime writtenAt;
 
@@ -35,6 +34,7 @@ public class MessageDto {
             return MessageResponse.builder()
                     .id(message.getId())
                     .writerId(message.getWriterId())
+                    .writerNickname(message.getWriterNickname()) // ✅ 추가
                     .content(message.getContent())
                     .writtenAt(message.getWrittenAt())
                     .build();
@@ -57,7 +57,9 @@ public class MessageDto {
         private Long id;
         private Long workshopId;   // ✅ 추가
         private Long loungeId;
+        
         private String writerId;
+        private String writerNickname; // ✅ 추가
         private String content;
         private LocalDateTime writtenAt;
 
@@ -67,6 +69,7 @@ public class MessageDto {
                     .workshopId(workshopId)
                     .loungeId(message.getLoungeId())
                     .writerId(message.getWriterId())
+                    .writerNickname(message.getWriterNickname()) // ✅ 추가
                     .content(message.getContent())
                     .writtenAt(message.getWrittenAt())
                     .build();

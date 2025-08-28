@@ -2,15 +2,12 @@ package com.workmates.backend.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workmates.backend.domain.Lounge;
-import com.workmates.backend.domain.Workshop;
 import com.workmates.backend.repository.LoungeRepository;
-import com.workmates.backend.repository.WorkshopRepository;
 import com.workmates.backend.web.dto.LoungeDto;
 
 import lombok.RequiredArgsConstructor;
