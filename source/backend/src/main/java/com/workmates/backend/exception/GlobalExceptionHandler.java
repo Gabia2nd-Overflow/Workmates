@@ -2,6 +2,7 @@ package com.workmates.backend.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.badRequest().body(response);
     }
+
     //유효성 검사
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
@@ -52,6 +54,29 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+
+    // 예외 처리 코드 추가 --> 접근 권한 체크 관련
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(org.springframework.security.access.AccessDeniedException e) {
+        log.warn("AccessDenied: {}", e.getMessage());
+        ErrorResponse response = ErrorResponse.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.FORBIDDEN.value()) // 403
+                .build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    // 예외 처리 코드 추가
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NoSuchElementException e) {
+        log.warn("NotFound: {}", e.getMessage());
+        ErrorResponse response = ErrorResponse.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.NOT_FOUND.value()) // 404
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     //응답 예외처리
     public static class ErrorResponse {
         private String message;
