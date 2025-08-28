@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Home from "./pages/Home";
 import WorkshopsPage from "./pages/WorkshopsPage";   // 선택(없으면 지우고 바로 WorkshopDetail만 써도 됨)
 import WorkshopDetail from "./pages/WorkshopDetail";
-import LoungeDetail from "./components/lounge/LoungeDetail";
+import LoungeDetail from "./Components/LoungeDetail";
 
 export default function App() {
   return (
