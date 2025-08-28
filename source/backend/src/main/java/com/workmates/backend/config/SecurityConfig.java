@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/workshops/**").permitAll()
                 .requestMatchers("/api/chatrooms/**").permitAll()
+                .requestMatchers("/api/threads/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                 .requestMatchers(
                     "/ws-stomp/**",

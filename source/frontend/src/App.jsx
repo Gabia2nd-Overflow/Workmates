@@ -7,6 +7,7 @@ import LoungeDetail from "./Components/LoungeDetail";
 // ✅ 로그인/회원가입 복구
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+// import Post from "./pages/Post";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         {/* 워크샵 상세 + 라운지 중첩 라우팅 */}
         <Route path="/workshops/:workshopId" element={<WorkshopDetail />}>
           <Route path="lounges/:loungeId" element={<LoungeDetail />} />
+           {/* <Route path="posts/:threadId" element={<Post />} />  */}
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

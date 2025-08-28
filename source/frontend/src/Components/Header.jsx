@@ -1,8 +1,11 @@
 import React from "react";
 import { cn } from "../utils/cn";
 import AuthButtons from "../Components/AuthButtons";
+import { useNavigate } from "react-router-dom";
+
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <header
   className={cn(
@@ -16,6 +19,7 @@ const Header = () => {
   <div className="flex items-center w-1/3">
     <div className="w-14 h-14 bg-white rounded-[15px] mr-4 flex items-center justify-center shadow overflow-hidden">
       <img
+       onClick={() => navigate("/")}
         src="/img/logo.png"
         alt="로고"
         className="w-full h-full object-cover"

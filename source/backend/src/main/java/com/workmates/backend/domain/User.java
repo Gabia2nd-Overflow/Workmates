@@ -17,7 +17,10 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
+
 public class User { // 사용자
+    
     
     @Id
     @Column(name = "id", length = DomainConstants.ID_MAX_LEN)

@@ -39,6 +39,34 @@ export const workshopAPI = {
   remove: (workshopId) => api.delete(`/workshops/${workshopId}`),
 };
 
+export const threadAPI = {
+  list: (workshopId, token) => {
+    return fetch(`/api/threads/workshop/${workshopId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { "Authorization": `Bearer ${token}` }) // 토큰이 있으면 헤더 추가
+      }
+    }).then(res => res.json());
+  },
+  create: (request, token) => {
+    if (!token) {
+      return Promise.reject(new Error("로그인 토큰이 필요합니다."));
+    }
+    return fetch(`/api/threads`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` // JWT 토큰 추가
+      },
+      body: JSON.stringify(request)
+    }).then(res => {
+      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+      return res.json();
+    });
+  }
+};
+
+
 // lounges (workshop 종속)
 export const loungeAPI = {
   list: (workshopId) => api.get(`/workshops/${workshopId}/lounges`),
