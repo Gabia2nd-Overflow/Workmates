@@ -1,5 +1,6 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.updateBuildConfiguration": "interactive",
-    "java.search.scope": "main"
+    "java.search.scope": "main",
+    "java.debug.settings.onBuildFailureProceed": false
 }
