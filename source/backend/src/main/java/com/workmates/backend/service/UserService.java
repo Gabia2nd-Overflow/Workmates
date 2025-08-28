@@ -23,9 +23,6 @@ public class UserService {
         if (userRepository.existsById(request.getId())) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
-        if (userRepository.existsByNickname(request.getNickname())) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-        }
         
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
