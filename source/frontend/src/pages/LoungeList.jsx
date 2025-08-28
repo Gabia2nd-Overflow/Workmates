@@ -1,7 +1,7 @@
 // src/pages/ChatroomList.jsx
 import React, { useEffect, useState } from "react";
 import { chatroomAPI } from "../services/api";
-import ChatroomDetail from './ChatroomDetail';
+import ChatroomDetail from '../Components/LoungeDetail';
 
 const ChatroomList = () => {
   const [rooms, setRooms] = useState([]);

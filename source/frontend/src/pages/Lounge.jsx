@@ -1,7 +1,7 @@
 // src/pages/Chatroom.jsx
 import React from 'react';
 
-import ChatroomList from './ChatroomList';
+import ChatroomList from './LoungeList';
 
 function Chatroom() {
   return (
