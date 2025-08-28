@@ -2,8 +2,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
-import FileUploadButton from "../../Components/FileUploadButton";
-import { messageAPI } from "../../services/api";
+import FileUploadButton from "./FileUploadButton";
+import { messageAPI } from "../services/api";
 
 export default function LoungeDetail() {
   const { workshopId, loungeId } = useParams();
