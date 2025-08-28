@@ -104,7 +104,7 @@ public class MessageService {
             throw new IllegalStateException("본인의 메시지만 삭제할 수 있습니다.");
         }
 
-        message.setIsDeleted(true);
+        message.setDeleted(true);
 
         // ✅ 3개 인자 버전으로 호출 (workshopId, loungeId, messageId)
         broadcastService.sendDeleted(workshopId, loungeId, messageId);
