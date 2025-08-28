@@ -2,7 +2,7 @@
 
 import Header from '../Components/Header';
 import AuthButtons from '../Components/AuthButtons';
-import ChatroomButton from '../Components/ChatroomButton';
+import WorkshopButton from '../Components/WorkshopButton';
 import Chatroom from './Chatroom';
 import UserFooter from '../Components/UserFooter';
 
@@ -16,7 +16,7 @@ const Home = () => {
       {/* 본문 영역 (비워둠) */}
       <main className="p-8 text-center text-gray-400">
         <p>메인 콘텐츠가 여기에 표시됩니다.</p>
-        <ChatroomButton/>
+        <WorkshopButton/>
       </main>
 
     {/* 하단바 영역 */}

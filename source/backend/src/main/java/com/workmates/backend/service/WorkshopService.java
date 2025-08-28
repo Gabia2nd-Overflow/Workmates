@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class WorkshopService {
 
     private final WorkshopRepository workshopRepository;

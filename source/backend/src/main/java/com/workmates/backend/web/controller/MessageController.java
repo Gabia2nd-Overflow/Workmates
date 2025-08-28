@@ -1,10 +1,9 @@
 package com.workmates.backend.web.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,63 +11,80 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.workmates.backend.domain.Message;
 import com.workmates.backend.service.MessageService;
 import com.workmates.backend.web.dto.MessageDto;
-import com.workmates.backend.web.dto.MessageDto.DeleteMessageRequest;
-import com.workmates.backend.web.dto.MessageDto.EditMessageRequest;
-import com.workmates.backend.web.dto.MessageDto.SendMessageRequest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping("/api/workshops/{workshopId}/lounges/{loungeId}/messages")
 @RequiredArgsConstructor
-@RequestMapping("/api/chatrooms/{loungeId}/messages")
+@Validated
 public class MessageController {
 
     private final MessageService messageService;
 
-    @PostMapping
-    public ResponseEntity<MessageDto.MessageResponse> sendMessage(
-            @PathVariable Long loungeId,
-            @RequestBody SendMessageRequest request) {
-        System.out.println("받은 writerId = " + request.getWriterId());
-        System.out.println("받은 content = " + request.getContent());
-        Message message = messageService.sendMessage(
-                loungeId,
-                request.getWriterId(),
-                request.getContent()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(MessageDto.MessageResponse.from(message));
-    }
-
+    /**
+     * 메시지 목록 조회 (초기 로딩)
+     * GET /api/workshops/{wId}/lounges/{lId}/messages
+     */
     @GetMapping
-    public ResponseEntity<List<MessageDto.MessageResponse>> getMessages(@PathVariable Long loungeId) {
-        List<MessageDto.MessageResponse> messages = messageService.getMessages(loungeId).stream()
-                .map(MessageDto.MessageResponse::from)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(messages);
+    public List<MessageDto.MessageResponse> list(
+            @PathVariable Long workshopId,
+            @PathVariable Long loungeId
+    ) {
+        return messageService.getMessages(workshopId, loungeId);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<MessageDto.ChatSocketResponse> editMessage(
-            @PathVariable("id") Long messageId,
-            @RequestBody EditMessageRequest request
+    /**
+     * 메시지 전송 (저장 + 웹소켓 브로드캐스트)
+     * POST /api/workshops/{wId}/lounges/{lId}/messages
+     * body: { writerId, content }
+     */
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public MessageDto.ChatSocketResponse send(
+            @PathVariable Long workshopId,
+            @PathVariable Long loungeId,
+            @RequestBody @Valid MessageDto.SendMessageRequest body
     ) {
-        MessageDto.ChatSocketResponse updated =
-                messageService.editMessage(messageId, request.getWriterId(), request.getContent());
-
-        return ResponseEntity.ok(updated);
+        return messageService.sendMessage(workshopId, loungeId, body.getWriterId(), body.getContent());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMessage(
-            @PathVariable("id") Long messageId,
-            @RequestBody DeleteMessageRequest request
+    /**
+     * 메시지 수정 (더티체킹 + 웹소켓 브로드캐스트)
+     * PATCH /api/workshops/{wId}/lounges/{lId}/messages/{messageId}
+     * body: { writerId, content, fileUrl? }
+     */
+    @PatchMapping("/{messageId}")
+    public MessageDto.ChatSocketResponse edit(
+            @PathVariable Long workshopId,
+            @PathVariable Long loungeId,
+            @PathVariable Long messageId,
+            @RequestBody @Valid MessageDto.EditMessageRequest body
     ) {
-        messageService.deleteMessage(messageId, request.getWriterId());
-        return ResponseEntity.noContent().build();
+        return messageService.editMessage(
+                workshopId, loungeId, messageId, body.getWriterId(), body.getContent()
+        );
+    }
+
+    /**
+     * 메시지 삭제(소프트) + 웹소켓 브로드캐스트
+     * DELETE /api/workshops/{wId}/lounges/{lId}/messages/{messageId}
+     * body: { writerId }
+     */
+    @DeleteMapping("/{messageId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(
+            @PathVariable Long workshopId,
+            @PathVariable Long loungeId,
+            @PathVariable Long messageId,
+            @RequestBody @Valid MessageDto.DeleteMessageRequest body
+    ) {
+        messageService.deleteMessage(workshopId, loungeId, messageId, body.getWriterId());
     }
 }

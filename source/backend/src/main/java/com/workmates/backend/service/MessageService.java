@@ -17,55 +17,96 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MessageService {
 
     private final MessageRepository messageRepository;
     private final LoungeRepository loungeRepository;
     private final UserRepository userRepository;
     private final MessageBroadcastService broadcastService;
-    @Transactional
-    public Message sendMessage(Long loungeId, String userId, String content) {
+
+    // ===== 공통 검증 =====
+    private Lounge requireLounge(Long workshopId, Long loungeId) {
         Lounge lounge = loungeRepository.findById(loungeId)
                 .orElseThrow(() -> new IllegalArgumentException("라운지가 존재하지 않습니다."));
+        if (!lounge.getWorkshopId().equals(workshopId)) {
+            throw new IllegalArgumentException("라운지가 요청한 워크샵에 속하지 않습니다.");
+        }
+        if (Boolean.TRUE.equals(lounge.getIsDeleted())) {
+            throw new IllegalStateException("삭제된 라운지입니다.");
+        }
+        return lounge;
+    }
 
-        User sender = userRepository.findById(userId)
+    private User requireUser(String userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
-
-        Message message = new Message(lounge.getId(), sender.getId(), content);
-        return messageRepository.save(message);
     }
 
-    
-    @Transactional(readOnly = true)
-    public List<Message> getMessages(Long loungeId) {
-        return messageRepository.findAllByLoungeIdAndIsDeletedFalse(loungeId);
-    }
-
+    // ===== 메시지 생성 =====
     @Transactional
-    public MessageDto.ChatSocketResponse editMessage(Long messageId, String editorId, String newContent) {
-        Message message = messageRepository.findByIdAndIsDeletedFalse(messageId)
-            .orElseThrow(() -> new IllegalArgumentException("삭제할 메시지를 찾을 수 없습니다."));
+    public MessageDto.ChatSocketResponse sendMessage(Long workshopId, Long loungeId,
+                                                     String userId, String content) {
+        Lounge lounge = requireLounge(workshopId, loungeId);
+        User sender = requireUser(userId);
 
+        Message saved = messageRepository.save(new Message(lounge.getId(), sender.getId(), content));
+
+        MessageDto.ChatSocketResponse dto = MessageDto.ChatSocketResponse.from(saved, workshopId);
+        broadcastService.sendCreated(dto);
+        return dto;
+    }
+
+    // ===== 메시지 목록 =====
+    public List<MessageDto.MessageResponse> getMessages(Long workshopId, Long loungeId) {
+        requireLounge(workshopId, loungeId);
+        return messageRepository.findAllByLoungeIdAndIsDeletedFalse(loungeId)
+                .stream().map(MessageDto.MessageResponse::from).toList();
+    }
+
+    // ===== 메시지 수정 =====
+    @Transactional
+    public MessageDto.ChatSocketResponse editMessage(Long workshopId, Long loungeId,
+                                                     Long messageId, String editorId, String newContent) {
+        requireLounge(workshopId, loungeId);
+
+        Message message = messageRepository.findByIdAndIsDeletedFalse(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("수정할 메시지를 찾을 수 없습니다."));
+
+        if (!message.getLoungeId().equals(loungeId)) {
+            throw new IllegalArgumentException("메시지가 해당 라운지에 속하지 않습니다.");
+        }
         if (!message.getWriterId().equals(editorId)) {
             throw new IllegalStateException("본인의 메시지만 수정할 수 있습니다.");
         }
 
-        message.setContent(newContent); // content 필드 수정
-        MessageDto.ChatSocketResponse dto = MessageDto.ChatSocketResponse.from(message);
-        broadcastService.sendUpdated(dto); // WebSocket 전송
+        message.setContent(newContent);
 
+        // ✅ 반드시 workshopId를 같이 넘김 (현재 from 시그니처)
+        MessageDto.ChatSocketResponse dto = MessageDto.ChatSocketResponse.from(message, workshopId);
+        broadcastService.sendUpdated(dto);
         return dto;
     }
-    @Transactional
-    public void deleteMessage(Long messageId, String editorId) {
-        Message message = messageRepository.findByIdAndIsDeletedFalse(messageId)
-            .orElseThrow(() -> new IllegalArgumentException("삭제할 메시지를 찾을 수 없습니다."));
 
+    // ===== 메시지 삭제(소프트) =====
+    @Transactional
+    public void deleteMessage(Long workshopId, Long loungeId,
+                              Long messageId, String editorId) {
+        requireLounge(workshopId, loungeId);
+
+        Message message = messageRepository.findByIdAndIsDeletedFalse(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 메시지를 찾을 수 없습니다."));
+
+        if (!message.getLoungeId().equals(loungeId)) {
+            throw new IllegalArgumentException("메시지가 해당 라운지에 속하지 않습니다.");
+        }
         if (!message.getWriterId().equals(editorId)) {
             throw new IllegalStateException("본인의 메시지만 삭제할 수 있습니다.");
         }
 
-        message.setIsDeleted(true); // deleted = true 처리
-        broadcastService.sendDeleted(message.getLoungeId(), message.getId()); // WebSocket 전송
+        message.setIsDeleted(true);
+
+        // ✅ 3개 인자 버전으로 호출 (workshopId, loungeId, messageId)
+        broadcastService.sendDeleted(workshopId, loungeId, messageId);
     }
 }
