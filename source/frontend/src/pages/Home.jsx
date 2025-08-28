@@ -1,9 +1,7 @@
 // src/pages/Home.jsx
 
 import Header from '../Components/Header';
-import AuthButtons from '../Components/AuthButtons';
 import WorkshopButton from '../Components/WorkshopButton';
-import Chatroom from './Chatroom';
 import UserFooter from '../Components/UserFooter';
 
 const Home = () => {

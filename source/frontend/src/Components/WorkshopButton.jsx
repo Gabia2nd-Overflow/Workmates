@@ -4,7 +4,7 @@ import Button from './Button';
 const WorkshopButton = () => {
   const navigate = useNavigate();
   const handleRoom = () =>{
-    navigate('/Workshop');
+    navigate('/workshops');
   }
 
   return (

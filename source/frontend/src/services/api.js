@@ -23,7 +23,13 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+// 회원 관련 API만 남김
+export const authAPI = {
+  signUp: (data) => api.post('/auth/signup', data),
+  login: (data) => api.post('/auth/login', data),
+  getMyInfo: () => api.get('/auth/me'),
+  updateMyInfo: (data) => api.put('/auth/me', data),
+};
 // workshops
 export const workshopAPI = {
   list: () => api.get("/workshops"),
