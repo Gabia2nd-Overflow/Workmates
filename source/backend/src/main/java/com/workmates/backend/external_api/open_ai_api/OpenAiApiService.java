@@ -126,18 +126,16 @@ public class OpenAiApiService {
         ObjectMapper mapper = new ObjectMapper();
 
         StringBuilder comments = new StringBuilder();
-        // commentList.sort(c1, c2 -> (int) (c2.getId() - c1.getId()));
+        // commentList.sort((c1, c2) -> (int) (c2.getId() - c1.getId()));
         for(int s = 0, e = Math.min(commentList.size(), 30); s < e; ++s) {
             comments.append(String.valueOf(s + 1) + ". ");
             comments.append(commentList.get(s));
             comments.append(" ");
         }
 
-        System.out.println("comments : " + comments.toString());
-
         ObjectNode messageObj = mapper.createObjectNode();
         messageObj.put("role", "user");
-        messageObj.put("content", comments.toString() + "앞서 주어진 문장들은 어떤 게시물에 대해 사용자들이 남긴 댓글의 리스트입니다. 댓글들의 전체적인 반응을 분석해서 요약하고, 댓글들이 작성된 언어에 맞게 번역해서 대답해주세요.\n");
+        messageObj.put("content", "주어진 댓글들의 감성을 분석해서 전체적인 반응을 긍정적/대체로 긍정적/중립적/대체로 부정적/부정적 중 하나로 단답으로 대답해.\n" + comments);
 
 
         ArrayNode messagesArray = mapper.createArrayNode();
