@@ -1,10 +1,12 @@
-// src/pages/ChatroomDetail.jsx
+// src/components/lounge/LoungeDetail.jsx
 import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
-import FileUploadButton from "../Components/FileUploadButton";
-import { messageAPI } from "../services/api";
+import FileUploadButton from "../../Components/FileUploadButton";
+import { messageAPI } from "../../services/api";
 
-function ChatroomDetail({ chatroomId }) {
+export default function LoungeDetail() {
+  const { workshopId, loungeId } = useParams();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [editingMessageId, setEditingMessageId] = useState(null);
@@ -14,26 +16,32 @@ function ChatroomDetail({ chatroomId }) {
   const stompClient = useRef(null);
   const scrollRef = useRef(null);
 
+  // 초기 메시지 로드 (REST)
   useEffect(() => {
-    if (!chatroomId) return;
-    fetch(`http://localhost:8080/api/chatrooms/${chatroomId}/messages`)
-      .then((res) => res.json())
-      .then((data) => setMessages(data));
-  }, [chatroomId]);
+    if (!workshopId || !loungeId) return;
+    messageAPI
+      .list(workshopId, loungeId)
+      .then(({ data }) => setMessages(data))
+      .catch(() => setMessages([]));
+  }, [workshopId, loungeId]);
 
+  // WebSocket 연결 및 구독
   useEffect(() => {
-    if (!chatroomId) return;
+    if (!workshopId || !loungeId) return;
 
     const client = new Client({
       brokerURL: "ws://localhost:8080/ws-stomp",
       reconnectDelay: 5000,
       onConnect: () => {
-        client.subscribe(`/sub/chatrooms.${chatroomId}`, (message) => {
-          const newMsg = JSON.parse(message.body);
+        // ✅ 프로젝트의 실제 토픽 규칙에 맞게 이 부분만 변경하세요.
+        // 예시1) 라운지 단독: `/sub/lounges.${loungeId}`
+        // 예시2) 워크샵-라운지 계층: `/sub/workshops.${workshopId}.lounges.${loungeId}`
+        const SUB_TOPIC = `/sub/lounges.${loungeId}`;
 
-          // ✅ 중복 방지
+        client.subscribe(SUB_TOPIC, (frame) => {
+          const newMsg = JSON.parse(frame.body);
           setMessages((prev) => {
-            const exists = prev.some((msg) => msg.id === newMsg.id);
+            const exists = prev.some((m) => m.id === newMsg.id);
             return exists ? prev : [...prev, newMsg];
           });
         });
@@ -44,48 +52,58 @@ function ChatroomDetail({ chatroomId }) {
     stompClient.current = client;
 
     return () => client.deactivate();
-  }, [chatroomId]);
+  }, [workshopId, loungeId]);
 
+  // 자동 스크롤
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // 메시지 전송 (WebSocket 발행)
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || !stompClient.current) return;
+
+    // ✅ 프로젝트의 실제 발행 경로 규칙에 맞게 이 부분만 변경하세요.
+    // 예시1) `/pub/lounges.send`
+    // 예시2) `/pub/workshops.lounges.send`
+    const PUB_DEST = "/pub/lounges.send";
+
     stompClient.current.publish({
-      destination: "/pub/chat.send",
-      body: JSON.stringify({ chatroomId, senderId: userId, content: input }),
+      destination: PUB_DEST,
+      body: JSON.stringify({
+        workshopId,
+        loungeId,
+        senderId: userId,
+        content: input,
+      }),
     });
     setInput("");
   };
 
+  // 메시지 수정 (REST)
   const handleEdit = async (messageId) => {
     try {
-      await messageAPI.editMessage(chatroomId, messageId, {
+      await messageAPI.edit(workshopId, loungeId, messageId, {
         senderId: userId,
         content: editInput,
       });
-
       setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === messageId ? { ...msg, content: editInput } : msg
-        )
+        prev.map((m) => (m.id === messageId ? { ...m, content: editInput } : m))
       );
       setEditingMessageId(null);
       setEditInput("");
-    } catch (error) {
-      console.error("메시지 수정 실패", error);
+    } catch (e) {
+      console.error("메시지 수정 실패", e);
     }
   };
 
+  // 메시지 삭제 (REST)
   const handleDelete = async (messageId) => {
     try {
-      await messageAPI.deleteMessage(chatroomId, messageId, {
-        senderId: userId,
-      });
-      setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
-    } catch (error) {
-      console.error("메시지 삭제 실패", error);
+      await messageAPI.remove(workshopId, loungeId, messageId);
+      setMessages((prev) => prev.filter((m) => m.id !== messageId));
+    } catch (e) {
+      console.error("메시지 삭제 실패", e);
     }
   };
 
@@ -93,17 +111,17 @@ function ChatroomDetail({ chatroomId }) {
     <div className="flex flex-col h-full">
       {/* 헤더 */}
       <div className="bg-blue-600 text-white px-4 py-2 font-semibold">
-        워크샵 #{chatroomId}
+        라운지 #{loungeId}
       </div>
 
-      {/* 메시지 출력 영역 */}
+      {/* 메시지 영역 */}
       <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
         {messages.map((msg) => (
           <div key={`${msg.id}-${msg.updatedAt || ""}`} className="mb-3">
             <div className="font-semibold text-blue-700 flex justify-between">
               <span>
-                {msg.senderNickname}
-                {msg.senderNickname === user.nickname && (
+                {msg.senderNickname ?? msg.senderId}
+                {msg.senderId === userId && (
                   <>
                     <button
                       onClick={() => {
@@ -124,10 +142,12 @@ function ChatroomDetail({ chatroomId }) {
                 )}
               </span>
               <span className="text-xs text-gray-400">
-                {new Date(msg.createdAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                {msg.createdAt
+                  ? new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : ""}
               </span>
             </div>
 
@@ -147,9 +167,7 @@ function ChatroomDetail({ chatroomId }) {
               </div>
             ) : msg.type === "FILE" ? (
               <>
-                <div className="text-sm text-gray-600">
-                  📎 파일 업로드가 완료되었습니다.
-                </div>
+                <div className="text-sm text-gray-600">📎 파일 업로드가 완료되었습니다.</div>
                 <a
                   href={msg.fileUrl}
                   target="_blank"
@@ -160,17 +178,19 @@ function ChatroomDetail({ chatroomId }) {
                 </a>
               </>
             ) : (
-              <div className="text-sm text-gray-600">{msg.content}</div>
+              <div className="text-sm text-gray-700 whitespace-pre-wrap">{msg.content}</div>
             )}
           </div>
         ))}
         <div ref={scrollRef} />
       </div>
 
-      {/* 입력창 + 파일 버튼 */}
+      {/* 입력/파일 */}
       <div className="p-3 border-t bg-white flex items-center">
+        {/* ⬇ FileUploadButton 내부도 chatroomId → (workshopId, loungeId)로 변경 필요 */}
         <FileUploadButton
-          chatroomId={chatroomId}
+          workshopId={workshopId}
+          loungeId={loungeId}
           userId={userId}
           stompClient={stompClient}
         />
@@ -189,15 +209,10 @@ function ChatroomDetail({ chatroomId }) {
           }}
         />
 
-        <button
-          onClick={handleSend}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
+        <button onClick={handleSend} className="bg-blue-600 text-white px-4 py-2 rounded">
           전송
         </button>
       </div>
     </div>
   );
 }
-
-export default ChatroomDetail;

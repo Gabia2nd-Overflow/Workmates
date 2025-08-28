@@ -1,107 +1,67 @@
 // src/services/api.js
+import axios from "axios";
 
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8080/api';
-
-//백엔드 실제 엔드포인트: "/api/schedules"
-const SCHEDULAR_PATH = '/schedules';
-
-// axios 인스턴스 생성
 const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: "http://localhost:8080/api",
+  headers: { "Content-Type": "application/json" },
 });
 
-// 요청 인터셉터 - 토큰 추가
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-// 응답 인터셉터 - 인증 실패 시 자동 로그아웃
 api.interceptors.response.use(
-  (response) => response,
+  (res) => res,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
 
-// 회원 관련 API만 남김
-export const authAPI = {
-  signUp: (data) => api.post('/auth/signup', data),
-  login: (data) => api.post('/auth/login', data),
-  getMyInfo: () => api.get('/auth/me'),
-  updateMyInfo: (data) => api.put('/auth/me', data),
-};
-
-// ===== 여기 추가 =====
+// workshops
 export const workshopAPI = {
-  create: (data) => api.post('/workshops', data),
-  list:   () => api.get('/workshops'),
-  get:    (id) => api.get(`/workshops/${id}`),
-  update: (id, data) => api.patch(`/workshops/${id}`, data),
-  remove: (id) => api.delete(`/workshops/${id}`),
+  list: () => api.get("/workshops"),
+  get: (workshopId) => api.get(`/workshops/${workshopId}`),
+  create: (data) => api.post("/workshops", data),
+  update: (workshopId, data) => api.patch(`/workshops/${workshopId}`, data),
+  remove: (workshopId) => api.delete(`/workshops/${workshopId}`),
 };
-// ====================
 
+// lounges (workshop 종속)
 export const loungeAPI = {
-  list:   (wId)                => api.get(`/workshops/${wId}/lounges`),
-  get:    (wId, lId)           => api.get(`/workshops/${wId}/lounges/${lId}`),
-  create: (wId, data)          => api.post(`/workshops/${wId}/lounges`, data),
-  update: (wId, lId, data)     => api.patch(`/workshops/${wId}/lounges/${lId}`, data),
-  remove: (wId, lId)           => api.delete(`/workshops/${wId}/lounges/${lId}`),
-}
+  list: (workshopId) => api.get(`/workshops/${workshopId}/lounges`),
+  get: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}`),
+  create: (workshopId, data) => api.post(`/workshops/${workshopId}/lounges`, data),
+  update: (workshopId, loungeId, data) => api.patch(`/workshops/${workshopId}/lounges/${loungeId}`, data),
+  remove: (workshopId, loungeId) => api.delete(`/workshops/${workshopId}/lounges/${loungeId}`),
+};
 
+// messages (lounge 종속)
 export const messageAPI = {
-  getMessages: (chatroomId) =>
-    api.get(`/chatrooms/${chatroomId}/messages`),
-  sendMessage: (chatroomId, data) =>
-    api.post(`/chatrooms/${chatroomId}/messages`, data),
-  editMessage: (chatroomId, messageId, data) =>
-    api.patch(`/chatrooms/${chatroomId}/messages/${messageId}`, data),
-  deleteMessage: (chatroomId, messageId, data) =>
-    api.delete(`/chatrooms/${chatroomId}/messages/${messageId}`, {
-      data, // DELETE에 body 보낼 땐 'data' 키로 감싸야 함!
-    }),
+  list: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}/messages`),
+  send: (workshopId, loungeId, data) => api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, data),
+  edit: (workshopId, loungeId, messageId, data) => api.patch(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`, data),
+  remove: (workshopId, loungeId, messageId) => api.delete(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`),
 };
 
+// files (lounge 종속)
 export const fileAPI = {
-  upload: (formData) =>
-    api.post('/messages/files', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  upload: (workshopId, loungeId, formData) =>
+    api.post(`/workshops/${workshopId}/lounges/${loungeId}/files`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     }),
-};
-
-// 스케줄러 API 래퍼 추가 - yjy
-export const schedularAPI = {
-  // list
-  getAll: () => api.get(SCHEDULAR_PATH),
-  // create
-  create: (data) => api.post(SCHEDULAR_PATH, data),
-  // update
-  update: (id, data) => api.put(`${SCHEDULAR_PATH}/${id}`, data),
-  // delete
-  remove: (id) => api.delete(`${SCHEDULAR_PATH}/${id}`),
-  // stats
-  getStats: () => api.get(`${SCHEDULAR_PATH}/stats`),
+  download: (workshopId, loungeId, fileId) =>
+    api.get(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`, {
+      responseType: "blob",
+    }),
+  remove: (workshopId, loungeId, fileId) =>
+    api.delete(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`),
 };
 
 export default api;
