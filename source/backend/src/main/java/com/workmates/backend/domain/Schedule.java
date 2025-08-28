@@ -51,4 +51,7 @@ public class Schedule { // 작업 일정
 
     @Column(name = "workshopId", nullable = false)
     private Long workshopId; // 스케쥴이 등록된 워크샵 아이디
+
+    @Column(name = "writerId", nullable = false)
+    private String writerId; // 스케쥴을 등록한 사용자 아이디
 }
