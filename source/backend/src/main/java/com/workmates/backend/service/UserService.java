@@ -14,8 +14,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
+    
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public UserDto.CheckIdResponse checkId(UserDto.CheckIdRequest request) {
+        return null;
+    }
+
+    public UserDto.VerifyEmailResponse verifyEmail(UserDto.VerifyEmailRequest request) {
+        return null;
+    }
+
+    public UserDto.ConfirmEmailResponse confirmEmail(UserDto.ConfirmEmailRequest request) {
+        return null;
+    }
 
     @Transactional
     public UserDto.UserResponse signUp(UserDto.SignUpRequest request) {

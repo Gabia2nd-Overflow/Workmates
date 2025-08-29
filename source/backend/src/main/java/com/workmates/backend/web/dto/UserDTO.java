@@ -11,7 +11,74 @@ import lombok.Setter;
 
 public class UserDto {
 
-    //회원가입
+    // 아이디 중복확인 요청
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CheckIdRequest {
+        private String id;
+    }
+
+    // 아이디 중복확인 응답
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CheckIdResponse {
+        private Boolean isDuplicate;
+    }
+
+    // 이메일 인증 코드 전송 및 재전송 요청
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyEmailRequest {
+        private String email;
+    }
+
+    // 이메일 인증 코드 전송 및 재전송 응답
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyEmailResponse {
+        private Boolean isCodeSent;
+    }
+
+    // 이메일 인증 확인 요청
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ConfirmEmailRequest {
+        private String email;
+        private String verificationCode;
+    }
+
+    // 이메일 인증 확인 응답
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ConfirmEmailResponse {
+        private Boolean isConfirmed;
+    }
+
+    // 회원가입
     @Data 
     @Getter 
     @Setter
@@ -25,7 +92,7 @@ public class UserDto {
         private String email;
     }
 
-    //로그인 요청
+    // 로그인 요청
     @Data
     @Builder
     @Getter
@@ -37,7 +104,7 @@ public class UserDto {
         private String password;
     }
 
-    //로그인 응답.
+    // 로그인 응답.
     @Data
     @Builder
     @Getter
