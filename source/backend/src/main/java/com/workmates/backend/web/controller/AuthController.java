@@ -1,13 +1,21 @@
 // ✅ 기존 UserDTO 기준으로 변경된 AuthController
 package com.workmates.backend.web.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.workmates.backend.config.JwtTokenProvider;
 import com.workmates.backend.service.UserService;
 import com.workmates.backend.web.dto.UserDto;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,15 +25,15 @@ public class AuthController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/signup/check_userid") // 회원가입 - 아이디 중복확인
-    public ResponseEntity<UserDto.CheckUserid> checkUserId() {
-        return ResponseEntity.ok();
-    }
+    // @PostMapping("/signup/check_userid") // 회원가입 - 아이디 중복확인
+    // public ResponseEntity<UserDto.CheckUserid> checkUserId() {
+    //     return ResponseEntity.ok();
+    // }
     
-    @PostMapping("/signup/auth_email") // 회원가입 - 이메일 중복확인 및 인증
-    public ResponseEntity<UserDto.AuthEmail> authEmail() {
-        return ResponseEntity.ok();
-    }
+    // @PostMapping("/signup/auth_email") // 회원가입 - 이메일 중복확인 및 인증
+    // public ResponseEntity<UserDto.AuthEmail> authEmail() {
+    //     return ResponseEntity.ok();
+    // }
 
     @PostMapping("/signup") // 회원가입
     public ResponseEntity<UserDto.UserResponse> signUp(@Valid @RequestBody UserDto.SignUpRequest request) {
