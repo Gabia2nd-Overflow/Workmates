@@ -1,7 +1,6 @@
 import React from "react";
 import { cn } from "../utils/cn";
 import AuthButtons from "../Components/AuthButtons";
-import "./Header.css";
 
 const Header = () => {
   return (

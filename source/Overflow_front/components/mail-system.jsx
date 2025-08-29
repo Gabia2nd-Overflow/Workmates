@@ -1,18 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
-import { Inbox, Send, Archive, Trash2, Star, Reply, Forward, Languages, Paperclip, Search, Plus } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Inbox,
+  Send,
+  Archive,
+  Trash2,
+  Star,
+  Reply,
+  Forward,
+  Languages,
+  Paperclip,
+  Search,
+  Plus,
+} from "lucide-react";
 
 export function MailSystem() {
-  const [selectedMail, setSelectedMail] = useState(null)
-  const [isComposing, setIsComposing] = useState(false)
+  const [selectedMail, setSelectedMail] = useState(null);
+  const [isComposing, setIsComposing] = useState(false);
 
   const emails = [
     {
@@ -20,21 +32,24 @@ export function MailSystem() {
       from: "client@company.com",
       fromName: "John Smith",
       subject: "Project Update Request",
-      preview: "Could you please provide an update on the current project status...",
+      preview:
+        "Could you please provide an update on the current project status...",
       time: "10:30 AM",
       isRead: false,
       isStarred: true,
       hasAttachment: true,
       originalLang: "en",
       translatedSubject: "프로젝트 업데이트 요청",
-      translatedPreview: "현재 프로젝트 상태에 대한 업데이트를 제공해 주실 수 있나요...",
+      translatedPreview:
+        "현재 프로젝트 상태에 대한 업데이트를 제공해 주실 수 있나요...",
     },
     {
       id: 2,
       from: "team@design.com",
       fromName: "Design Team",
       subject: "New Design Assets Available",
-      preview: "We have uploaded the latest design assets to the shared folder...",
+      preview:
+        "We have uploaded the latest design assets to the shared folder...",
       time: "9:15 AM",
       isRead: true,
       isStarred: false,
@@ -57,28 +72,32 @@ export function MailSystem() {
       translatedSubject: "시스템 유지보수 안내",
       translatedPreview: "다음 주 화요일에 시스템 유지보수를 실시합니다...",
     },
-  ]
+  ];
 
   return (
     <div className="flex h-full">
       {/* 메일 목록 사이드바 */}
-      <div className="w-80 bg-blue-50 border-r border-blue-200 flex flex-col">
-        <div className="p-4 border-b border-blue-200">
-          <div className="flex items-center justify-between mb-4">
+      <div className="flex w-80 flex-col border-r border-blue-200 bg-blue-50">
+        <div className="border-b border-blue-200 p-4">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold text-blue-900">웹메일</h2>
-            <Button size="sm" onClick={() => setIsComposing(true)} className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="h-4 w-4 mr-1" />
+            <Button
+              size="sm"
+              onClick={() => setIsComposing(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Plus className="mr-1 h-4 w-4" />
               작성
             </Button>
           </div>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input placeholder="메일 검색..." className="pl-9" />
           </div>
         </div>
 
-        <Tabs defaultValue="inbox" className="flex-1 flex flex-col">
-          <TabsList className="grid w-full grid-cols-4 mx-4 mt-2">
+        <Tabs defaultValue="inbox" className="flex flex-1 flex-col">
+          <TabsList className="mx-4 mt-2 grid w-full grid-cols-4">
             <TabsTrigger value="inbox">받은편지함</TabsTrigger>
             <TabsTrigger value="sent">보낸편지함</TabsTrigger>
             <TabsTrigger value="starred">중요</TabsTrigger>
@@ -86,7 +105,7 @@ export function MailSystem() {
           </TabsList>
 
           <TabsContent value="inbox" className="flex-1 overflow-hidden">
-            <div className="p-4 space-y-2">
+            <div className="space-y-2 p-4">
               {emails.map((email) => (
                 <Card
                   key={email.id}
@@ -96,34 +115,53 @@ export function MailSystem() {
                   onClick={() => setSelectedMail(email)}
                 >
                   <CardContent className="p-3">
-                    <div className="flex items-start justify-between mb-2">
+                    <div className="mb-2 flex items-start justify-between">
                       <div className="flex items-center space-x-2">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>{email.fromName[0]}</AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm truncate ${!email.isRead ? "font-semibold" : ""}`}>{email.fromName}</p>
-                          <p className="text-xs text-gray-500 truncate">{email.from}</p>
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className={`truncate text-sm ${!email.isRead ? "font-semibold" : ""}`}
+                          >
+                            {email.fromName}
+                          </p>
+                          <p className="truncate text-xs text-gray-500">
+                            {email.from}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1">
-                        {email.isStarred && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
-                        {email.hasAttachment && <Paperclip className="h-4 w-4 text-gray-400" />}
-                        <span className="text-xs text-gray-500">{email.time}</span>
+                        {email.isStarred && (
+                          <Star className="h-4 w-4 fill-current text-yellow-500" />
+                        )}
+                        {email.hasAttachment && (
+                          <Paperclip className="h-4 w-4 text-gray-400" />
+                        )}
+                        <span className="text-xs text-gray-500">
+                          {email.time}
+                        </span>
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <p className={`text-sm truncate ${!email.isRead ? "font-semibold" : ""}`}>
+                      <p
+                        className={`truncate text-sm ${!email.isRead ? "font-semibold" : ""}`}
+                      >
                         {email.translatedSubject}
                       </p>
-                      <p className="text-xs text-gray-600 truncate">{email.translatedPreview}</p>
+                      <p className="truncate text-xs text-gray-600">
+                        {email.translatedPreview}
+                      </p>
                     </div>
 
                     {email.originalLang !== "ko" && (
-                      <div className="flex items-center space-x-1 mt-2">
+                      <div className="mt-2 flex items-center space-x-1">
                         <Languages className="h-3 w-3 text-blue-500" />
-                        <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-100 text-xs text-blue-800"
+                        >
                           {email.originalLang.toUpperCase()} → KO
                         </Badge>
                       </div>
@@ -137,7 +175,7 @@ export function MailSystem() {
       </div>
 
       {/* 메일 내용 영역 */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-1 flex-col">
         {isComposing ? (
           <div className="flex-1 p-6">
             <Card>
@@ -159,20 +197,23 @@ export function MailSystem() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Button variant="outline" size="sm">
-                      <Paperclip className="h-4 w-4 mr-1" />
+                      <Paperclip className="mr-1 h-4 w-4" />
                       첨부
                     </Button>
                     <Button variant="outline" size="sm">
-                      <Languages className="h-4 w-4 mr-1" />
+                      <Languages className="mr-1 h-4 w-4" />
                       번역
                     </Button>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" onClick={() => setIsComposing(false)}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsComposing(false)}
+                    >
                       취소
                     </Button>
                     <Button className="bg-blue-600 hover:bg-blue-700">
-                      <Send className="h-4 w-4 mr-1" />
+                      <Send className="mr-1 h-4 w-4" />
                       전송
                     </Button>
                   </div>
@@ -181,11 +222,13 @@ export function MailSystem() {
             </Card>
           </div>
         ) : selectedMail ? (
-          <div className="flex-1 flex flex-col">
+          <div className="flex flex-1 flex-col">
             {/* 메일 헤더 */}
-            <div className="p-6 border-b border-gray-200 bg-white">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">{selectedMail.translatedSubject}</h2>
+            <div className="border-b border-gray-200 bg-white p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-xl font-semibold">
+                  {selectedMail.translatedSubject}
+                </h2>
                 <div className="flex items-center space-x-2">
                   <Button variant="ghost" size="sm">
                     <Reply className="h-4 w-4" />
@@ -216,7 +259,7 @@ export function MailSystem() {
                   <p className="text-sm text-gray-500">{selectedMail.time}</p>
                   {selectedMail.originalLang !== "ko" && (
                     <Badge variant="secondary" className="mt-1">
-                      <Languages className="h-3 w-3 mr-1" />
+                      <Languages className="mr-1 h-3 w-3" />
                       자동 번역됨
                     </Badge>
                   )}
@@ -225,11 +268,12 @@ export function MailSystem() {
             </div>
 
             {/* 메일 내용 */}
-            <div className="flex-1 p-6 overflow-auto">
+            <div className="flex-1 overflow-auto p-6">
               <div className="prose max-w-none">
                 <p>안녕하세요,</p>
                 <p>
-                  현재 진행 중인 프로젝트의 상태에 대한 업데이트를 요청드립니다. 특히 다음 사항들에 대해 알고 싶습니다:
+                  현재 진행 중인 프로젝트의 상태에 대한 업데이트를 요청드립니다.
+                  특히 다음 사항들에 대해 알고 싶습니다:
                 </p>
                 <ul>
                   <li>현재 진행률</li>
@@ -245,13 +289,16 @@ export function MailSystem() {
               {selectedMail.originalLang !== "ko" && (
                 <Card className="mt-6 bg-gray-50">
                   <CardHeader>
-                    <CardTitle className="text-sm">원문 ({selectedMail.originalLang.toUpperCase()})</CardTitle>
+                    <CardTitle className="text-sm">
+                      원문 ({selectedMail.originalLang.toUpperCase()})
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">
-                      Could you please provide an update on the current project status? I would like to know about the
-                      current progress, expected completion date, any issues or delays, and if additional resources are
-                      needed.
+                      Could you please provide an update on the current project
+                      status? I would like to know about the current progress,
+                      expected completion date, any issues or delays, and if
+                      additional resources are needed.
                     </p>
                   </CardContent>
                 </Card>
@@ -259,14 +306,14 @@ export function MailSystem() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-gray-50">
+          <div className="flex flex-1 items-center justify-center bg-gray-50">
             <div className="text-center">
-              <Inbox className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <Inbox className="mx-auto mb-4 h-12 w-12 text-gray-400" />
               <p className="text-gray-500">메일을 선택하여 내용을 확인하세요</p>
             </div>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
