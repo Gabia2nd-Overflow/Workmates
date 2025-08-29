@@ -17,7 +17,7 @@ public class AuthController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/signup/check/userid") // 회원가입 - 아이디 중복확인
+    @PostMapping("/signup/check/id") // 회원가입 - 아이디 중복확인
     public ResponseEntity<UserDto.CheckUserid> checkUserId() {
         return ResponseEntity.ok();
     }
