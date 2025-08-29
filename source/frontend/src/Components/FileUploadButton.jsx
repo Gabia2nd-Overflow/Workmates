@@ -36,13 +36,17 @@ const FileUploadButton = ({ chatroomId, userId, stompClient }) => {
 
   return (
     <>
-      <button onClick={() => inputRef.current.click()} className="mr-2 text-xl">
+      <button 
+        type="button"
+        onClick={() => inputRef.current.click()} 
+        className="file-upload-btn">
         📎
       </button>
+
       <input
         type="file"
         ref={inputRef}
-        style={{ display: 'none' }}
+        className="file-input-hidden"
         onChange={handleUpload}
       />
     </>
