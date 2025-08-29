@@ -1,5 +1,6 @@
 package com.workmates.backend.repository;
 
+import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,63 +11,44 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ActiveProfiles("test")   // ✅ application-test.yml 사용 강제
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
 class ScheduleRepositoryTest {
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
+    @Autowired ScheduleRepository scheduleRepository;
 
-    private Schedule createSampleSchedule(String title) {
-        return Schedule.builder()
-                .title(title)
-                .content("테스트 컨텍스트")
+    @Test
+    @DisplayName("findByWorkshopId: 소프트 삭제 항목은 @Where로 자동 제외")
+    void findByWorkshopId_excludesSoftDeleted() {
+        Schedule keep = Schedule.builder()
+                .title("보존").content("...")
                 .startDate(LocalDateTime.now())
-                .dueDate(LocalDateTime.now().plusDays(1))
-                .importancy("HIGH")
+                .dueDate(LocalDateTime.now().plusHours(1))
+                .importancy(Importance.LOW)
                 .isCompleted(false)
                 .isDeleted(false)
-                .workshopId(1L)
+                .workshopId(10L).writerId("alice")
                 .build();
-    }
 
-    @Test
-    @DisplayName("스케줄 생성 및 조회 테스트")
-    void testCreateAndFind() {
-        Schedule saved = scheduleRepository.save(createSampleSchedule("테스트 일정"));
-        Optional<Schedule> found = scheduleRepository.findById(saved.getId());
-        assertTrue(found.isPresent());
-    }
+        Schedule softDeleted = Schedule.builder()
+                .title("삭제됨").content("...")
+                .startDate(LocalDateTime.now())
+                .dueDate(LocalDateTime.now().plusHours(1))
+                .importancy(Importance.HIGH)
+                .isCompleted(false)
+                .isDeleted(true) // 소프트 삭제
+                .workshopId(10L).writerId("bob")
+                .build();
 
-    @Test
-    @DisplayName("스케줄 수정 테스트")
-    void testUpdate() {
-        Schedule schedule = scheduleRepository.save(createSampleSchedule("원본 일정"));
-        schedule.setTitle("수정된 일정");
-        Schedule updated = scheduleRepository.save(schedule);
-        assertEquals("수정된 일정", updated.getTitle());
-    }
+        scheduleRepository.save(keep);
+        scheduleRepository.save(softDeleted);
 
-    @Test
-    @DisplayName("스케줄 삭제 테스트")
-    void testDelete() {
-        Schedule schedule = scheduleRepository.save(createSampleSchedule("삭제 일정"));
-        Long id = schedule.getId();
-        scheduleRepository.delete(schedule);
-        assertFalse(scheduleRepository.findById(id).isPresent());
-    }
-
-    @Test
-    @DisplayName("모든 스케줄 조회 테스트")
-    void testFindAll() {
-        scheduleRepository.save(createSampleSchedule("일정1"));
-        scheduleRepository.save(createSampleSchedule("일정2"));
-        List<Schedule> schedules = scheduleRepository.findAll();
-        assertTrue(schedules.size() >= 2);
+        List<Schedule> found = scheduleRepository.findByWorkshopId(10L);
+        assertEquals(1, found.size());
+        assertEquals("보존", found.get(0).getTitle());
     }
 }

@@ -1,129 +1,139 @@
 package com.workmates.backend.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.workmates.backend.domain.Importance;
 import com.workmates.backend.service.ScheduleService;
 import com.workmates.backend.web.controller.ScheduleController;
 import com.workmates.backend.web.dto.ScheduleDto;
-import com.workmates.backend.web.controller.ScheduleController;
-
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ScheduleController.class)
-@AutoConfigureMockMvc(addFilters = false) // 🔥 보안 필터 비활성화하여 테스트 단순화
+@WebMvcTest(controllers = ScheduleController.class)
 class ScheduleControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired MockMvc mockMvc;
+    @Autowired ObjectMapper objectMapper;
 
-    @MockBean
-    private ScheduleService scheduleService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private ScheduleDto.Response sampleResponse;
-
-    @BeforeEach
-    void setUp() {
-        sampleResponse = ScheduleDto.Response.builder()
-                .id(1L)
-                .title("회의")
-                .content("테스트 내용")
-                .startDate(LocalDateTime.now())
-                .dueDate(LocalDateTime.now().plusDays(1))
-                .importancy("HIGH")
-                .isCompleted(false)
-                .build();
-    }
+    @MockBean ScheduleService scheduleService;
 
     @Test
-    void create_shouldReturnCreatedSchedule() throws Exception {
-        when(scheduleService.createSchedule(any())).thenReturn(sampleResponse);
-
-        mockMvc.perform(post("/api/schedules")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(
-                                new ScheduleDto.CreateRequest("회의", "테스트 내용",
-                                        LocalDateTime.now(), LocalDateTime.now().plusDays(1),
-                                "HIGH")
-                        )))
-                .andDo(print()) // 🔥 응답 JSON 디버깅
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("회의"))
-                .andExpect(jsonPath("$.isCompleted").value(false));
-    }
-
-    @Test
-    void update_shouldReturnUpdatedSchedule() throws Exception {
-        when(scheduleService.updateSchedule(eq(1L), any())).thenReturn(sampleResponse);
-
-        ScheduleDto.UpdateRequest updateRequest = new ScheduleDto.UpdateRequest(
-                "회의", "수정된 내용", LocalDateTime.now(),
-                LocalDateTime.now().plusDays(2), "LOW", true
+    @DisplayName("워크샵 일정 조회: 200 OK")
+    @WithMockUser(username = "alice") // SecurityContext에 사용자 주입
+    void getSchedulesForWorkshop_ok() throws Exception {
+        Long workshopId = 10L;
+        List<ScheduleDto.Response> list = List.of(
+                ScheduleDto.Response.builder()
+                        .id(1L).title("회의").content("리뷰")
+                        .startDate(LocalDateTime.of(2025,9,1,10,0))
+                        .dueDate(LocalDateTime.of(2025,9,1,11,0))
+                        .importancy(Importance.MEDIUM).isCompleted(false).build()
         );
 
-        mockMvc.perform(put("/api/schedules/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("회의"))
-                .andExpect(jsonPath("$.isCompleted").value(false)); // ✅ service mock이 반환하는 값 기준
+        when(scheduleService.getSchedulesForWorkshop(eq(workshopId), eq("alice"))).thenReturn(list);
+
+        mockMvc.perform(get("/api/workshops/{workshopId}/schedules", workshopId))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$[0].id").value(1))
+               .andExpect(jsonPath("$[0].title").value("회의"));
     }
 
     @Test
-    void delete_shouldReturnNoContent() throws Exception {
-        Mockito.doNothing().when(scheduleService).deleteSchedule(1L);
+    @DisplayName("워크샵 일정 생성: 201 Created (writerId는 인증 컨텍스트에서 주입)")
+    @WithMockUser(username = "alice")
+    void createSchedule_created() throws Exception {
+        Long workshopId = 10L;
+        var req = ScheduleDto.CreateRequest.builder()
+                .title("디자인 회의")
+                .content("UI/UX 리뷰")
+                .startDate(LocalDateTime.of(2025,9,1,10,0))
+                .dueDate(LocalDateTime.of(2025,9,1,12,0))
+                .importancy(Importance.HIGH)
+                .build();
 
-        mockMvc.perform(delete("/api/schedules/1"))
-                .andDo(print())
-                .andExpect(status().isNoContent());
+        var resp = ScheduleDto.Response.builder()
+                .id(100L)
+                .title(req.getTitle())
+                .content(req.getContent())
+                .startDate(req.getStartDate())
+                .dueDate(req.getDueDate())
+                .importancy(Importance.HIGH)
+                .isCompleted(false)
+                .build();
 
-        verify(scheduleService, times(1)).deleteSchedule(1L);
+        when(scheduleService.createSchedule(any(ScheduleDto.CreateRequest.class), eq(workshopId), eq("alice")))
+                .thenReturn(resp);
+
+        mockMvc.perform(post("/api/workshops/{workshopId}/schedules", workshopId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+               .andDo(print())
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.id").value(100))
+               .andExpect(jsonPath("$.title").value("디자인 회의"));
     }
 
     @Test
-    void getAll_shouldReturnListOfSchedules() throws Exception {
-        when(scheduleService.getAllSchedules()).thenReturn(Collections.singletonList(sampleResponse));
+    @DisplayName("일정 수정: 200 OK")
+    @WithMockUser(username = "alice")
+    void updateSchedule_ok() throws Exception {
+        Long id = 100L;
+        var req = ScheduleDto.UpdateRequest.builder()
+                .title("수정된 제목")
+                .content("수정된 내용")
+                .startDate(LocalDateTime.of(2025,9,1,10,0))
+                .dueDate(LocalDateTime.of(2025,9,1,12,0))
+                .importancy("HIGH")
+                .isCompleted(true)
+                .build();
 
-        mockMvc.perform(get("/api/schedules"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("회의"));
+        var resp = ScheduleDto.Response.builder()
+                .id(id)
+                .title(req.getTitle())
+                .content(req.getContent())
+                .startDate(req.getStartDate())
+                .dueDate(req.getDueDate())
+                .importancy(Importance.HIGH)
+                .isCompleted(true)
+                .build();
+
+        when(scheduleService.updateSchedule(eq(id), any(ScheduleDto.UpdateRequest.class))).thenReturn(resp);
+
+        mockMvc.perform(put("/api/schedules/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.title").value("수정된 제목"))
+               .andExpect(jsonPath("$.importancy").value("HIGH"))
+               .andExpect(jsonPath("$.isCompleted").value(true));
     }
 
     @Test
-    void getStats_shouldReturnStats() throws Exception {
-        Map<String, Long> stats = new HashMap<>();
-        stats.put("total", 5L);
-        stats.put("isCompleted", 2L);
-        stats.put("dueSoon", 1L);
+    @DisplayName("일정 삭제: 204 No Content")
+    @WithMockUser(username = "alice")
+    void deleteSchedule_noContent() throws Exception {
+        Long id = 100L;
+        Mockito.doNothing().when(scheduleService).deleteSchedule(id);
 
-        when(scheduleService.getScheduleStats()).thenReturn(stats);
-
-        mockMvc.perform(get("/api/schedules/stats"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(5))
-                .andExpect(jsonPath("$.isCompleted").value(2))
-                .andExpect(jsonPath("$.dueSoon").value(1));
+        mockMvc.perform(delete("/api/schedules/{id}", id))
+               .andDo(print())
+               .andExpect(status().isNoContent());
     }
 }
