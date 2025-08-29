@@ -35,7 +35,7 @@ public class AuthController {
         return ResponseEntity.ok(userService.verifyEmail(request));
     }
 
-    @PostMapping("/verify-email/confirm") // 회원가입 - 이메일 인증 시도
+    @PostMapping("/confirm-email") // 회원가입 - 이메일 인증 시도
     public ResponseEntity<UserDto.ConfirmEmailResponse> confirmEmail(@Valid @RequestBody UserDto.ConfirmEmailRequest request) {
         return ResponseEntity.ok(userService.confirmEmail(request));
     }
