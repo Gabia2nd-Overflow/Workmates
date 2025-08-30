@@ -28,7 +28,7 @@ public class Comment { // 댓글
     @Column(name = "id")
     private Long id; // 댓글 식별 번호
 
-    @Column(name = "rootId")
+    @Column(name = "root_id")
     @Builder.Default
     private Long rootId = null; // 현재 댓글이 대댓글이라면 원댓글의 comment_id. 기본적으로 null
 
@@ -39,28 +39,28 @@ public class Comment { // 댓글
     @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
     private String content; // 댓글 내용
 
-    @Column(name = "writtenAt", nullable = false)
+    @Column(name = "written_at", nullable = false)
     @Builder.Default
     private LocalDateTime writtenAt = LocalDateTime.now(); // 댓글 작성일시. 기본적으로 LocalDateTime.now()
 
-    @Column(name = "writtenIn", nullable = false)
+    @Column(name = "written_in", nullable = false)
     @Builder.Default
     private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 댓글이 작성된 언어. 기본적으로 한국어
 
-    @Column(name = "attachmentUrl", unique = true)
+    @Column(name = "attachment_url", unique = true)
     @Builder.Default
     private String attachmentUrl = null; // 댓글 첨부파일들이 저장된 url. 기본적으로 null 
 
-    @Column(name = "isDeleted", nullable = false)
+    @Column(name = "is_deleted", nullable = false)
     @Builder.Default
     private Boolean isDeleted = false; // 댓글 삭제 여부. 기본적으로 false
 
-    @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_id", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String writerId; // 댓글 작성자 아이디
 
-    @Column(name = "writerNickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_nickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
     private String writerNickname; // 댓글 작성자 닉네임
 
-    @Column(name = "postId", nullable = false)
+    @Column(name = "post_id", nullable = false)
     private Long postId; // 댓글이 작성된 게시글 아이디
 }

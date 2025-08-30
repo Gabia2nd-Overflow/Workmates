@@ -32,7 +32,7 @@ public class User { // 사용자
     @Column(name = "bio", length = DomainConstants.COMMENT_MAX_LEN)
     private String bio; // 사용자 프로필 소개
     
-    @Column(name = "imageUrl", unique = true)
+    @Column(name = "image_url", unique = true)
     @Builder.Default
     private String imageUrl = null; // 사용자의 프로필 이미지가 저장된 url. 기본적으로 null
 
@@ -43,10 +43,10 @@ public class User { // 사용자
     @Column(name = "email", unique = true, length = DomainConstants.COMMENT_MAX_LEN)
     private String email; // 이메일 계정 주소
 
-    @Column(name = "emailPassword", length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "email_password", length = DomainConstants.COMMENT_MAX_LEN)
     private String emailPassword; // 이메일 계정이 사용하는 비밀번호
     
-    @Column(name = "isDeleted", nullable = false)
+    @Column(name = "is_deleted", nullable = false)
     @Builder.Default
     private Boolean isDeleted = false; // 사용자 탈퇴 여부. 기본적으로 false
 }

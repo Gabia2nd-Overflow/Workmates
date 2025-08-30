@@ -40,15 +40,15 @@ public class Message { // 메세지
 
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "USER_ID")
-    @Column(name = "attachmentUrl")
+    @Column(name = "attachment_url")
     @Builder.Default
     private String attachmentUrl = null; // 메세지 첨부파일들의 url. 기본적으로 null
 
-    @Column(name = "writtenAt", nullable = false)
+    @Column(name = "written_at", nullable = false)
     @Builder.Default
     private LocalDateTime writtenAt = LocalDateTime.now(); // 메세지 작성일시. 기본적으로 LocalDateTime.now()
 
-    @Column(name = "writtenIn", nullable = false)
+    @Column(name = "written_in", nullable = false)
     @Builder.Default
     private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 메세지가 작성된 언어. 기본적으로 한국어
 
@@ -56,13 +56,13 @@ public class Message { // 메세지
     @Builder.Default
     private boolean isDeleted = false; // 메세지 삭제 여부. 기본적으로 false
 
-    @Column(name = "writerId", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_id", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String writerId; // 메세지를 작성한 사용자 아이디
 
-    @Column(name = "writerNickname", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_nickname", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String writerNickname; // 메세지를 작성한 사용자의 닉네임
 
-    @Column(name = "loungeId", nullable = false)
+    @Column(name = "lounge_id", nullable = false)
     private Long loungeId; // 메세지가 작성된 라운지 아이디
 
         // ✅ 편의 생성자를 유지하더라도 기본값/타임존 보장
