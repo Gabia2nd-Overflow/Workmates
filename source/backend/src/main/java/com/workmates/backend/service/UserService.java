@@ -1,19 +1,13 @@
 package com.workmates.backend.service;
 
-import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailMessage;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.messaging.MessagingException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.workmates.backend.config.MailVerificationConfig;
 import com.workmates.backend.constant.DomainConstants;
 import com.workmates.backend.constant.ServiceConstants;
 import com.workmates.backend.domain.EmailVerification;
@@ -32,9 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private final JavaMailSender mailSender;
+    private final MailVerificationConfig mailVerificationConfig;
 
     public UserDto.CheckIdResponse checkId(UserDto.CheckIdRequest request) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId())) { // 정규표현식에 위반되는 아이디가 요청으로 전달된 경우
@@ -64,6 +56,8 @@ public class UserService {
             emailVerificationRepository.save(emailVerification);
         }
 
+        mailVerificationConfig.sendVerificationEmail(emailVerification.getEmail(), emailVerification.getCode());
+
         return UserDto.VerifyEmailResponse.builder()
                 .isCodeSent(true)
                 .build();
@@ -80,7 +74,7 @@ public class UserService {
                         .orElseThrow(() -> new IllegalArgumentException("올바르지 않은 인증 요청입니다. 이메일을 확인해주세요.")); 
         
 
-        if(request.getRequestTime().isAfter(emailVerification.getExpiresAt())) { // 요청
+        if(request.getRequestTime().isAfter(emailVerification.getExpiresAt())) { // 코드가 만료된 경우
             throw new IllegalArgumentException("이미 만료된 코드입니다.");
         }
 
@@ -172,7 +166,5 @@ public class UserService {
         return codeBuilder.toString();
     }
 
-    private void sendVerificationEmail(String to, String verificationCode) {
-        
-    }
+    
 }

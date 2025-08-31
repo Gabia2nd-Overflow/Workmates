@@ -3,13 +3,16 @@ package com.workmates.backend.config;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Configuration
-public class MailVerifyConfig {
+public class MailVerificationConfig {
     
     @Value("${mail-verify.host}")
     private String host;
@@ -38,19 +41,18 @@ public class MailVerifyConfig {
     @Value("${mail-verify.properties.mail.smtp.connectionTimeout}")
     private int connectionTimeout;
 
-    @Bean
-    public JavaMailSender javaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    private final JavaMailSenderImpl javaMailSender;
 
-        mailSender.setHost(host);
-        mailSender.setPort(port);
-        mailSender.setUsername(username);
-        mailSender.setPassword(password);
-        mailSender.setDefaultEncoding("UTF-8");
+    public MailVerificationConfig() {
+        javaMailSender = new JavaMailSenderImpl();
 
-        mailSender.setJavaMailProperties(applyMailProperties());
+        javaMailSender.setHost(host);
+        javaMailSender.setPort(port);
+        javaMailSender.setUsername(username);
+        javaMailSender.setPassword(password);
+        javaMailSender.setDefaultEncoding("UTF-8");
 
-        return mailSender;
+        javaMailSender.setJavaMailProperties(applyMailProperties());
     }
 
     private Properties applyMailProperties() {
@@ -67,5 +69,23 @@ public class MailVerifyConfig {
         mailProperties.setProperty("mail.mime.charset", "UTF-8");
 
         return mailProperties;
+    }
+
+    public void sendVerificationEmail(String to, String verificationCode) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); 
+            
+            helper.setFrom(username);
+            message.setSubject("Workmates Email Verification Code");
+            message.setText("안녕하세요!\n\n" +
+                        "이메일 인증을 위해 아래 인증코드를 입력해주세요.\n\n" +
+                        "인증코드: " + verificationCode + "\n\n" +
+                        "이 코드는 5분 후에 만료됩니다.\n\n");
+
+            javaMailSender.send(message);
+        }  catch(MessagingException | MailException e) {
+            throw new IllegalArgumentException("인증코드 전송에 실패했습니다.");
+        }
     }
 }
