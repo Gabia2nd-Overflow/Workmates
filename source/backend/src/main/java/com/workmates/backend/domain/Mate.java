@@ -24,12 +24,10 @@ import lombok.Setter;
 public class Mate { // 사용자 친구 등록/차단 여부 - 차단은 구현하면 +@. 안해도 무관
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sender_id", length = DomainConstants.ID_MAX_LEN)
     private String senderId; // 요청을 보낸 사용자 아이디
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "receiver_id", length = DomainConstants.ID_MAX_LEN)
     private String receiverId; // 요청의 대상이 된 사용자 아이디
 
