@@ -1,5 +1,7 @@
 package com.workmates.backend.domain;
 
+import com.workmates.backend.constant.DomainConstants;
+
 import jakarta.persistence.*;
 import lombok.*;
 

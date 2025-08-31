@@ -3,15 +3,14 @@ package com.workmates.backend.domain;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import com.workmates.backend.constant.DomainConstants;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-// import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
-// import jakarta.persistence.JoinColumn;
-// import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,13 +32,9 @@ public class Message { // 메세지
     @Column(name = "id")
     private Long id; // 메세지 아이디
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "CHATROOM_ID")
     @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
     private String content; // 메세지 내용
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "USER_ID")
     @Column(name = "attachment_url")
     @Builder.Default
     private String attachmentUrl = null; // 메세지 첨부파일들의 url. 기본적으로 null

@@ -36,7 +36,7 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
 
-mailverify:
+mail-verify:
   host: smtp.gmail.com
   port: 587
   username: workmates.verify@gmail.com

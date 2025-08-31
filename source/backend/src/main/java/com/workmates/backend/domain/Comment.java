@@ -2,6 +2,8 @@ package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
 
+import com.workmates.backend.constant.DomainConstants;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

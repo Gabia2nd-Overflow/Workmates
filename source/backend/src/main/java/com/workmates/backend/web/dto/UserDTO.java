@@ -1,5 +1,7 @@
 package com.workmates.backend.web.dto;
 
+import java.time.LocalDateTime;
+
 import com.workmates.backend.domain.User;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +32,7 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CheckIdResponse {
-        private Boolean isDuplicate;
+        private Boolean isOk;
     }
 
     // 이메일 인증 코드 전송 및 재전송 요청
@@ -42,6 +44,7 @@ public class UserDto {
     @AllArgsConstructor
     public static class VerifyEmailRequest {
         private String email;
+        private LocalDateTime requestTime;
     }
 
     // 이메일 인증 코드 전송 및 재전송 응답
@@ -65,6 +68,7 @@ public class UserDto {
     public static class ConfirmEmailRequest {
         private String email;
         private String verificationCode;
+        private LocalDateTime requestTime;
     }
 
     // 이메일 인증 확인 응답
