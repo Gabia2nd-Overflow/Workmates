@@ -23,13 +23,19 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 // 회원 관련 API만 남김
 export const authAPI = {
+  checkId: (data) => api.post('/auth/check-id', data), // 아이디 중복확인
+  verifyEmail: (data) => api.post('/auth/verify-email', data), // 인증코드 전송 요청 및 재전송 요청
+  confirmEmail: (data) => api.post('/auth/confirm-email', data), // 인증코드 입력 확인
+
   signUp: (data) => api.post('/auth/signup', data),
   login: (data) => api.post('/auth/login', data),
   getMyInfo: () => api.get('/auth/me'),
   updateMyInfo: (data) => api.put('/auth/me', data),
 };
+
 // workshops
 export const workshopAPI = {
   list: () => api.get("/workshops"),
