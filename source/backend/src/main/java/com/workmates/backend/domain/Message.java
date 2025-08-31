@@ -28,7 +28,7 @@ import lombok.Setter;
 public class Message { // 메세지
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id; // 메세지 아이디
 

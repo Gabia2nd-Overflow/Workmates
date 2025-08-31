@@ -6,7 +6,7 @@ public class ServiceConstants {
 
     public static final String PW_REGEX = "[A-Za-z0-9]{8,20}$";
 
-    public static final String NICKNAME_REGEX = "^[가-힣A-Za-z0-9]{1, 20}$";
+    public static final String NICKNAME_REGEX = "^[가-힣A-Za-z0-9]{1,20}$";
 
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
