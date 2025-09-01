@@ -6,6 +6,7 @@ import { authAPI } from "../services/api";
 import Button from "../Components/Button";
 import Input from "../Components/Input";
 import toast from "react-hot-toast"; //알림
+import "./SignUp.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -40,19 +41,19 @@ const SignUp = () => {
 
   return (
     // 반응형 패딩
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="page page--signup">
       {/* 반응형 너비 */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="signup__container">
         <div className="text-center">
           {/* 반응형 텍스트 */}
-          <h2 onClick={() => navigate("/")}  className="text-3xl font-bold text-gray-900">🛍️ workmates</h2>
-          <p className="mt-2 text-sm text-gray-600">새로운 계정을 만드세요</p>
+          <h2 onClick={() => navigate("/")}  className="signup__brand">🛍️ workmates</h2>
+          <p className="signup__subtitle">새로운 계정을 만드세요</p>
         </div>
       </div>
       {/* 반응형 간격 */}
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="card py-8 px-4 sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <div className="signup__container signup__container--spaced">
+        <div className="signup__card">
+          <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <Input
                 label="아이디"
@@ -111,7 +112,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <div className="relative">
+              <div className="signup__field-box">
                 <Input
                   label="비밀번호"
                   type={showPassword ? "text" : "password"}
@@ -128,7 +129,7 @@ const SignUp = () => {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                  className="signup__toggle"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -141,7 +142,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <div className="relative">
+              <div className="signup__field-box">
                 <Input
                   label="비밀번호 확인"
                   type={showConfirmPassword ? "text" : "password"}
@@ -156,7 +157,7 @@ const SignUp = () => {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                  className="signup__toggle"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? (
@@ -175,22 +176,22 @@ const SignUp = () => {
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+          <div className="signup__hr">
+            <div className="signup__hr-box">
+              <div className="signup__hr-rail">
+                <div className="signup__hr-line" />
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
+              <div className="signup__hr-label">
+                <span className="signup__hr-chip">
                   이미 계정이 있으신가요?
                 </span>
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="signup__actions">
               <Link
                 to="/login"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-pink-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                className="signup__alt-link"
               >
                 로그인
               </Link>

@@ -1,0 +1,25 @@
+.page.page--workshop {
+  /* 화면 높이는 '콘텐츠 래퍼'에서 관리 */
+  @apply min-h-screen bg-gray-50;
+}
+
+/* 헤더 높이만큼 위로 여백을 주는 '전용 래퍼' */
+.workshop__content {
+  @apply pt-[80px] flex;
+}
+
+/* 중앙 메인 화면 (사이드바는 fixed라서 본문은 왼쪽 여백 필요) */
+.workshop__main {
+  @apply flex-1 ml-20 flex items-center justify-center;
+}
+
+/* 환영 문구 영역 */
+.workshop__welcome {
+  @apply text-center;
+}
+.workshop__welcome-title {
+  @apply text-2xl font-bold text-pink-600 mb-2;
+}
+.workshop__welcome-text {
+  @apply text-pink-500;
+}

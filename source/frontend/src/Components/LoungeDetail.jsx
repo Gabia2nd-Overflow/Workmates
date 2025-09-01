@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import FileUploadButton from "./FileUploadButton";
 import { messageAPI } from "../services/api";
+import "./LoungeDetail.css"
 
 export default function LoungeDetail() {
   const { workshopId, loungeId } = useParams();

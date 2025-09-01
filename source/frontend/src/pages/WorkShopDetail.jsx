@@ -5,6 +5,7 @@ import Sidebar from "../Components/Sidebar";
 import LoungeSection from "../Components/LoungeSection";
 import ThreadSection from "../Components/ThreadSection";
 import { loungeAPI, workshopAPI, threadAPI } from "../services/api";
+import "./WorkShopDetail.css";
 
 export default function WorkshopDetail() {
   const { workshopId } = useParams();
@@ -20,12 +21,12 @@ export default function WorkshopDetail() {
   }, [workshopId]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page page--workshop-detail">
       <Header />
       <Sidebar />
-      <div className="pt-[80px] pl-20 h-[calc(100vh-80px)] flex">
-        <aside className="w-64 border-r p-4">
-          <h3 className="font-bold truncate mb-3" title={workshop?.workshopName}>
+      <div className="wsd__layout">
+        <aside className="wsd__sidebar">
+          <h3 className="wsd__title" title={workshop?.workshopName}>
             {workshop?.workshopName || "Workshop"}
           </h3>
 
@@ -33,7 +34,7 @@ export default function WorkshopDetail() {
           <ThreadSection workshopId={workshopId} threads={threads} setThreads={setThreads} />
         </aside>
 
-        <section className="flex-1">
+        <section className="wsd__content">
           <Outlet />
         </section>
       </div>
