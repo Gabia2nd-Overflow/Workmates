@@ -45,9 +45,9 @@ public class Comment { // 댓글
     @Builder.Default
     private LocalDateTime writtenAt = LocalDateTime.now(); // 댓글 작성일시. 기본적으로 LocalDateTime.now()
 
-    @Column(name = "written_in", nullable = false)
-    @Builder.Default
-    private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 댓글이 작성된 언어. 기본적으로 한국어
+    // @Column(name = "written_in", nullable = false)
+    // @Builder.Default
+    // private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 댓글이 작성된 언어. 기본적으로 한국어
 
     @Column(name = "attachment_url", unique = true)
     @Builder.Default

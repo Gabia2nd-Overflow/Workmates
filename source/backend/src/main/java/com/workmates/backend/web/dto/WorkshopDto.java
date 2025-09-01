@@ -1,7 +1,5 @@
 package com.workmates.backend.web.dto;
 
-import java.time.LocalDateTime;
-
 import com.workmates.backend.domain.Workshop;
 
 import lombok.AllArgsConstructor;
