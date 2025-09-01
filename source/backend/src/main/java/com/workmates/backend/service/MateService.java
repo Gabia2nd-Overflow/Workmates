@@ -9,6 +9,7 @@ import com.workmates.backend.constant.ServiceConstants;
 import com.workmates.backend.domain.Mate;
 import com.workmates.backend.domain.MateId;
 import com.workmates.backend.domain.User;
+import com.workmates.backend.repository.BlockRepository;
 import com.workmates.backend.repository.MateRepository;
 import com.workmates.backend.repository.UserRepository;
 import com.workmates.backend.web.dto.MateDto;
@@ -21,6 +22,7 @@ public class MateService {
     
     private final MateRepository mateRepository;
     private final UserRepository userRepository;
+    private final BlockRepository blockRepository;
 
     public MateDto.SearchResponse search(MateDto.SearchRequest request) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 검색 거부
