@@ -40,30 +40,11 @@ export const workshopAPI = {
 };
 
 export const threadAPI = {
-  list: (workshopId, token) => {
-    return fetch(`/api/threads/workshop/${workshopId}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { "Authorization": `Bearer ${token}` }) // 토큰이 있으면 헤더 추가
-      }
-    }).then(res => res.json());
-  },
-  create: (request, token) => {
-    if (!token) {
-      return Promise.reject(new Error("로그인 토큰이 필요합니다."));
-    }
-    return fetch(`/api/threads`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // JWT 토큰 추가
-      },
-      body: JSON.stringify(request)
-    }).then(res => {
-      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-      return res.json();
-    });
-  }
+  list: (workshopId) => api.get(`/workshops/${workshopId}/threads`),
+  get: (workshopId, threadId) => api.get(`/workshops/${workshopId}/threads/${threadId}`),
+  create: (workshopId, data) => api.post(`/workshops/${workshopId}/threads`, data),
+  update: (workshopId, threadId, data) => api.patch(`/workshops/${workshopId}/threads/${threadId}`, data),
+  remove: (workshopId, threadId) => api.delete(`/workshops/${workshopId}/threads/${threadId}`),
 };
 
 
@@ -97,5 +78,15 @@ export const fileAPI = {
   remove: (workshopId, loungeId, fileId) =>
     api.delete(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`),
 };
+
+// services/api.js 맨 아래 추가
+export const postAPI = {
+  list: (threadId) => api.get(`/threads/${threadId}/posts`),
+  create: (threadId, data) => api.post(`/threads/${threadId}/posts`, data),
+  get: (postId) => api.get(`/posts/${postId}`),
+  update: (postId, data) => api.patch(`/posts/${postId}`, data),
+  remove: (postId) => api.delete(`/posts/${postId}`),
+};
+
 
 export default api;

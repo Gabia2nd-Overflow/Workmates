@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/threads")
+@RequestMapping("/api/workshops/{workshopId}/threads")
 @RequiredArgsConstructor
 public class ThreadController {
 
@@ -20,7 +20,7 @@ public class ThreadController {
         return ResponseEntity.ok(threadService.createThread(request));
     }
 
-    @GetMapping("/workshop/{workshopId}")
+    @GetMapping
     public ResponseEntity<List<ThreadDto.Response>> getThreadsByWorkshop(@PathVariable Long workshopId) {
         return ResponseEntity.ok(threadService.getThreadsByWorkshop(workshopId));
     }
