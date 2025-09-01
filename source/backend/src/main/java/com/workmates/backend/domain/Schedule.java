@@ -36,9 +36,9 @@ public class Schedule { // 작업 일정
     @Builder.Default
     private LocalDateTime dueDate = LocalDateTime.now(); // 스케쥴 마감 일시. 기본적으로 LocalDateTime.now()지만 명시적으로 지정할 필요가 있음
 
-    @Column(name = "written_in", nullable = false)
-    @Builder.Default
-    private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 스케쥴이 등록된 언어. 기본적으로 한국어
+    // @Column(name = "written_in", nullable = false)
+    // @Builder.Default
+    // private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 스케쥴이 등록된 언어. 기본적으로 한국어
 
     @Column(name = "importancy", nullable = false, length = DomainConstants.ID_MAX_LEN) // LOW MEDIUM HIGH
     @Builder.Default

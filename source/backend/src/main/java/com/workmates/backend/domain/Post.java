@@ -35,9 +35,9 @@ public class Post { // 게시글
     @Builder.Default
     private LocalDateTime writtenAt = LocalDateTime.now(); // 게시글 작성일시. 기본적으로 LocalDateTime.now()
 
-    @Column(name = "written_in", nullable = false)
-    @Builder.Default
-    private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 게시글이 작성된 언어. 기본적으로 한국어
+    // @Column(name = "written_in", nullable = false)
+    // @Builder.Default
+    // private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 게시글이 작성된 언어. 기본적으로 한국어
     
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default

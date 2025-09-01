@@ -236,6 +236,19 @@
     padding: 0 4px;               /* px-1 */
   }
 
+  /* 텍스트 컬럼이 가로 공간 */
+.user-footer__textcol {
+  display: flex;
+  flex-direction: column;
+  flex: 1;             /* 오른쪽으로 공간을 밀기 */
+}
+
+/* 닉네임/전원 버튼을 같은 라인으로 */
+.user-footer__nickname-row {
+  display: flex;
+  align-items: center;
+}
+
   .user-footer__avatar {
     width: 48px;
     height: 48px;
@@ -291,25 +304,27 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
     padding: 0 4px;               /* px-1 */
     margin-top: auto;
   }
 
   .user-footer__btn {
-    width: 33.333%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    border: 1px solid #C5C5C5;
-    border-radius: 8px;
-    height: 36px;
+
+    background: none;
+    border: none;
     cursor: pointer;
+
+    width: auto;
+    height: auto;
   }
 
   .user-footer__btn-img {
-    width: 20px;
-    height: 20px;
+    width: 65px;
+    height: 26px;
     display: block;
   }
 

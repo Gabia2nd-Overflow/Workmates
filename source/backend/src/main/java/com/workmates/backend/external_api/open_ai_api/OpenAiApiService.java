@@ -44,13 +44,13 @@ public class OpenAiApiService {
         return decryptedApiKey;
     }
 
-    public CompletableFuture<String> translateAsync(String text, String sourceLang, String targetLang) throws Exception {
+    public CompletableFuture<String> translateAsync(String text, String targetLang) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
         ObjectNode messageObj = mapper.createObjectNode();
         messageObj.put("role", "user");
-        messageObj.put("content", "Translate the following text from " + sourceLang + " to " + targetLang + ":\n" + text);
+        messageObj.put("content", "Translate the following text in " + targetLang + ".\n" + text);
 
         ArrayNode messagesArray = mapper.createArrayNode();
         messagesArray.add(messageObj);
