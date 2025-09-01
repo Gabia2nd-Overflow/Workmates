@@ -130,18 +130,19 @@ export default function LoungeDetail() {
       console.error("메시지 삭제 실패", e);
     }
   };
+
   return (
     <div className="flex flex-col h-full">
       {/* 헤더 */}
-      <div className="bg-blue-600 text-white px-4 py-2 font-semibold">
+      <div className="lounge-header">
         라운지 #{loungeId}
       </div>
 
       {/* 메시지 영역 */}
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+      <div className="lounge-messages">
         {messages.map((msg) => (
           <div key={`${msg.id}-${msg.updatedAt || ""}`} className="mb-3">
-            <div className="font-semibold text-blue-700 flex justify-between">
+            <div className="lounge-msg-meta">
               <span>
                 {msg.senderNickname ?? msg.senderId}
                 {msg.senderId === userId && (
@@ -151,20 +152,20 @@ export default function LoungeDetail() {
                         setEditingMessageId(msg.id);
                         setEditInput(msg.content);
                       }}
-                      className="ml-2 text-xs text-gray-500 hover:underline"
+                      className="btn-inline btn-inline--edit"
                     >
                       ✏️
                     </button>
                     <button
                       onClick={() => handleDelete(msg.id)}
-                      className="ml-1 text-xs text-red-500 hover:underline"
+                      className="btn-inline btn-inline--delete"
                     >
                       🗑️
                     </button>
                   </>
                 )}
               </span>
-              <span className="text-xs text-gray-400">
+              <span className="meta-time">
                 {msg.createdAt
                   ? new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -179,18 +180,18 @@ export default function LoungeDetail() {
                 <textarea
                   value={editInput}
                   onChange={(e) => setEditInput(e.target.value)}
-                  className="w-full border rounded p-1"
+                  className="textarea-sm"
                 />
                 <button
                   onClick={() => handleEdit(msg.id)}
-                  className="mt-1 text-sm text-white bg-green-500 px-2 py-1 rounded"
+                  className="btn btn--success-sm mt-1"
                 >
                   수정 완료
                 </button>
               </div>
             ) : msg.type === "FILE" ? (
               <>
-                <div className="text-sm text-gray-600">
+                <div className="file-note">
                   📎 파일 업로드가 완료되었습니다.
                 </div>
                 <a
@@ -203,7 +204,7 @@ export default function LoungeDetail() {
                 </a>
               </>
             ) : (
-              <div className="text-sm text-gray-700 whitespace-pre-wrap">
+              <div className="msg-content">
                 {msg.content}
               </div>
             )}
@@ -213,7 +214,7 @@ export default function LoungeDetail() {
       </div>
 
       {/* 입력/파일 */}
-      <div className="p-3 border-t bg-white flex items-center">
+      <div className="composer">
         {/* ⬇ FileUploadButton 내부도 chatroomId → (workshopId, loungeId)로 변경 필요 */}
         <FileUploadButton
           workshopId={workshopId}
@@ -223,7 +224,7 @@ export default function LoungeDetail() {
         />
 
         <textarea
-          className="flex-1 border p-2 rounded mr-2"
+          className="composer__input"
           rows={2}
           placeholder="메시지를 입력하세요..."
           value={input}
@@ -238,7 +239,7 @@ export default function LoungeDetail() {
 
         <button
           onClick={handleSend}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="btn btn--primary"
         >
           전송
         </button>
