@@ -46,8 +46,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// Google Translate API
-    implementation 'com.google.cloud:google-cloud-translate:2.68.0'
+	// Java Mail API
+	implementation "org.springframework.boot:spring-boot-starter-mail"
 
 	// OpenAI API
 	implementation("org.springframework.ai:spring-ai-openai:1.0.0") 

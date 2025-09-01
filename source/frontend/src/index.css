@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "./style/components.css";
 
 @tailwind base;
 @tailwind components;
@@ -7,6 +8,7 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    
   }
   
   body {
@@ -38,4 +40,5 @@
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-200;
   }
+
 }
