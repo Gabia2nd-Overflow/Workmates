@@ -4,7 +4,7 @@ import { cn } from "../utils/cn";
 // 더미 유저 데이터 (props로 교체 가능)
 const user = {
   avatar: "/img/Kim_Developer.png",
-  nickname: "Kim_Developer",
+  nickname: "김개발자",
   account: "Kim_developer",
 };
 
