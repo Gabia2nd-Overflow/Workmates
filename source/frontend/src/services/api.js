@@ -9,6 +9,15 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
+
+  //workshop userid 보내는용.  DEV방식. 
+  const url = config.url || "";
+  const path = url.startsWith("/") ? url : `/${url}`;
+  if (path.startsWith("/workshops")) {
+    const uid = localStorage.getItem("userId") 
+               || (JSON.parse(localStorage.getItem("user")||"null")?.id);
+    if (uid) config.headers["X-User-Id"] = uid;
+  }
   return config;
 });
 

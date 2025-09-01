@@ -1,4 +1,4 @@
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import Sidebar from "../Components/Sidebar";
@@ -8,7 +8,6 @@ import { loungeAPI, workshopAPI, threadAPI } from "../services/api";
 
 export default function WorkshopDetail() {
   const { workshopId } = useParams();
-  const navigate = useNavigate();
   const [workshop, setWorkshop] = useState(null);
   const [lounges, setLounges] = useState([]);
   const [threads, setThreads] = useState([]);
