@@ -30,4 +30,26 @@ public class MateDto {
         private String nickname;
         private String imageUrl;
     };
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InviteRequest { // 사용자 검색 요청
+        private String senderId;
+        private String receiverId;
+    };
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InviteResponse { // 사용자 검색 응답
+        private Boolean inviteSent;
+    };
+    
 }

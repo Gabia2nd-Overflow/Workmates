@@ -3,8 +3,11 @@ package com.workmates.backend.service;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.workmates.backend.constant.ServiceConstants;
+import com.workmates.backend.domain.Mate;
+import com.workmates.backend.domain.MateId;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.MateRepository;
 import com.workmates.backend.repository.UserRepository;
@@ -31,6 +34,32 @@ public class MateService {
             .id(user.getId())
             .nickname(user.getNickname())
             .imageUrl(user.getImageUrl())
+            .build();
+    }
+
+    @Transactional
+    public MateDto.InviteResponse invite(MateDto.InviteRequest request) {
+        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getSenderId()) ||
+           !Pattern.matches(ServiceConstants.ID_REGEX, request.getReceiverId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 초대 거부
+            throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
+        }
+
+        MateId id = new MateId(request.getSenderId(), request.getReceiverId());
+        MateId swapId = new MateId(request.getReceiverId(), request.getSenderId());
+        boolean isDuplicateInvitation = mateRepository.findById(id).isPresent() || // 이미 DB에 존재하는 친구 요청인지 두 유형을 검사
+                                        mateRepository.findById(swapId).isPresent();
+
+        if(!isDuplicateInvitation) {
+            mateRepository
+                .save(Mate.builder()
+                .senderId(request.getSenderId())
+                .receiverId(request.getReceiverId())
+                .build()
+            );
+        }
+
+        return MateDto.InviteResponse.builder()
+            .inviteSent(!isDuplicateInvitation)
             .build();
     }
 }
