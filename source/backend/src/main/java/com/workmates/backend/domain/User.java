@@ -23,7 +23,6 @@ import lombok.Setter;
 
 public class User { // 사용자
     
-    
     @Id
     @Column(name = "id", length = DomainConstants.ID_MAX_LEN)
     private String id; // 사용자 아이디

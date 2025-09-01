@@ -1,7 +1,6 @@
 package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import com.workmates.backend.constant.DomainConstants;
 
