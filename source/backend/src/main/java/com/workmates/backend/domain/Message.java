@@ -67,7 +67,7 @@ public class Message { // 메세지
         this.content  = content;
         this.isDeleted = false;
         this.writtenAt = LocalDateTime.now();
-        this.writtenIn = ZoneId.of("Asia/Seoul").getId();
+        // this.writtenIn = ZoneId.of("Asia/Seoul").getId();
     }
 
     @PrePersist
@@ -75,8 +75,8 @@ public class Message { // 메세지
         if (this.writtenAt == null) {
             this.writtenAt = LocalDateTime.now();
         }
-        if (this.writtenIn == null) {
-            this.writtenIn = ZoneId.of("Asia/Seoul").getId();
-        }
+        // if (this.writtenIn == null) {
+        //     this.writtenIn = ZoneId.of("Asia/Seoul").getId();
+        // }
     }
 }

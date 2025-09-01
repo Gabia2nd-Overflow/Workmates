@@ -31,6 +31,9 @@ public class Workshop { // 워크샵
     @Column(name = "name", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
     private String name; // 워크샵 이름
 
+    @Column(name = "workshop_creator", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    private String workshopCreator;
+
     @Column(name = "image_url", unique = true)
     @Builder.Default
     private String imageUrl = null; // 워크샵 아이콘 이미지 url. 기본적으로 null
