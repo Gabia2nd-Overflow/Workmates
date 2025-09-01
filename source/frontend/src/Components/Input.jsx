@@ -10,21 +10,22 @@ const Input = forwardRef(({
   return (
     <div className="space-y-1">
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="input-label">
           {label}
         </label>
       )}
+
       <input
         ref={ref}  // ✅ react-hook-form 연결 핵심
         className={cn(
           'input',
-          error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
+          error && 'input--error',
           className
         )}
         {...props}
       />
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p className="input-help input-help--error">{error}</p>
       )}
     </div>
   );
