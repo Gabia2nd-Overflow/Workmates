@@ -5,6 +5,7 @@ import com.workmates.backend.constant.DomainConstants;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@IdClass(MateId.class)
 public class Mate { // 사용자 친구 등록/차단 여부 - 차단은 구현하면 +@. 안해도 무관
     
     @Id
