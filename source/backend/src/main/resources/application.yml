@@ -19,6 +19,22 @@ spring:
     jwt:
       secret: your-super-secret-key-that-is-at-least-64-bytes-long-for-hs512-to-work-correctly
       expiration: 86400000 # 24 hours
+  
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: workmates.verify@gmail.com
+    password: bwis vylc bbkh gxez
+    properties:
+      mail:
+        smtp:
+          debug: true
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          timeout: 5000
+          connectiontimeout: 5000
 
 logging:
   level:
@@ -36,6 +52,8 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
 
+
+  
 open-ai-api:
   encrypted: c2stcHJvai1WY1FtbjFCZUZZeklHYVpQTGx6Y3BrSmpaQlV5Wk9BWFhqR0txaTRJeEhGWHM0cmoxRXkySndWUzQzVTRFTVJZMDA0blF5aVY5cFQzQmxia0ZKN1lRdk54UFFaUDd3eFRlTVdFTUp0S3J1Y1hHcWhnbmxZMDJ5WkszU0FpVS1RVUtCVGFfR1JDeVRxS183aVlhTTZfVDdyY2JZd0E=
   

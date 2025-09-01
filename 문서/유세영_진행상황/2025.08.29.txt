@@ -1,0 +1,3 @@
+- CSS 분리 작업
+
+- components 폴더의 파일들에 대한 style을 frontend/src/style 의 components.css에 분리

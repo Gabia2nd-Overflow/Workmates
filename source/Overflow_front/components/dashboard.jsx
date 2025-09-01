@@ -1,8 +1,23 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Users, MessageSquare, FileText, TrendingUp, Clock, CheckCircle, AlertCircle, Calendar } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Users,
+  MessageSquare,
+  FileText,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Calendar,
+} from "lucide-react";
 
 export function Dashboard() {
   const stats = [
@@ -10,27 +25,49 @@ export function Dashboard() {
     { title: "팀 멤버", value: "48", icon: Users, change: "+5" },
     { title: "오늘 메시지", value: "234", icon: MessageSquare, change: "+12%" },
     { title: "완료율", value: "78%", icon: TrendingUp, change: "+5%" },
-  ]
+  ];
 
   const recentProjects = [
-    { name: "웹사이트 리뉴얼", progress: 85, status: "active", deadline: "2024-01-15" },
-    { name: "모바일 앱 개발", progress: 60, status: "active", deadline: "2024-01-20" },
-    { name: "브랜딩 프로젝트", progress: 95, status: "review", deadline: "2024-01-10" },
-    { name: "마케팅 캠페인", progress: 40, status: "active", deadline: "2024-01-25" },
-  ]
+    {
+      name: "웹사이트 리뉴얼",
+      progress: 85,
+      status: "active",
+      deadline: "2024-01-15",
+    },
+    {
+      name: "모바일 앱 개발",
+      progress: 60,
+      status: "active",
+      deadline: "2024-01-20",
+    },
+    {
+      name: "브랜딩 프로젝트",
+      progress: 95,
+      status: "review",
+      deadline: "2024-01-10",
+    },
+    {
+      name: "마케팅 캠페인",
+      progress: 40,
+      status: "active",
+      deadline: "2024-01-25",
+    },
+  ];
 
   const upcomingTasks = [
     { title: "클라이언트 미팅", time: "14:00", type: "meeting" },
     { title: "디자인 리뷰", time: "16:30", type: "review" },
     { title: "프로젝트 데드라인", time: "내일", type: "deadline" },
-  ]
+  ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-blue-900">대시보드</h1>
-          <p className="text-blue-600 mt-1">프로젝트 현황과 팀 활동을 한눈에 확인하세요</p>
+          <p className="mt-1 text-blue-600">
+            프로젝트 현황과 팀 활동을 한눈에 확인하세요
+          </p>
         </div>
         <Button className="bg-blue-600 hover:bg-blue-700">
           <Calendar className="mr-2 h-4 w-4" />새 프로젝트
@@ -38,25 +75,31 @@ export function Dashboard() {
       </div>
 
       {/* 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => {
-          const Icon = stat.icon
+          const Icon = stat.icon;
           return (
             <Card key={stat.title} className="border-blue-200">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-blue-600">{stat.title}</CardTitle>
+                <CardTitle className="text-sm font-medium text-blue-600">
+                  {stat.title}
+                </CardTitle>
                 <Icon className="h-4 w-4 text-blue-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-blue-900">{stat.value}</div>
-                <p className="text-xs text-blue-600 mt-1">{stat.change} 지난 주 대비</p>
+                <div className="text-2xl font-bold text-blue-900">
+                  {stat.value}
+                </div>
+                <p className="mt-1 text-xs text-blue-600">
+                  {stat.change} 지난 주 대비
+                </p>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* 프로젝트 진행 현황 */}
         <Card>
           <CardHeader>
@@ -69,14 +112,25 @@ export function Dashboard() {
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{project.name}</span>
                   <div className="flex items-center space-x-2">
-                    <Badge variant={project.status === "active" ? "default" : "secondary"}>
+                    <Badge
+                      variant={
+                        project.status === "active" ? "default" : "secondary"
+                      }
+                    >
                       {project.status === "active" ? "진행중" : "검토중"}
                     </Badge>
-                    <span className="text-sm text-gray-500">{project.deadline}</span>
+                    <span className="text-sm text-gray-500">
+                      {project.deadline}
+                    </span>
                   </div>
                 </div>
-                <Progress value={project.progress} className="h-2 bg-blue-100" />
-                <div className="text-sm text-gray-500">{project.progress}% 완료</div>
+                <Progress
+                  value={project.progress}
+                  className="h-2 bg-blue-100"
+                />
+                <div className="text-sm text-gray-500">
+                  {project.progress}% 완료
+                </div>
               </div>
             ))}
           </CardContent>
@@ -92,9 +146,15 @@ export function Dashboard() {
             {upcomingTasks.map((task, index) => (
               <div key={index} className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
-                  {task.type === "meeting" && <Users className="h-5 w-5 text-blue-500" />}
-                  {task.type === "review" && <CheckCircle className="h-5 w-5 text-green-500" />}
-                  {task.type === "deadline" && <AlertCircle className="h-5 w-5 text-red-500" />}
+                  {task.type === "meeting" && (
+                    <Users className="h-5 w-5 text-blue-500" />
+                  )}
+                  {task.type === "review" && (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  )}
+                  {task.type === "deadline" && (
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                  )}
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">{task.title}</p>
@@ -114,7 +174,7 @@ export function Dashboard() {
           <CardDescription>최근 7일간의 팀 활동 분석</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">1,234</div>
               <div className="text-sm text-gray-500">총 메시지</div>
@@ -131,5 +191,5 @@ export function Dashboard() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

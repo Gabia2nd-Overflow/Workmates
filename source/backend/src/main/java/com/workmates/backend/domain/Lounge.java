@@ -1,5 +1,7 @@
 package com.workmates.backend.domain;
 
+import com.workmates.backend.constant.DomainConstants;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,10 +31,10 @@ public class Lounge { // 채팅방
     @Column(name = "name", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String name; // 채팅방 이름
 
-    @Column(name = "isDeleted", nullable = false)
+    @Column(name = "is_deleted", nullable = false)
     @Builder.Default
     private Boolean isDeleted = false; // 채팅방 폐쇄 여부. 기본적으로 false
 
-    @Column(name = "workshopId", nullable = false)
+    @Column(name = "workshop_id", nullable = false)
     private Long workshopId; // 채팅방이 등록된 워크샵 아이디 
 }

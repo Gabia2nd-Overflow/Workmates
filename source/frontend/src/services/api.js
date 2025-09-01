@@ -23,13 +23,19 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 // 회원 관련 API만 남김
 export const authAPI = {
+  checkId: (data) => api.post('/auth/check-id', data), // 아이디 중복확인
+  verifyEmail: (data) => api.post('/auth/verify-email', data), // 인증코드 전송 요청 및 재전송 요청
+  confirmEmail: (data) => api.post('/auth/confirm-email', data), // 인증코드 입력 확인
+
   signUp: (data) => api.post('/auth/signup', data),
   login: (data) => api.post('/auth/login', data),
   getMyInfo: () => api.get('/auth/me'),
   updateMyInfo: (data) => api.put('/auth/me', data),
 };
+
 // workshops
 export const workshopAPI = {
   list: () => api.get("/workshops"),
@@ -38,6 +44,15 @@ export const workshopAPI = {
   update: (workshopId, data) => api.patch(`/workshops/${workshopId}`, data),
   remove: (workshopId) => api.delete(`/workshops/${workshopId}`),
 };
+
+export const threadAPI = {
+  list: (workshopId) => api.get(`/workshops/${workshopId}/threads`),
+  get: (workshopId, threadId) => api.get(`/workshops/${workshopId}/threads/${threadId}`),
+  create: (workshopId, data) => api.post(`/workshops/${workshopId}/threads`, data),
+  update: (workshopId, threadId, data) => api.patch(`/workshops/${workshopId}/threads/${threadId}`, data),
+  remove: (workshopId, threadId) => api.delete(`/workshops/${workshopId}/threads/${threadId}`),
+};
+
 
 // lounges (workshop 종속)
 export const loungeAPI = {
@@ -69,5 +84,15 @@ export const fileAPI = {
   remove: (workshopId, loungeId, fileId) =>
     api.delete(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`),
 };
+
+// services/api.js 맨 아래 추가
+export const postAPI = {
+  list: (threadId) => api.get(`/threads/${threadId}/posts`),
+  create: (threadId, data) => api.post(`/threads/${threadId}/posts`, data),
+  get: (postId) => api.get(`/posts/${postId}`),
+  update: (postId, data) => api.patch(`/posts/${postId}`, data),
+  remove: (postId) => api.delete(`/posts/${postId}`),
+};
+
 
 export default api;

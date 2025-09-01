@@ -16,74 +16,98 @@ export default function LoungeDetail() {
   const stompClient = useRef(null);
   const scrollRef = useRef(null);
 
-  // 초기 메시지 로드 (REST)
+  // === 초기 메시지 로드 (REST) ===
   useEffect(() => {
     if (!workshopId || !loungeId) return;
     messageAPI
       .list(workshopId, loungeId)
-      .then(({ data }) => setMessages(data))
+      .then(({ data }) => setMessages(data ?? []))
       .catch(() => setMessages([]));
   }, [workshopId, loungeId]);
 
-  // WebSocket 연결 및 구독
+  // === WebSocket 연결 및 구독 (SockJS 미사용, 순수 WS) ===
   useEffect(() => {
     if (!workshopId || !loungeId) return;
 
     const client = new Client({
-      brokerURL: "ws://localhost:8080/ws-stomp",
+      // HTTPS이면 wss:// 로 바꾸세요.
+      brokerURL: import.meta.env.VITE_WS_URL || "ws://localhost:8080/ws-stomp",
       reconnectDelay: 5000,
+      // JWT 쓰면 여기에 Authorization 넣기
+      connectHeaders: (() => {
+        const token = localStorage.getItem("token");
+        return token ? { Authorization: `Bearer ${token}` } : {};
+      })(),
+      // 로그 보고 싶으면 켜기
+      // debug: (str) => console.log(str),
       onConnect: () => {
-        // ✅ 프로젝트의 실제 토픽 규칙에 맞게 이 부분만 변경하세요.
-        // 예시1) 라운지 단독: `/sub/lounges.${loungeId}`
-        // 예시2) 워크샵-라운지 계층: `/sub/workshops.${workshopId}.lounges.${loungeId}`
-        const SUB_TOPIC = `/sub/lounges.${loungeId}`;
+        // ✅ 서버 브로드캐스트 목적지에 맞춰 구독 경로 통일 (dot 경로)
+        const SUB_TOPIC = `/sub/workshops.${workshopId}.lounges.${loungeId}`;
 
-        client.subscribe(SUB_TOPIC, (frame) => {
-          const newMsg = JSON.parse(frame.body);
+        const sub = client.subscribe(SUB_TOPIC, (frame) => {
+          // 서버가 { type, message } 형태로 주는 경우와, 곧바로 메시지 객체를 주는 경우 모두 대응
+          const payload = JSON.parse(frame.body);
+          const msg = payload?.message ?? payload;
+
           setMessages((prev) => {
-            const exists = prev.some((m) => m.id === newMsg.id);
-            return exists ? prev : [...prev, newMsg];
+            if (!msg || !msg.id) return prev;
+            // 중복 방지
+            return prev.some((m) => m.id === msg.id) ? prev : [...prev, msg];
           });
         });
+
+        // clean-up 시 해제
+        client._workmatesSub = sub;
       },
     });
 
     client.activate();
     stompClient.current = client;
 
-    return () => client.deactivate();
+    return () => {
+      try {
+        client._workmatesSub?.unsubscribe();
+      } catch {
+        console.error("에러발생.")
+      }
+        client.deactivate();
+      
+    };
   }, [workshopId, loungeId]);
 
-  // 자동 스크롤
+  // === 자동 스크롤 ===
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 메시지 전송 (WebSocket 발행)
+  // === 메시지 전송 (WebSocket 발행) ===
   const handleSend = () => {
-    if (!input.trim() || !stompClient.current) return;
+    if (!input.trim() || !stompClient.current || !workshopId || !loungeId)
+      return;
 
-    // ✅ 프로젝트의 실제 발행 경로 규칙에 맞게 이 부분만 변경하세요.
-    // 예시1) `/pub/lounges.send`
-    // 예시2) `/pub/workshops.lounges.send`
-    const PUB_DEST = "/pub/lounges.send";
+    // ✅ 서버 @MessageMapping("/workshops.{workshopId}.lounges.{loungeId}.send") 와 1:1 매칭
+    const PUB_DEST = `/pub/workshops.${workshopId}.lounges.${loungeId}.send`;
 
     stompClient.current.publish({
       destination: PUB_DEST,
       body: JSON.stringify({
-        workshopId,
-        loungeId,
-        senderId: userId,
+        // 컨트롤러가 body를 MessageDto.SendMessageRequest(body)로 받음 → 필드명 맞추기
+        // 백엔드 DTO가 writerId 라면 writerId로, senderId라면 senderId로!
+        writerId: userId, // ← 백엔드가 writerId를 받는다면 이대로. (senderId 사용 시 키 이름 변경)
         content: input,
       }),
+      headers: { "content-type": "application/json" },
     });
+
     setInput("");
   };
 
-  // 메시지 수정 (REST)
+  // === 메시지 수정 (REST) ===
   const handleEdit = async (messageId) => {
     try {
       await messageAPI.edit(workshopId, loungeId, messageId, {
+        // ⚠️ 백엔드 REST가 senderId/ writerId 중 무엇을 받는지 확인.
+        // 기존 문서에선 senderId 사용 예시가 많았음. 필요 시 writerId로 변경.
         senderId: userId,
         content: editInput,
       });
@@ -97,7 +121,7 @@ export default function LoungeDetail() {
     }
   };
 
-  // 메시지 삭제 (REST)
+  // === 메시지 삭제 (REST) ===
   const handleDelete = async (messageId) => {
     try {
       await messageAPI.remove(workshopId, loungeId, messageId);
@@ -110,15 +134,15 @@ export default function LoungeDetail() {
   return (
     <div className="flex flex-col h-full">
       {/* 헤더 */}
-      <div className="bg-blue-600 text-white px-4 py-2 font-semibold">
+      <div className="lounge-header">
         라운지 #{loungeId}
       </div>
 
       {/* 메시지 영역 */}
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+      <div className="lounge-messages">
         {messages.map((msg) => (
           <div key={`${msg.id}-${msg.updatedAt || ""}`} className="mb-3">
-            <div className="font-semibold text-blue-700 flex justify-between">
+            <div className="lounge-msg-meta">
               <span>
                 {msg.senderNickname ?? msg.senderId}
                 {msg.senderId === userId && (
@@ -128,20 +152,20 @@ export default function LoungeDetail() {
                         setEditingMessageId(msg.id);
                         setEditInput(msg.content);
                       }}
-                      className="ml-2 text-xs text-gray-500 hover:underline"
+                      className="btn-inline btn-inline--edit"
                     >
                       ✏️
                     </button>
                     <button
                       onClick={() => handleDelete(msg.id)}
-                      className="ml-1 text-xs text-red-500 hover:underline"
+                      className="btn-inline btn-inline--delete"
                     >
                       🗑️
                     </button>
                   </>
                 )}
               </span>
-              <span className="text-xs text-gray-400">
+              <span className="meta-time">
                 {msg.createdAt
                   ? new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -156,18 +180,20 @@ export default function LoungeDetail() {
                 <textarea
                   value={editInput}
                   onChange={(e) => setEditInput(e.target.value)}
-                  className="w-full border rounded p-1"
+                  className="textarea-sm"
                 />
                 <button
                   onClick={() => handleEdit(msg.id)}
-                  className="mt-1 text-sm text-white bg-green-500 px-2 py-1 rounded"
+                  className="btn btn--success-sm mt-1"
                 >
                   수정 완료
                 </button>
               </div>
             ) : msg.type === "FILE" ? (
               <>
-                <div className="text-sm text-gray-600">📎 파일 업로드가 완료되었습니다.</div>
+                <div className="file-note">
+                  📎 파일 업로드가 완료되었습니다.
+                </div>
                 <a
                   href={msg.fileUrl}
                   target="_blank"
@@ -178,7 +204,9 @@ export default function LoungeDetail() {
                 </a>
               </>
             ) : (
-              <div className="text-sm text-gray-700 whitespace-pre-wrap">{msg.content}</div>
+              <div className="msg-content">
+                {msg.content}
+              </div>
             )}
           </div>
         ))}
@@ -186,7 +214,7 @@ export default function LoungeDetail() {
       </div>
 
       {/* 입력/파일 */}
-      <div className="p-3 border-t bg-white flex items-center">
+      <div className="composer">
         {/* ⬇ FileUploadButton 내부도 chatroomId → (workshopId, loungeId)로 변경 필요 */}
         <FileUploadButton
           workshopId={workshopId}
@@ -196,7 +224,7 @@ export default function LoungeDetail() {
         />
 
         <textarea
-          className="flex-1 border p-2 rounded mr-2"
+          className="composer__input"
           rows={2}
           placeholder="메시지를 입력하세요..."
           value={input}
@@ -209,7 +237,10 @@ export default function LoungeDetail() {
           }}
         />
 
-        <button onClick={handleSend} className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button
+          onClick={handleSend}
+          className="btn btn--primary"
+        >
           전송
         </button>
       </div>
