@@ -1,0 +1,121 @@
+/* 고정 레이아웃 */
+  .user-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 60;                  /* 헤더/분홍영역 위로 보이게 */
+    width: 300px;
+    height: 120px;
+    padding: 8px 12px;            /* py-2 px-3 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #FFDFE4;
+    border: 1px solid #C5C5C5;
+  }
+
+  /* 프로필 행 */
+  .user-footer__profile-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;           /* mb-2 */
+    padding: 0 4px;               /* px-1 */
+  }
+
+  /* 텍스트 컬럼이 가로 공간 */
+.user-footer__textcol {
+  display: flex;
+  flex-direction: column;
+  flex: 1;             /* 오른쪽으로 공간을 밀기 */
+}
+
+/* 닉네임/전원 버튼을 같은 라인으로 */
+.user-footer__nickname-row {
+  display: flex;
+  align-items: center;
+}
+
+  .user-footer__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;            /* mr-2 */
+    border: 1px solid #C5C5C5;
+    background: #fff;
+  }
+
+  .user-footer__ids {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .user-footer__nickname {
+    font-weight: 600;
+    font-size: 14px;
+    color: #111827;
+  }
+
+  .user-footer__account {
+    font-size: 12px;
+    color: #6B7280;
+  }
+
+  .user-footer__power-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .user-footer__power-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+
+  /* 분홍 줄 (장식) */
+  .user-footer__pink-bar {
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(90deg, #FF8DA1 0%, #FFB6C1 100%);
+    border-radius: 9999px;
+    margin-bottom: 8px;           /* mb-2 */
+  }
+
+  /* 하단 버튼 영역 */
+  .user-footer__buttons {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 4px;               /* px-1 */
+    margin-top: auto;
+  }
+
+  .user-footer__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    width: auto;
+    height: auto;
+  }
+
+  .user-footer__btn-img {
+    width: 65px;
+    height: 26px;
+    display: block;
+  }
+
+  /* 위치 조정을 원하면 개별 modifier 사용 */
+  .user-footer__btn--left   { margin-right: 6px; }
+  .user-footer__btn--center { margin: 0 3px; }
+  .user-footer__btn--right  { margin-left: 6px; }

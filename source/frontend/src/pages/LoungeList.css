@@ -1,0 +1,63 @@
+.page.page--chatroom-list {
+  @apply bg-gray-50;
+}
+
+/* 전체 레이아웃: 좌측 리스트 + 우측 상세 */
+.chatroom-list__layout {
+  @apply flex h-screen;
+}
+
+/* 좌측 리스트 패널 */
+.chatroom-list__sidebar {
+  @apply w-72 bg-gray-100 border-r p-4;
+}
+
+/* 좌측 상단 바(제목 + 버튼) */
+.chatroom-list__sidebar-bar {
+  @apply flex justify-between items-center mb-4;
+}
+
+.chatroom-list__title {
+  @apply text-lg font-bold;
+}
+
+.chatroom-list__create-btn {
+  @apply bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600;
+}
+
+/* 리스트 */
+.chatroom-list__list {
+  @apply space-y-2;
+}
+
+.chatroom-list__item {
+  @apply p-3 border rounded cursor-pointer bg-white hover:bg-blue-50;
+}
+
+/* 비활성 */
+.chatroom-list__item--inactive {
+  @apply bg-white hover:bg-blue-50;        /* ← 비활성 색 + hover */
+}
+
+/* 활성 */
+.chatroom-list__item--active {
+  @apply bg-blue-100;
+}
+
+.chatroom-list__room-name {
+  @apply font-medium text-blue-700;
+}
+
+.chatroom-list__room-desc {
+  @apply text-xs text-gray-500 truncate;
+}
+
+/* 우측 상세 패널 */
+.chatroom-list__main {
+  @apply flex-1;
+}
+
+/* 우측 플레이스홀더 텍스트 */
+.chatroom-list__placeholder {
+  @apply flex h-full items-center justify-center text-gray-400;
+}

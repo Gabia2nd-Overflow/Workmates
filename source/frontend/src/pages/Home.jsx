@@ -3,16 +3,17 @@
 import Header from '../Components/Header';
 import WorkshopButton from '../Components/WorkshopButton';
 import UserFooter from '../Components/UserFooter';
+import './Home.css';
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gray-50 pt-[80px]"> {/* pt-[100px]: Header height 만큼 padding top */}
+    <div className="page page--home"> {/* pt-[100px]: Header height 만큼 padding top */}
 
     {/* 상단바 영역 */}
     <Header />
 
       {/* 본문 영역 (비워둠) */}
-      <main className="p-8 text-center text-gray-400">
+      <main className="home__main">
         <p>메인 콘텐츠가 여기에 표시됩니다.</p>
         <WorkshopButton/>
       </main>

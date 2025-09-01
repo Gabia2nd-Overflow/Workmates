@@ -1,0 +1,11 @@
+.page.page--workshops {
+  @apply min-h-screen bg-gray-50;
+}
+
+.workshops__layout {
+  @apply pt-[80px] pl-20 h-[calc(100vh-80px)];
+}
+
+.workshops__empty {
+  @apply h-full flex items-center justify-center text-gray-500;
+}

@@ -1,0 +1,36 @@
+/* 상단 헤더 바 */
+  .lounge-header { @apply bg-blue-600 text-white px-4 py-2 font-semibold; }
+
+  /* 메시지 리스트 영역 */
+  .lounge-messages { @apply flex-1 overflow-y-auto p-4 bg-gray-50; }
+
+  /* 메시지 아이템 래퍼 */
+  .lounge-msg { @apply mb-3; }
+
+  /* 닉네임/버튼/시간 한 줄 메타 */
+  .lounge-msg-meta { @apply font-semibold text-blue-700 flex justify-between; }
+
+  /* 인라인 편집/삭제 버튼 */
+  .btn-inline { @apply text-xs hover:underline; }
+  .btn-inline--edit { @apply ml-2 text-gray-500; }
+  .btn-inline--delete { @apply ml-1 text-red-500; }
+
+  /* 타임스탬프 */
+  .meta-time { @apply text-xs text-gray-400; }
+
+  /* 편집용 textarea(작게) */
+  .textarea-sm { @apply w-full border rounded p-1; }
+
+  /* 전송 바(컴포저) */
+  .composer { @apply p-3 border-t bg-white flex items-center; }
+  .composer__input { @apply flex-1 border p-2 rounded mr-2; }
+
+  /* 버튼 공통/변형 */
+  .btn--success-sm { @apply bg-green-500 text-white text-sm px-2 py-1 rounded; }
+
+  /* 파일 메시지 */
+  .file-note { @apply text-sm text-gray-600; }
+  .file-link { @apply text-sm text-blue-500 underline; }
+
+  /* 일반 텍스트 메시지 */
+  .msg-content { @apply text-sm text-gray-700 whitespace-pre-wrap; }

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { chatroomAPI } from '../services/api';
+import './CreateLounge.css';
 
 const CreateChatroom = () => {
   const [name, setName] = useState('');
@@ -23,16 +24,16 @@ const CreateChatroom = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-bold mb-4">워크샵 생성</h2>
+    <div className="page page--create-lounge">
+      <div className="create-lounge__card">
+        <h2 className="create-lounge__title">워크샵 생성</h2>
 
         <input
           type="text"
           placeholder="워크샵 이름"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full mb-3 p-2 border rounded"
+          className="create-lounge__input"
         />
 
         <textarea
@@ -40,12 +41,12 @@ const CreateChatroom = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full mb-4 p-2 border rounded"
+          className="create-lounge__textarea"
         />
 
         <button
           onClick={handleCreate}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="create-lounge__submit"
         >
           생성하기
         </button>

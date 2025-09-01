@@ -1,0 +1,7 @@
+.page.page--home {
+  @apply min-h-screen bg-gray-50 pt-[80px];
+}
+
+.home__main {
+  @apply p-8 text-center text-gray-400;
+}
