@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/ws-stomp").permitAll()
                 // ✅ CORS Preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/api/threads/**").permitAll()
                 // 예: 관리자 API
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 // 나머지(필요 시 잠금)

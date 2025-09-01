@@ -45,7 +45,7 @@ const SignUp = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           {/* 반응형 텍스트 */}
-          <h2 className="text-3xl font-bold text-gray-900">🛍️ workmates</h2>
+          <h2 onClick={() => navigate("/")}  className="text-3xl font-bold text-gray-900">🛍️ workmates</h2>
           <p className="mt-2 text-sm text-gray-600">새로운 계정을 만드세요</p>
         </div>
       </div>
@@ -190,7 +190,7 @@ const SignUp = () => {
             <div className="mt-6">
               <Link
                 to="/login"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-pink-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
               >
                 로그인
               </Link>

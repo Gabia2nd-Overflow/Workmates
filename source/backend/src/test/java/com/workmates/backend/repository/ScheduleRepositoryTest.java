@@ -22,9 +22,13 @@ class ScheduleRepositoryTest {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    private static long id = 0;
+
     private Schedule createSampleSchedule(String title) {
         return Schedule.builder()
                 .title(title)
+                .workshopId(++id)
+                .writerId("hwshin0727")
                 .content("테스트 컨텍스트")
                 .startDate(LocalDateTime.now())
                 .dueDate(LocalDateTime.now().plusDays(1))

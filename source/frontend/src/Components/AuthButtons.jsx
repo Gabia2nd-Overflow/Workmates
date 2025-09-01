@@ -36,7 +36,7 @@ const AuthButtons = () => {
           <Button variant="outline" onClick={() => navigate('/login')}>
             로그인
           </Button>
-          <Button onClick={() => navigate('/signup')}>
+          <Button variant="outline" onClick={() => navigate('/signup')}>
             회원가입
           </Button>
         </>
