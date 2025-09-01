@@ -43,9 +43,9 @@ public class Message { // 메세지
     @Builder.Default
     private LocalDateTime writtenAt = LocalDateTime.now(); // 메세지 작성일시. 기본적으로 LocalDateTime.now()
 
-    @Column(name = "written_in", nullable = false)
-    @Builder.Default
-    private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 메세지가 작성된 언어. 기본적으로 한국어
+    // @Column(name = "written_in", nullable = false)
+    // @Builder.Default
+    // private String writtenIn = DomainConstants.DEFAULT_LANGUAGE; // 메세지가 작성된 언어. 기본적으로 한국어
 
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default

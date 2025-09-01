@@ -41,9 +41,9 @@ public class User { // 사용자
     @Builder.Default
     private String imageUrl = null; // 사용자의 프로필 이미지가 저장된 url. 기본적으로 null
 
-    @Column(name = "language", nullable = false)
-    @Builder.Default
-    private String language = DomainConstants.DEFAULT_LANGUAGE; // 사용자가 사용하는 언어. 기본적으로 한국어
+    // @Column(name = "language", nullable = false)
+    // @Builder.Default
+    // private String language = DomainConstants.DEFAULT_LANGUAGE; // 사용자가 사용하는 언어. 기본적으로 한국어
 
     @Column(name = "email", unique = true, length = DomainConstants.COMMENT_MAX_LEN)
     private String email; // 이메일 계정 주소
