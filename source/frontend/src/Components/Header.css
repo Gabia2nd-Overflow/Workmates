@@ -24,11 +24,15 @@
   .header__right { justify-content: flex-end; }
 
   .header__logo-box {
-    width: 44px;
-    height: 44px;
+    width: var(--logo-w, 60px);
+    height: 60px;
     border-radius: 8px;
     overflow: hidden;
     background: #fff;
+
+    margin-left: calc( (var(--sidebar-w, 5rem) / 2)
+                     - (var(--logo-w, 60px) / 2)
+                     - 3rem );
   }
 
   .header__logo-img {

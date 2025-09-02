@@ -3,9 +3,11 @@
     position: fixed;
     left: 0;
     top: 80px;                    /* top-[80px] */
+    bottom: 120px;
     width: 5rem;                  /* w-20 */
-    height: calc(100vh - 80px);   /* h-[calc(100vh-80px)] */
+    height: auto;   /* h-[calc(100vh-80px)] */
     z-index: 40;                  /* z-40 */
+    overflow-y: auto;             /* 내용 길어지면 스크롤 */
     @apply bg-pink-50 border-r flex flex-col items-center py-4 gap-3;
   }
 

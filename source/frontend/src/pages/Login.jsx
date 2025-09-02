@@ -8,6 +8,8 @@ import Input from '../Components/Input';
 import toast from 'react-hot-toast';
 import './Login.css';
 
+const BRAND_LOGO_SRC = "/img/logo.png";
+
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -44,19 +46,27 @@ const Login = () => {
 
   return (
     <div className="page page--login">
-      <div className="login__container">
-        <div className="text-center">
-          <h2 onClick={() => navigate("/")}  className="login__brand">
-            🛍️ Workmates
-          </h2>
-          <p className="login__subtitle">
-            계정에 로그인하세요
-          </p>
-        </div>
-      </div>
-
       <div className="login__container login__container--spaced">
         <div className="login__card">
+          {/* 카드 상단(로고, 제목, 부제) */}
+          <div className="login__card-head">
+            <div className="login__brand-row">
+            {/* 로고 슬롯(이미지 없으면 슬롯만 보임) */}
+            <h2 onClick={() => navigate("/")} className="login__brand">Workmates</h2>
+            <span className="login__logo-slot" aria-hidden="true">
+              <img 
+                src={BRAND_LOGO_SRC} 
+                alt="Workmates brand logo" 
+                className="login__logo-img" 
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              /> 
+            </span>
+          
+          
+          </div>
+            <p className="login__subtitle">계정에 로그인하세요</p>
+        </div>
+        {/* 폼 */}
           <form className="login__form" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <Input
@@ -104,14 +114,15 @@ const Login = () => {
             <div>
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full login__submit"
                 disabled={loading}
               >
                 {loading ? '로그인 중...' : '로그인'}
               </Button>
             </div>
           </form>
-
+          
+          {/* 구분선, 하단 링크 */}
           <div className="login__hr">
             <div className="login__hr-box">
               <div className="login__hr-rail">

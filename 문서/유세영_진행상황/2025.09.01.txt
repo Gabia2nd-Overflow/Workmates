@@ -5,3 +5,7 @@
 
 >>> 공통된 디자인만 frontend/src/style의 foundation.css에 분리.
     다른 디자인은 충돌 우려로 인해 components폴더 안 개별 .css로 분리
+
+- pages도 CSS 분리(CSS는 foundation에 들어갈만한 사항이 아직 없어서 개별 CSS만 존재)
+
+- 현재 다른 사람이 작업하고 있는 commponents 제외하고 CSS 분리
