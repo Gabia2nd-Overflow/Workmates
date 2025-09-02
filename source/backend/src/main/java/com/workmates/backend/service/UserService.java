@@ -196,7 +196,7 @@ public class UserService {
         return codeBuilder.toString();
     }
 
-    public void sendVerificationEmail(String to, String verificationCode) {
+    private void sendVerificationEmail(String to, String verificationCode) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); 
