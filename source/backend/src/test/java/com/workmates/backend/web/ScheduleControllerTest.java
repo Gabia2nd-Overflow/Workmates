@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(controllers = ScheduleController.class)
 class ScheduleControllerTest {
@@ -80,7 +81,7 @@ class ScheduleControllerTest {
         when(scheduleService.createSchedule(any(ScheduleDto.CreateRequest.class), eq(workshopId), eq("alice")))
                 .thenReturn(resp);
 
-        mockMvc.perform(post("/api/workshops/{workshopId}/schedules", workshopId)
+        mockMvc.perform(post("/api/workshops/{workshopId}/schedules", workshopId).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
                .andDo(print())
@@ -115,7 +116,7 @@ class ScheduleControllerTest {
 
         when(scheduleService.updateSchedule(eq(id), any(ScheduleDto.UpdateRequest.class))).thenReturn(resp);
 
-        mockMvc.perform(put("/api/schedules/{id}", id)
+        mockMvc.perform(put("/api/schedules/{id}", id).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
                .andDo(print())
@@ -132,7 +133,7 @@ class ScheduleControllerTest {
         Long id = 100L;
         Mockito.doNothing().when(scheduleService).deleteSchedule(id);
 
-        mockMvc.perform(delete("/api/schedules/{id}", id))
+        mockMvc.perform(delete("/api/schedules/{id}", id).with(csrf()))
                .andDo(print())
                .andExpect(status().isNoContent());
     }
