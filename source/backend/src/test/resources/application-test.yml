@@ -1,11 +1,19 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/mydatabase?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/mydatabase?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
-    password: 1234   # ✅ 실제 MySQL root 비밀번호로 변경
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create-drop   # ✅ 테스트 시작 시 테이블 생성, 종료 시 삭제
+      ddl-auto: create-drop # 테스트 시작 시 테이블 생성, 종료 시 제거
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+  test:
+    database:
+      replace: NONE # ✅ 내장 DB로 대체하지 말고, 위 MySQL 설정을 그대로 사용
