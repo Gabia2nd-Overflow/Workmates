@@ -82,10 +82,36 @@ public class MateService {
     }
 
     @Transactional
+    public MateDto.AppendHandleResponse appendHandle(MateDto.AppendHandleRequest request) {
+        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getSenderId()) ||
+           !Pattern.matches(ServiceConstants.ID_REGEX, request.getReceiverId()) ||
+           request.getSenderId().equals(request.getReceiverId())) { // 정규표현식에 맞지 않은 아이디 또는 송수신자가 일치하는 요청이 전달될 경우 처리 거부
+            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
+        }
+
+        MateId mateId = new MateId(request.getSenderId(), request.getReceiverId());
+        Mate mate = mateRepository.findById(mateId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 요청입니다."));
+        Integer handleResult = null;
+
+        if(request.getIsAccepted()) {
+            mateRepository.AcceptMateRequest(mateId.getSenderId(), mateId.getReceiverId());
+            handleResult = 1;
+        } else { // 친구 요청 거절
+            mateRepository.deleteById(mateId);
+            handleResult = 2;
+        }
+
+        return MateDto.AppendHandleResponse.builder()
+                    .handleResult(handleResult)
+                    .build();
+    }
+
+    @Transactional
     public MateDto.RemoveResponse remove(MateDto.RemoveRequest request) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId()) ||
            !Pattern.matches(ServiceConstants.ID_REGEX, request.getTargetId()) ||
-           request.getId().equals(request.getTargetId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 초대 거부
+           request.getId().equals(request.getTargetId())) { // 정규표현식에 맞지 않은 아이디 또는 송수신자가 일치하는 요청이 전달될 경우 처리 거부
             throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }
 

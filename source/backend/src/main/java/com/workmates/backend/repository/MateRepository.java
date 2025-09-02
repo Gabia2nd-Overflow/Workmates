@@ -17,4 +17,7 @@ public interface MateRepository extends JpaRepository<Mate, MateId> {
     
     @Query(value = "SELECT * FROM MATE WHERE sender_id = :id OR receiver_id = :id", nativeQuery = true)
     public List<Mate> findAllBySenderIdOrReceiverId(String id);
+
+    @Query(value = "UPDATE MATE SET is_accepted = true where sender_id = :senderId and receiverId = :receiverId", nativeQuery = true)
+    public void AcceptMateRequest(@NonNull String senderId, @NonNull String receiverId);
 }
