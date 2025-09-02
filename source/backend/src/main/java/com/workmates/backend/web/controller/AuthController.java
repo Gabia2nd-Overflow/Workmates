@@ -25,7 +25,7 @@ public class AuthController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/check-id") // 회원가입 - 아이디 중복확인
+    @PostMapping("/check-id") // 회원가입 - 아이디 중복확인
     public ResponseEntity<UserDto.CheckIdResponse> checkId(@Valid @RequestBody UserDto.CheckIdRequest request) {
         return ResponseEntity.ok(userService.checkId(request));
     }

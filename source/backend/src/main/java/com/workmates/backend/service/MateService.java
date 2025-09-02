@@ -1,5 +1,7 @@
 package com.workmates.backend.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
@@ -24,6 +26,18 @@ public class MateService {
     private final UserRepository userRepository;
     private final BlockRepository blockRepository;
 
+    public MateDto.MatelistResponse matelist(String id) {
+        if(!Pattern.matches(ServiceConstants.ID_REGEX, id)) {
+            throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
+        }
+
+        List<Mate> matelist = new ArrayList<>();
+        
+        return MateDto.MatelistResponse.builder()
+                .matelist(matelist)
+                .build();
+    }
+
     public MateDto.SearchResponse search(MateDto.SearchRequest request) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 검색 거부
             throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
@@ -40,7 +54,7 @@ public class MateService {
     }
 
     @Transactional
-    public MateDto.InviteResponse invite(MateDto.InviteRequest request) {
+    public MateDto.AppendResponse append(MateDto.AppendRequest request) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getSenderId()) ||
            !Pattern.matches(ServiceConstants.ID_REGEX, request.getReceiverId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 초대 거부
             throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
@@ -60,8 +74,31 @@ public class MateService {
             );
         }
 
-        return MateDto.InviteResponse.builder()
+        return MateDto.AppendResponse.builder()
             .inviteSent(!isDuplicateInvitation)
+            .build();
+    }
+
+    @Transactional
+    public MateDto.RemoveResponse remove(MateDto.RemoveRequest request) {
+        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId()) ||
+           !Pattern.matches(ServiceConstants.ID_REGEX, request.getTargetId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 초대 거부
+            throw new IllegalArgumentException("올바르지 않은 삭제 요청입니다.");
+        }
+
+        MateId id = new MateId(request.getId(), request.getTargetId());
+        MateId swapId = new MateId(request.getTargetId(), request.getId());
+        
+        if(mateRepository.findById(id).isPresent()) {
+            mateRepository.deleteById(id);
+        } else if(mateRepository.findById(swapId).isPresent()) {
+            mateRepository.deleteById(swapId);
+        } else {
+            throw new IllegalArgumentException("삭제 요청을 처리할 수 없습니다.");
+        }
+
+        return MateDto.RemoveResponse.builder()
+            .isRemoved(true)
             .build();
     }
 }
