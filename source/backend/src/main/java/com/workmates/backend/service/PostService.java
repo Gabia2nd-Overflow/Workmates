@@ -47,4 +47,12 @@ public class PostService {
                 .map(PostDto.Response::new)
                 .collect(Collectors.toList());
     }
+
+    // 조회수 증가
+    public void increaseViews(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setViews((post.getViews() == null ? 0 : post.getViews()) + 1);
+        postRepository.save(post);
+    }
 }

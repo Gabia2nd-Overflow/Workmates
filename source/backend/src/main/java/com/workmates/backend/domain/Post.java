@@ -35,6 +35,8 @@ public class Post {
     @Column(name = "writer_id", nullable = false, length = 32)
     private String writerId = "unknown";
 
+    private Integer views = 0;
+
     @Column(name = "writer_nickname", nullable = false, length = 32)
     private String writerNickname = "unknown";
 
