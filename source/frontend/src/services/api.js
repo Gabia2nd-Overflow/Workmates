@@ -6,16 +6,24 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+const getUserId = () => {
+  const direct = localStorage.getItem("userId");
+  if (direct) return direct;
+  try {
+    const u = JSON.parse(localStorage.getItem("user") || "null");
+    return u?.id ?? u?.userId ?? u?.username ?? null;
+  } catch { return null; }
+};
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
 
-  //workshop userid 보내는용.  DEV방식. 
+  // ✅ DEV: /workshops 경로에만 X-User-Id 자동 첨부
   const url = config.url || "";
   const path = url.startsWith("/") ? url : `/${url}`;
   if (path.startsWith("/workshops")) {
-    const uid = localStorage.getItem("userId") 
-               || (JSON.parse(localStorage.getItem("user")||"null")?.id);
+    const uid = getUserId();
     if (uid) config.headers["X-User-Id"] = uid;
   }
   return config;
