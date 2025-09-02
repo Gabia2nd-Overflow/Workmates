@@ -34,9 +34,10 @@ public class Workshop { // 워크샵
     @Column(name = "workshop_creator", nullable = false, length = DomainConstants.ID_MAX_LEN)
     private String workshopCreator;
 
-    @Column(name = "image_url", unique = true)
+    @Column(name = "image_url")
     @Builder.Default
     private String imageUrl = null; // 워크샵 아이콘 이미지 url. 기본적으로 null
+    //unique넣으면 빈 이미지를 넣은 서버가 2개이상 만들어지지 않음.
 
     @Column(name = "description", length = DomainConstants.COMMENT_MAX_LEN)
     private String description; // 워크샵 설명

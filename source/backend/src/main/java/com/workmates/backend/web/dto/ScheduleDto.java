@@ -1,6 +1,8 @@
 package com.workmates.backend.web.dto;
 
 import java.time.LocalDateTime;
+
+import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +26,7 @@ public class ScheduleDto {
         private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String importancy;
+        private Importance importancy;
     }
 
     @Data
@@ -50,7 +52,7 @@ public class ScheduleDto {
         private String content;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private String importancy;
+        private Importance importancy;
         private Boolean isCompleted;
 
         public static Response from(Schedule entity) {
