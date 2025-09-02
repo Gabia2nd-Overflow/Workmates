@@ -15,4 +15,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     long countByIsCompleted(boolean isCompleted);
 
     List<Schedule> findByDueDateBefore(LocalDateTime dueDate);
+
+    List<Schedule> findByWorkshopId(Long workshopId);
 }

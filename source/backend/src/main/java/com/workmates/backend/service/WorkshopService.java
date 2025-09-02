@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.workmates.backend.domain.Workshop;
+import com.workmates.backend.domain.WorkshopMember;
 import com.workmates.backend.repository.WorkshopMemberRepository;
 import com.workmates.backend.repository.WorkshopRepository;
 import com.workmates.backend.web.dto.WorkshopDto;
@@ -24,15 +25,27 @@ public class WorkshopService {
     private final WorkshopRepository workshopRepository;
     private final WorkshopMemberRepository workshopMemberRepository;
 
-    public WorkshopDto.Response create(WorkshopDto.CreateRequest req) {
-        Workshop w = Workshop.builder()
-                .name(req.getWorkshopName())
-                .imageUrl(req.getWorkshopIconImage())
-                .description(req.getWorkshopDescription())
-                .build();
-            
-        Workshop saved = workshopRepository.save(w); // 인스턴스 메서드로 호출
-        return WorkshopDto.Response.from(saved);
+    public WorkshopDto.Response create(String userId, WorkshopDto.CreateRequest req) {
+    Workshop w = Workshop.builder()
+            .name(req.getWorkshopName())
+            .imageUrl(req.getWorkshopIconImage())
+            .description(req.getWorkshopDescription())
+            .workshopCreator(userId)   // ✅ 필수: NOT NULL 컬럼 매핑
+            .build();
+
+    Workshop saved = workshopRepository.save(w);
+
+    // 생성자 자동 멤버 등록 (중복 방지)
+    if (!workshopMemberRepository.existsByMemberIdAndWorkshopId(userId, saved.getId())) {
+        workshopMemberRepository.save(
+            WorkshopMember.builder()
+                .memberId(userId)
+                .workshopId(saved.getId())
+                .memberNickname(userId) // 닉네임 소스 있으면 교체
+                .build()
+        );
+    }
+    return WorkshopDto.Response.from(saved);
     }
 
     @Transactional(readOnly = true)
