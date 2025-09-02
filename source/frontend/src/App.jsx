@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import WorkshopsPage from "./pages/WorkshopsPage";
-import WorkshopDetail from "./pages/WorkshopDetail";
+import WorkshopDetail from "./pages/WorkShopDetail";
 import LoungeDetail from "./Components/LoungeDetail";
 import ThreadDetail from "./components/ThreadDetail";
 import Login from "./pages/Login";
@@ -18,8 +18,8 @@ export default function App() {
 
         {/* 워크샵 상세 + 라운지/스레드 중첩 라우팅 */}
         <Route path="/workshops/:workshopId" element={<WorkshopDetail />}>
-  <Route path="lounges/:loungeId" element={<LoungeDetail />} />
-  <Route path="threads/:threadId" element={<ThreadDetail />} />
+        <Route path="lounges/:loungeId" element={<LoungeDetail />} />
+        <Route path="threads/:threadId" element={<ThreadDetail />} />
 </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

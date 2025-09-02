@@ -1,0 +1,23 @@
+.page.page--create-lounge {
+  @apply min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4;
+}
+
+.create-lounge__card {
+  @apply w-full max-w-md bg-white p-6 rounded shadow;
+}
+
+.create-lounge__title {
+  @apply text-xl font-bold mb-4;
+}
+
+.create-lounge__input {
+  @apply w-full mb-3 p-2 border rounded;
+}
+
+.create-lounge__textarea {
+  @apply w-full mb-4 p-2 border rounded;
+}
+
+.create-lounge__submit {
+  @apply w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700;
+}

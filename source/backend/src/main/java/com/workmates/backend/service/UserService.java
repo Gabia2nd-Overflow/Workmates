@@ -59,10 +59,10 @@ public class UserService {
             throw new IllegalArgumentException("올바르지 않은 이메일입니다.");
         }
 
-        EmailVerification emailVerification = new EmailVerification(request.getEmail(), generateCode(), request.getRequestTime());
+        EmailVerification emailVerification = new EmailVerification(request.getEmail(), generateCode(), request.getRequestTime(), false);
 
         if(emailVerificationRepository.findByEmail(request.getEmail()).isPresent()) { // DB에 이미 이메일이 존재한다면 재전송 요청이므로 DB를 갱신
-            emailVerificationRepository.updateCode(emailVerification.getEmail(), emailVerification.getCode(), emailVerification.getExpiresAt());
+            emailVerificationRepository.updateCode(emailVerification.getEmail(), emailVerification.getCode(), emailVerification.getExpiresAt(), emailVerification.getIsConfirmed());
         } else { // 그렇지 않다면 새로 인증하는 이메일이므로 DB에 요청을 삽입
             emailVerificationRepository.save(emailVerification);
         }
@@ -89,8 +89,14 @@ public class UserService {
             throw new IllegalArgumentException("이미 만료된 코드입니다.");
         }
 
+        Boolean result = request.getVerificationCode().equals(emailVerification.getCode());
+        
+        if(result) {
+            emailVerificationRepository.updateCode(emailVerification.getEmail(), emailVerification.getCode(), emailVerification.getExpiresAt(), result);
+        }
+
         return UserDto.ConfirmEmailResponse.builder() // 올바른 인증 요청이라면 코드의 일치 여부를 반환
-                .isConfirmed(request.getVerificationCode().equals(emailVerification.getCode()))
+                .isConfirmed(result)
                 .build();
     }
 
@@ -111,12 +117,19 @@ public class UserService {
         }
 
         // 중복 검사
-        if (userRepository.existsById(request.getId())) {
+        if(userRepository.existsById(request.getId())) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
-        
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if(userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
+
+        // 메일 인증 검사
+        EmailVerification emailVerification = emailVerificationRepository.findByEmail(request.getEmail()).
+                                                orElseThrow(() -> new IllegalArgumentException("인증되지 않은 이메일입니다."));
+
+        if(!emailVerification.getIsConfirmed()) {
+            throw new IllegalArgumentException("인증되지 않은 이메일입니다.");
         }
 
          // 비밀번호 암호화

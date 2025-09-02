@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { workshopAPI } from "../services/api";
+import "./Sidebar.css"
 
 export default function Sidebar() {
   const [workshops, setWorkshops] = useState([]);

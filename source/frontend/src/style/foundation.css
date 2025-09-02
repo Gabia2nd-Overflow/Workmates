@@ -1,0 +1,69 @@
+/* ===========================================================
+   공통 유틸 (재사용용)
+=============================================================== */
+@layer components {
+  /* 아이콘: 왼쪽 여백 + 통일된 크기 */
+  .icon-left { @apply inline-block mr-2 h-4 w-4; }
+
+  /* 가벼운 버튼 룩(필요 시) */
+  .btn-ghost { @apply inline-flex items-center rounded px-2 py-1 hover:bg-gray-100; }
+
+  /* 파일 업로드 버튼/인풋 (선택적) */
+  .file-upload-btn {
+    margin-right: 0.5rem; /* mr-2 */
+    font-size: 1.25rem;   /* text-xl */
+    line-height: 1;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .file-input-hidden { display: none; }
+}
+
+/* =============================================================
+   Button
+================================================================= */
+@layer components {
+  /* Base */
+  .btn {
+    @apply inline-flex items-center justify-center font-medium rounded
+           transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  /* Variants */
+  .btn--primary  { @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500; }
+  .btn--secondary{ @apply bg-gray-200 text-gray-900 hover:bg-gray-300   focus:ring-gray-500; }
+  .btn--outline  { @apply border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-primary-500; }
+  .btn--danger   { @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500; }
+
+  /* Sizes */
+  .btn--sm { @apply px-3 py-1.5 text-sm; }
+  .btn--md { @apply px-4 py-2   text-sm; }
+  .btn--lg { @apply px-6 py-3   text-base; }
+}
+
+/* ===============================================================
+   Form controls (Input)
+=================================================================== */
+@layer components {
+  /* 기본 인풋 */
+  .input {
+    @apply w-full px-3 py-2 rounded-md border border-gray-300
+           bg-white text-gray-900 placeholder:text-gray-400
+           shadow-sm outline-none transition
+           focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+
+  /* 에러 상태 */
+  .input--error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500;
+  }
+
+  /* 라벨 & 헬프텍스트 */
+  .input-label { @apply block text-sm font-medium text-gray-700; }
+  .input-help { @apply text-sm; }
+  .input-help--error { @apply text-red-600; }
+}
