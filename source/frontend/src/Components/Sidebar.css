@@ -1,0 +1,40 @@
+/* 좌측 고정 사이드바 */
+  .ws-sidebar {
+    position: fixed;
+    left: 0;
+    top: 80px;                    /* top-[80px] */
+    width: 5rem;                  /* w-20 */
+    height: calc(100vh - 80px);   /* h-[calc(100vh-80px)] */
+    z-index: 40;                  /* z-40 */
+    @apply bg-pink-50 border-r flex flex-col items-center py-4 gap-3;
+  }
+
+  /* 워크샵 아이콘 리스트 컨테이너 */
+  .ws-list {
+    @apply flex-1 w-full flex flex-col items-center overflow-y-auto;
+  }
+
+  /* 워크샵 아이콘 버튼(공통) */
+  .ws-icon-btn {
+    @apply w-12 h-12 mb-2 rounded-full flex items-center justify-center text-white font-bold;
+  }
+  .ws-icon-btn--active { @apply bg-pink-500; }
+  .ws-icon-btn--idle { @apply bg-pink-300 hover:bg-pink-400; }
+
+  /* 생성(+) 버튼 */
+  .ws-create-btn {
+    @apply w-12 h-12 rounded-full border-2 border-dashed border-pink-400 text-pink-500 hover:bg-pink-100 text-xl leading-none;
+  }
+
+  /* 모달 오버레이/카드 */
+  .modal-overlay { @apply fixed inset-0 z-[60] bg-black/30 flex items-center justify-center; }
+  .modal-card    { @apply bg-white rounded-xl w-96 p-6; }
+
+  /* 폼 레이아웃 & 필드 */
+  .form-col      { @apply flex flex-col gap-3; }
+  .form-actions  { @apply flex justify-end gap-2 pt-2; }
+  .field         { @apply border p-2 rounded; }
+
+  /* 버튼들 */
+  .btn-outline-sm { @apply px-3 py-1 border rounded; }
+  .btn-primary-sm { @apply px-3 py-1 bg-pink-600 text-white rounded; }

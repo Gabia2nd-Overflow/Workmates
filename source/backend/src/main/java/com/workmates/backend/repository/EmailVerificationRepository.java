@@ -20,6 +20,6 @@ public interface EmailVerificationRepository extends JpaRepository<EmailVerifica
     void deleteExpiredCodes(LocalDateTime now);
 
     @Modifying
-    @Query(value = "UPDATE EMAIL_VERIFICATION set code = :code, expires_at = :expiresAt where email = :email", nativeQuery = true)
-    void updateCode(String email, String code, LocalDateTime expiresAt);
+    @Query(value = "UPDATE EMAIL_VERIFICATION set code = :code, expires_at = :expiresAt, is_confirmed = :isConfirmed where email = :email", nativeQuery = true)
+    void updateCode(String email, String code, LocalDateTime expiresAt, Boolean isConfirmed);
 }

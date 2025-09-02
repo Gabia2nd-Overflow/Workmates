@@ -1,0 +1,7 @@
+- CSS 분리 작업
+
+- components 폴더의 파일들에 대한 style을 frontend/src/style 의 components.css에 분리
+
+
+>>> 공통된 디자인만 frontend/src/style의 foundation.css에 분리.
+    다른 디자인은 충돌 우려로 인해 components폴더 안 개별 .css로 분리
