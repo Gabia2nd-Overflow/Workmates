@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/threads/**").permitAll()
                 // 예: 관리자 API
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // 친구/차단 기능 API
+                .requestMatchers("/api/mate/**").permitAll()
                 // 나머지(필요 시 잠금)
                 .anyRequest().authenticated()
                 );

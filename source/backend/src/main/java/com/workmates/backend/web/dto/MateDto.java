@@ -1,5 +1,9 @@
 package com.workmates.backend.web.dto;
 
+import java.util.List;
+
+import com.workmates.backend.domain.Mate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,4 +34,57 @@ public class MateDto {
         private String nickname;
         private String imageUrl;
     };
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AppendRequest { // 친구 추가 요청
+        private String senderId;
+        private String receiverId;
+    };
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AppendResponse { // 친구 추가 요청 응답
+        private Boolean inviteSent;
+    };
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveRequest { // 친구 삭제 요청
+        private String id;
+        private String targetId;
+    };
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveResponse { // 친구 삭제 요청 응답
+        private Boolean isRemoved;
+    };
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MatelistResponse { // 친구 삭제 요청 응답
+        private List<Mate> matelist;
+    };
+    
 }

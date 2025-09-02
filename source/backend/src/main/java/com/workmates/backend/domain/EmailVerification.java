@@ -31,9 +31,13 @@ public class EmailVerification { // 이메일 인증
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt; // 코드 만료 일시
 
-    public EmailVerification(String email, String code, LocalDateTime requestedAt) {
+    @Column(name = "is_confirmed", nullable = false)
+    private Boolean isConfirmed;
+
+    public EmailVerification(String email, String code, LocalDateTime requestedAt, Boolean isConfirmed) {
         this.email = email;
         this.code = code;
         this.expiresAt = requestedAt.plusMinutes(DomainConstants.CODE_EXPIRES_IN);
+        this.isConfirmed = isConfirmed;
     }
 }
