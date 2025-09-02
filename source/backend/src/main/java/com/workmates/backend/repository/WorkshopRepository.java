@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional; // ✅ 이 줄이 반드시 필요
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.workmates.backend.domain.Workshop;
@@ -17,4 +18,14 @@ public interface WorkshopRepository extends JpaRepository<Workshop, Long> {
     Optional<Workshop> findByIdAndIsDeletedFalse(Long id);
 
     boolean existsByIdAndIsDeletedFalse(Long id);
+
+    @Query("""
+    select w
+    from Workshop w
+        join WorkshopMember wm on wm.workshopId = w.id
+    where wm.memberId = :memberId
+        and w.isDeleted = false
+    order by w.id desc
+    """)
+    List<Workshop> findAllJoinedByMemberId(String memberId);
 }

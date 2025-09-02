@@ -21,22 +21,22 @@ public class MateController {
     
     private final MateService mateService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // 사용자의 친구목록 조회
     public ResponseEntity<MatelistResponse> matelist(@PathVariable @Valid String id) {
         return ResponseEntity.ok(mateService.matelist(id));    
     }
 
-    @PostMapping("/search")
+    @PostMapping("/search") // 사용자 검색
     public ResponseEntity<SearchResponse> search(@RequestBody @Valid SearchRequest request) {
         return ResponseEntity.ok(mateService.search(request));
     }
 
-    @PostMapping("/append")
+    @PostMapping("/append") // 친구 추가 요청
     public ResponseEntity<AppendResponse> append(@RequestBody @Valid AppendRequest request) {
         return ResponseEntity.ok(mateService.append(request));
     }
 
-    @PostMapping("/remove")
+    @PostMapping("/remove") // 친구 삭제 요청
     public ResponseEntity<RemoveResponse> remove(@RequestBody @Valid RemoveRequest request) {
         return ResponseEntity.ok(mateService.remove(request));
     }
