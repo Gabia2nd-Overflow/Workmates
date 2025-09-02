@@ -1,6 +1,8 @@
 package com.workmates.backend.service;
 
+import com.workmates.backend.domain.EmailVerification;
 import com.workmates.backend.domain.User;
+import com.workmates.backend.repository.EmailVerificationRepository;
 import com.workmates.backend.repository.UserRepository;
 import com.workmates.backend.web.dto.UserDto.SignUpRequest;
 import com.workmates.backend.web.dto.UserDto;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +26,9 @@ class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailVerificationRepository emailVerificationRepository;
+
     @Test
     void 회원가입_정상작동_테스트() {
         // given
@@ -33,9 +39,17 @@ class UserServiceTest {
                 .email("hwshin0727@gmail.com")
                 .build();
 
+        EmailVerification verification = EmailVerification.builder()
+                .email(request.getEmail())
+                .code("123456")
+                .expiresAt(LocalDateTime.now())
+                .isConfirmed(true)
+                .build();
+        
         // when
+        emailVerificationRepository.save(verification);
         UserDto.UserResponse savedUser = userService.signUp(request);
-
+        
         // then - 1단계: 서비스 응답값 검증
         assertThat(savedUser.getId()).isEqualTo("testuser");
 

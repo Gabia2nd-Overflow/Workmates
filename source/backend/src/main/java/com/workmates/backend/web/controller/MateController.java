@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mate")
+@RequestMapping("/api/mate")
 public class MateController {
     
     private final MateService mateService;

@@ -11,7 +11,6 @@ import com.workmates.backend.constant.ServiceConstants;
 import com.workmates.backend.domain.Mate;
 import com.workmates.backend.domain.MateId;
 import com.workmates.backend.domain.User;
-import com.workmates.backend.repository.BlockRepository;
 import com.workmates.backend.repository.MateRepository;
 import com.workmates.backend.repository.UserRepository;
 import com.workmates.backend.web.dto.MateDto;
@@ -24,7 +23,6 @@ public class MateService {
     
     private final MateRepository mateRepository;
     private final UserRepository userRepository;
-    private final BlockRepository blockRepository;
 
     public MateDto.MatelistResponse matelist(String id) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, id)) {
@@ -32,6 +30,8 @@ public class MateService {
         }
 
         List<Mate> matelist = new ArrayList<>();
+
+        matelist.addAll(mateRepository.findAllBySenderIdOrReceiverId(id));
         
         return MateDto.MatelistResponse.builder()
                 .matelist(matelist)
@@ -56,8 +56,10 @@ public class MateService {
     @Transactional
     public MateDto.AppendResponse append(MateDto.AppendRequest request) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getSenderId()) ||
-           !Pattern.matches(ServiceConstants.ID_REGEX, request.getReceiverId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 초대 거부
-            throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
+           !Pattern.matches(ServiceConstants.ID_REGEX, request.getReceiverId()) ||
+           request.getSenderId().equals(request.getReceiverId())
+        ) { // 정규표현식에 맞지 않은 아이디 또는 송신자와 수신자가 같은 요청이 전달될 경우 초대 거부
+            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }
 
         MateId id = new MateId(request.getSenderId(), request.getReceiverId());
@@ -82,8 +84,9 @@ public class MateService {
     @Transactional
     public MateDto.RemoveResponse remove(MateDto.RemoveRequest request) {
         if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId()) ||
-           !Pattern.matches(ServiceConstants.ID_REGEX, request.getTargetId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 초대 거부
-            throw new IllegalArgumentException("올바르지 않은 삭제 요청입니다.");
+           !Pattern.matches(ServiceConstants.ID_REGEX, request.getTargetId()) ||
+           request.getId().equals(request.getTargetId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 초대 거부
+            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }
 
         MateId id = new MateId(request.getId(), request.getTargetId());
