@@ -2,6 +2,7 @@ package com.workmates.backend.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
@@ -15,7 +16,13 @@ import com.workmates.backend.repository.MateRepository;
 import com.workmates.backend.repository.UserRepository;
 import com.workmates.backend.web.dto.MateDto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +36,28 @@ public class MateService {
             throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
         }
 
-        List<Mate> matelist = new ArrayList<>();
+        List<Mate> mates = mateRepository.findAllBySenderIdOrReceiverId(id);
+        List<MateInfo> matelist = new ArrayList<>();
 
-        matelist.addAll(mateRepository.findAllBySenderIdOrReceiverId(id));
-        
+        for(Mate mate : mates) {
+            Boolean requesterIsSender = mate.getSenderId().equals(id);
+            Optional<User> targetUser = userRepository.findById(requesterIsSender ? mate.getReceiverId() : mate.getSenderId());
+
+            if(targetUser.isPresent()) {
+                User user = targetUser.get();
+
+                matelist.add(
+                    MateInfo.builder()
+                        .id(user.getId())
+                        .nickname(user.getNickname())
+                        .imageUrl(user.getImageUrl())
+                        .isAccepted(mate.getIsAccepted())
+                        .requesterIsSender(requesterIsSender)
+                        .build()
+                );
+            }
+        }
+   
         return MateDto.MatelistResponse.builder()
                 .matelist(matelist)
                 .build();
@@ -90,8 +115,7 @@ public class MateService {
         }
 
         MateId mateId = new MateId(request.getSenderId(), request.getReceiverId());
-        Mate mate = mateRepository.findById(mateId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 요청입니다."));
+        if(!mateRepository.findById(mateId).isPresent()) new IllegalArgumentException("친구 요청이 존재하지 않습니다.");
         Integer handleResult = null;
 
         if(request.getIsAccepted()) {
@@ -129,5 +153,19 @@ public class MateService {
         return MateDto.RemoveResponse.builder()
             .isRemoved(true)
             .build();
+    }
+
+    @Data 
+    @Getter 
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MateInfo {
+        String id;
+        String nickname;
+        String imageUrl;
+        Boolean isAccepted;
+        Boolean requesterIsSender; // true면 목록 조회자가 sender, false면 receiver
     }
 }

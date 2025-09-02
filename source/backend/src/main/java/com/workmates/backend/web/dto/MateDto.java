@@ -3,6 +3,7 @@ package com.workmates.backend.web.dto;
 import java.util.List;
 
 import com.workmates.backend.domain.Mate;
+import com.workmates.backend.service.MateService.MateInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -106,7 +107,7 @@ public class MateDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MatelistResponse { // 친구목록 조회 요청 응답
-        private List<Mate> matelist;
+        private List<MateInfo> matelist;
     };
     
 }
