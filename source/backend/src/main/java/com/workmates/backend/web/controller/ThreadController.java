@@ -15,10 +15,15 @@ public class ThreadController {
 
     private final ThreadService threadService;
 
-    @PostMapping
-    public ResponseEntity<ThreadDto.Response> createThread(@RequestBody ThreadDto.Request request) {
-        return ResponseEntity.ok(threadService.createThread(request));
-    }
+@PostMapping
+public ResponseEntity<ThreadDto.Response> createThread(
+        @PathVariable Long workshopId,
+        @RequestBody ThreadDto.Request request
+) {
+    request.setWorkshopId(workshopId); // 강제로 DTO에 세팅
+    return ResponseEntity.ok(threadService.createThread(request));
+}
+
 
     @GetMapping
     public ResponseEntity<List<ThreadDto.Response>> getThreadsByWorkshop(@PathVariable Long workshopId) {
