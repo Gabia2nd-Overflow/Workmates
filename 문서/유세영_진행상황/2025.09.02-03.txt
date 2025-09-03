@@ -10,3 +10,4 @@
     cute: ["Katuri", "sans-serif"],
  > index.css에 기본 base font로 등록해놨으나 다른걸로 교체 원할 시 font 골라서 사용 가능
    
+- 회원가입 페이지 디자인
