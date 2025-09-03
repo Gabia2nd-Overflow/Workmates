@@ -1,100 +1,118 @@
 package com.workmates.backend.service;
 
+import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
 import com.workmates.backend.repository.ScheduleRepository;
 import com.workmates.backend.web.dto.ScheduleDto;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ScheduleServiceTest {
 
-    @Mock
-    private ScheduleRepository scheduleRepository;
+    @Mock ScheduleRepository scheduleRepository;
 
-    @InjectMocks
-    private ScheduleService scheduleService;
+    @InjectMocks ScheduleService scheduleService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Test
+    @DisplayName("생성 성공: writerId/workshopId 주입 및 날짜 검증")
+    void createSchedule_success() {
+        var dto = ScheduleDto.CreateRequest.builder()
+                .title("회의").content("리뷰")
+                .startDate(LocalDateTime.of(2025,9,1,10,0))
+                .dueDate(LocalDateTime.of(2025,9,1,11,0))
+                .importancy(Importance.MEDIUM)
+                .build();
+
+        when(scheduleRepository.save(any(Schedule.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var res = scheduleService.createSchedule(dto, 10L, "alice");
+
+        verify(scheduleRepository).save(argThat(s ->
+                s.getWorkshopId().equals(10L)
+                        && "alice".equals(s.getWriterId())
+                        && s.getImportancy() == Importance.MEDIUM
+                        && Boolean.FALSE.equals(s.getIsCompleted())
+        ));
+        assertEquals("회의", res.getTitle());
     }
 
     @Test
-    void createSchedule_shouldSaveAndReturnDto() {
-        ScheduleDto.CreateRequest dto = new ScheduleDto.CreateRequest("회의", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "HIGH");
-        Schedule entity = new Schedule(); entity.setTitle("회의");
+    @DisplayName("생성 실패: startDate > dueDate → IllegalArgumentException")
+    void createSchedule_invalidDates() {
+        var dto = ScheduleDto.CreateRequest.builder()
+                .title("회의").content("리뷰")
+                .startDate(LocalDateTime.of(2025,9,1,12,0))
+                .dueDate(LocalDateTime.of(2025,9,1,11,0))
+                .build();
 
-        when(scheduleRepository.save(any(Schedule.class))).thenReturn(entity);
-
-        ScheduleDto.Response result = scheduleService.createSchedule(dto);
-
-        assertEquals("회의", result.getTitle());
-        verify(scheduleRepository, times(1)).save(any(Schedule.class));
+        assertThrows(IllegalArgumentException.class,
+                () -> scheduleService.createSchedule(dto, 10L, "alice"));
+        verifyNoInteractions(scheduleRepository);
     }
 
     @Test
-    void updateSchedule_shouldUpdateExistingEntity() {
-        Long id = 1L;
-        Schedule existing = new Schedule(); existing.setId(id); existing.setTitle("원본");
-        ScheduleDto.UpdateRequest dto = new ScheduleDto.UpdateRequest("수정", "내용", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "LOW", true);
+    @DisplayName("수정 성공: UpdateRequest.importancy(String) → Enum 파싱")
+    void updateSchedule_parsesEnum() {
+        var existing = Schedule.builder()
+                .id(1L).title("t").content("c")
+                .startDate(LocalDateTime.of(2025,9,1,10,0))
+                .dueDate(LocalDateTime.of(2025,9,1,11,0))
+                .importancy(Importance.MEDIUM)
+                .isCompleted(false)
+                .workshopId(10L).writerId("alice")
+                .build();
 
-        when(scheduleRepository.findById(id)).thenReturn(Optional.of(existing));
-        when(scheduleRepository.save(existing)).thenReturn(existing);
+        when(scheduleRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(scheduleRepository.save(any(Schedule.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        ScheduleDto.Response result = scheduleService.updateSchedule(id, dto);
+        var req = ScheduleDto.UpdateRequest.builder()
+                .title("수정제목").content("수정내용")
+                .startDate(existing.getStartDate())
+                .dueDate(existing.getDueDate())
+                .importancy("HIGH")
+                .isCompleted(true)
+                .build();
 
-        assertEquals("수정", result.getTitle());
-        verify(scheduleRepository, times(1)).save(existing);
+        var res = scheduleService.updateSchedule(1L, req);
+
+        assertEquals(Importance.HIGH, res.getImportancy());
+        assertTrue(res.getIsCompleted());
+        verify(scheduleRepository).save(any(Schedule.class));
     }
 
     @Test
-    void updateSchedule_shouldThrowExceptionWhenNotFound() {
+    @DisplayName("수정 실패: 대상 없음 → NoSuchElementException(404 핸들됨)")
+    void updateSchedule_notFound() {
         when(scheduleRepository.findById(99L)).thenReturn(Optional.empty());
+        var req = ScheduleDto.UpdateRequest.builder()
+                .title("x").content("y")
+                .startDate(LocalDateTime.now())
+                .dueDate(LocalDateTime.now().plusHours(1))
+                .importancy("LOW")
+                .isCompleted(false)
+                .build();
 
-        assertThrows(NoSuchElementException.class, () -> scheduleService.updateSchedule(99L, mock(ScheduleDto.UpdateRequest.class)));
+        assertThrows(NoSuchElementException.class, () -> scheduleService.updateSchedule(99L, req));
     }
 
     @Test
-    void deleteSchedule_shouldDeleteById() {
-        Long id = 1L;
-
-        scheduleService.deleteSchedule(id);
-
-        verify(scheduleRepository, times(1)).deleteById(id);
-    }
-
-    @Test
-    void getAllSchedules_shouldReturnListOfDto() {
-        Schedule s1 = new Schedule(); s1.setTitle("일정1");
-        Schedule s2 = new Schedule(); s2.setTitle("일정2");
-        when(scheduleRepository.findAll()).thenReturn(Arrays.asList(s1, s2));
-
-        List<ScheduleDto.Response> result = scheduleService.getAllSchedules();
-
-        assertEquals(2, result.size());
-        assertEquals("일정1", result.get(0).getTitle());
-    }
-
-    @Test
-    void getScheduleStats_shouldReturnCorrectCounts() {
-        when(scheduleRepository.count()).thenReturn(5L);
-        when(scheduleRepository.countByIsCompleted(true)).thenReturn(2L);
-        when(scheduleRepository.findByDueDateBefore(any(LocalDateTime.class)))
-                .thenReturn(Collections.singletonList(new Schedule()));
-
-        Map<String, Long> stats = scheduleService.getScheduleStats();
-
-        assertEquals(5L, stats.get("total"));
-        assertEquals(2L, stats.get("isCompleted"));
-        assertEquals(1L, stats.get("dueSoon"));
+    @DisplayName("삭제: deleteById 호출(@SQLDelete로 소프트 삭제)")
+    void deleteSchedule_callsRepository() {
+        doNothing().when(scheduleRepository).deleteById(1L);
+        scheduleService.deleteSchedule(1L);
+        verify(scheduleRepository).deleteById(1L);
     }
 }

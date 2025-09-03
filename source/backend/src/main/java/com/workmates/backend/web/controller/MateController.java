@@ -36,8 +36,14 @@ public class MateController {
     //     return ResponseEntity.ok(mateService.append(request));
     // }
 
-    // @PostMapping("/remove") // 친구 삭제 요청
-    // public ResponseEntity<RemoveResponse> remove(@RequestBody @Valid RemoveRequest request) {
-    //     return ResponseEntity.ok(mateService.remove(request));
-    // }
+
+    @PostMapping("/append/handle") // 친구 추가 요청에 대한 수락/거절 요청
+    public ResponseEntity<AppendHandleResponse> appendHandle(@RequestBody @Valid AppendHandleRequest request) {
+        return ResponseEntity.ok(mateService.appendHandle(request));
+    }
+
+    @PostMapping("/remove") // 친구 삭제 요청
+    public ResponseEntity<RemoveResponse> remove(@RequestBody @Valid RemoveRequest request) {
+        return ResponseEntity.ok(mateService.remove(request));
+    }
 }

@@ -31,7 +31,7 @@ public class Mate { // 사용자 친구 등록 여부
     @Column(name = "receiver_id", length = DomainConstants.ID_MAX_LEN)
     private String receiverId; // 친구 요청의 대상이 된 사용자 아이디
 
-    @Column(name = "is_accpeted", nullable = false)
+    @Column(name = "is_accepted", nullable = false)
     @Builder.Default
     private Boolean isAccepted = false; // sender가 보낸 친구 요청의 수락 여부. 기본적으로 false
 }

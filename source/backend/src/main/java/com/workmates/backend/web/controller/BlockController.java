@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workmates.backend.service.BlockService;
+import com.workmates.backend.web.dto.BlockDto.*;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,24 +21,19 @@ public class BlockController {
     
     private final BlockService blockService;
 
-    // @GetMapping("/{id}")
-    // public ResponseEntity<MatelistResponse> matelist(@PathVariable @Valid String id) {
-    //     return ResponseEntity.ok(mateService.matelist(id));    
-    // }
+    @GetMapping("/{id}")
+    public ResponseEntity<BlocklistResponse> blocklist(@PathVariable @Valid String id) {
+        return ResponseEntity.ok(blockService.blocklist(id));    
+    }
 
-    // @PostMapping("/search")
-    // public ResponseEntity<SearchResponse> search(@RequestBody @Valid SearchRequest request) {
-    //     return ResponseEntity.ok(mateService.search(request));
-    // }
+    @PostMapping("/block-user")
+    public ResponseEntity<BlockResponse> block(@RequestBody @Valid BlockRequest request) {
+        return ResponseEntity.ok(blockService.block(request));
+    }
 
-    // @PostMapping("/append")
-    // public ResponseEntity<AppendResponse> append(@RequestBody @Valid AppendRequest request) {
-    //     return ResponseEntity.ok(mateService.append(request));
-    // }
-
-    // @PostMapping("/remove")
-    // public ResponseEntity<RemoveResponse> remove(@RequestBody @Valid RemoveRequest request) {
-    //     return ResponseEntity.ok(mateService.remove(request));
-    // }
+    @PostMapping("/unblock-user")
+    public ResponseEntity<UnblockResponse> unblock(@RequestBody @Valid UnblockRequest request) {
+        return ResponseEntity.ok(blockService.unblock(request));
+    }
 }
 

@@ -39,6 +39,7 @@ public class WorkshopDto {
         private String workshopIconImage;
         private String workshopDescription;
         private boolean workshopIsDeleted;
+        private String workshopCreator;
 
         public static Response from(Workshop w) {
             return Response.builder()
@@ -47,6 +48,7 @@ public class WorkshopDto {
                 .workshopIconImage(w.getImageUrl())
                 .workshopDescription(w.getDescription())
                 .workshopIsDeleted(w.getIsDeleted())
+                .workshopCreator(w.getWorkshopCreator())
                 .build();
         }
     }

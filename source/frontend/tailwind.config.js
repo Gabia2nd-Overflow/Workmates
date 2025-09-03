@@ -22,6 +22,10 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+
+        base: ["Cafe24Ssurround", "Noto Sans KR", "Malgun Gothic", "sans-serif"],
+        brand: ["Cafe24Ssurround", "sans-serif"],
+        cute: ["Katuri", "sans-serif"],
       },
     },
   },
