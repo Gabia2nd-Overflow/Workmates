@@ -8,6 +8,8 @@ import Input from "../Components/Input";
 import toast from "react-hot-toast"; //알림
 import "./SignUp.css";
 
+const BRAND_LOGO_SRC = "/img/logo.png";
+
 const SignUp = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -42,17 +44,27 @@ const SignUp = () => {
   return (
     // 반응형 패딩
     <div className="page page--signup">
-      {/* 반응형 너비 */}
-      <div className="signup__container">
+
+       {/* 카드 내부에 헤더 배치 */}
+       <div className="signup__container signup__container--spaced">
+        <div className="signup__card">
         <div className="text-center">
-          {/* 반응형 텍스트 */}
-          <h2 onClick={() => navigate("/")}  className="signup__brand">🛍️ workmates</h2>
+          
+          <h2 onClick={() => navigate("/")}  className="signup__brand">workmates
+
+          {/* 로고 이미지 */}
+          <img
+                src={BRAND_LOGO_SRC}
+                alt="Workmates brand logo"
+                className="signup__logo"
+                onError={(e) => { e.currentTarget.style.display = "none"; }}
+              />
+              </h2>
+
           <p className="signup__subtitle">새로운 계정을 만드세요</p>
         </div>
-      </div>
-      {/* 반응형 간격 */}
-      <div className="signup__container signup__container--spaced">
-        <div className="signup__card">
+      
+          {/* 폼/필드/검증 */}      
           <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <Input
