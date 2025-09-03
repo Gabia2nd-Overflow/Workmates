@@ -99,8 +99,7 @@ public class SecurityConfig {
                 .requestMatchers("/ws-stomp").permitAll()
                 // CORS Preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/threads/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/user-info/**").permitAll()
                 .requestMatchers("/api/mate/**").permitAll()
                 .requestMatchers("/api/block/**").permitAll()
 
