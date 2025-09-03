@@ -9,6 +9,8 @@ import Input from "../Components/Input";
 import toast from "react-hot-toast";
 import "./SignUp.css";
 
+const BRAND_LOGO_SRC = "/img/logo.png";
+
 // ===== 정규식 (백엔드 규칙과 맞추기) =====
 const ID_REGEX = /^[a-z0-9_]{4,20}$/;            // 소문자/숫자/_ 4~20
 const PW_REGEX = /^[A-Za-z0-9]{8,20}$/;           // 영문/숫자 8~20
@@ -187,15 +189,27 @@ export default function SignUp() {
 
   return (
     <div className="page page--signup">
-      <div className="signup__container">
+
+       {/* 카드 내부에 헤더 배치 */}
+       <div className="signup__container signup__container--spaced">
+        <div className="signup__card">
         <div className="text-center">
-          <h2 onClick={() => navigate("/")} className="signup__brand">🛍️ workmates</h2>
+          
+          <h2 onClick={() => navigate("/")}  className="signup__brand">workmates
+
+          {/* 로고 이미지 */}
+          <img
+                src={BRAND_LOGO_SRC}
+                alt="Workmates brand logo"
+                className="signup__logo"
+                onError={(e) => { e.currentTarget.style.display = "none"; }}
+              />
+              </h2>
+
           <p className="signup__subtitle">새로운 계정을 만드세요</p>
         </div>
-      </div>
-
-      <div className="signup__container signup__container--spaced">
-        <div className="signup__card">
+      
+          {/* 폼/필드/검증 */}      
           <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
             {/* 아이디 + 중복확인 (가로 배치) */}
             <div>

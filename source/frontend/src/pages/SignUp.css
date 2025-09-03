@@ -1,39 +1,104 @@
-.page.page--signup { @apply min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8; }
+:root{
+  --brand: #b62547;
+  --brand-light: #ffb6c1;
+  --card-border: #f3e5ea;
+  --field-bg: #fff5f8;
+  --field-border: #ffcfdb;
 
-.signup__container { @apply sm:mx-auto sm:w-full sm:max-w-md; }
-.signup__container--spaced { @apply mt-8; }
+  --page-gap-top: 1rem;           /* 카드 위에 보이는 배경 여백(화면 맨 위 ↔ 카드) */
+  --gap-title-subtitle: 0.35rem;  /* 'workmates' 라인 ↔ '새로운 계정을 만드세요' */
+  --gap-subtitle-form: 0.1rem;      /* '새로운 계정을 만드세요' ↔ 폼(아이디~) */
+}
 
-.signup__brand { @apply text-3xl font-bold text-gray-900 text-center; }
-.signup__subtitle { @apply mt-2 text-sm text-gray-600; }
+/* 배경 그라데이션 */
+.page.page--signup {
+  @apply min-h-screen flex flex-col justify-center sm:px-6 lg:px-8;
+  padding-top: var(--page-gap-top);
+  background: linear-gradient(180deg, #ffeaf0 0%, var(--brand-light) 48%, #ffffff 100%);
+}
 
-.signup__card { @apply bg-white shadow sm:rounded-lg py-8 px-4 sm:px-10; }
+/* 카드 중앙 정렬(기존 클래스 유지) */
+.page.page--signup .signup__container{
+  max-width: none;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* 자식(.signup__card) 가로 중앙 */
+}
+
+.signup__container--spaced { @apply mt-1; }
+
+.signup__card {
+  width: 1100px;
+  height: 850px;
+  @apply bg-white shadow sm:rounded-lg py-8 px-4 sm:px-10;
+  border-radius: 24px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 24px 48px rgba(182, 37, 71, 0.06);
+  max-width: 92vw;
+  padding-top: 0.2rem;
+}
+
+/* 카드 내부의 상단 헤더 */
+.signup__card > .text-center {
+  padding-top: var(--head-gap-top);
+  margin-bottom: var(--head-gap-bottom);
+}
+
+/* 타이틀에 로고를 인라인으로 붙이기 */
+.signup__brand {
+  @apply text-6xl font-bold text-center;
+  color: var(--brand);
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  line-height: 1;
+}
+
+/* 로고 크기 조절 */
+.signup__logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+/* 부제 색상 */
+.signup__subtitle {
+  @apply mt-2 text-sm text-center;
+  color: #6b7280;
+}
+
 .signup__form { @apply space-y-6; }
 
-/* ✅ 입력칸 + 옆 버튼(중복확인/인증코드/코드확인) */
-.signup__row { @apply flex items-end gap-2; }
-.signup__input-grow { @apply flex-1; }
-.signup__sidebtn {
-  @apply px-3 py-2 border rounded-md text-sm shadow-sm
-         text-gray-700 bg-white hover:bg-gray-50
-         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500;
-  height: 42px; /* Input 높이에 맞춰 필요시 40~44px 조정 */
+.signup__card input[type="text"],
+.signup__card input[type="email"],
+.signup__card input[type="password"]{
+  background: var(--field-bg);
+  border-color: var(--field-border);
 }
 
-/* ✅ 비밀번호 토글(눈 아이콘)은 입력칸 안쪽 우상단 고정 */
 .signup__field-box { @apply relative; }
-.signup__toggle { @apply absolute right-3 top-8 text-gray-400 hover:text-gray-600; }
+.signup__toggle    { @apply absolute right-3 top-8 text-gray-400 hover:text-gray-600; }
 
-/* 구분선 / 하단 링크 */
-.signup__hr { @apply mt-6; }
-.signup__hr-box { @apply relative; }
+.signup__hr      { @apply mt-6; }
+.signup__hr-box  { @apply relative; }
 .signup__hr-rail { @apply absolute inset-0 flex items-center; }
-.signup__hr-line { @apply w-full border-t border-gray-300; }
-.signup__hr-label { @apply relative flex justify-center text-sm; }
+.signup__hr-line { @apply w-full border-t; border-color: var(--card-border); }
+.signup__hr-label{ @apply relative flex justify-center text-sm; }
 .signup__hr-chip { @apply px-2 bg-white text-gray-500; }
 
+/* 색상만 브랜드로 */
 .signup__actions { @apply mt-6; }
 .signup__alt-link {
-  @apply w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
-         text-sm font-medium text-pink-600 bg-white hover:bg-gray-50
-         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500;
+  @apply w-full flex justify-center py-2 px-4 rounded-md outline-none
+         focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
+         text-sm font-medium bg-white hover:bg-gray-50 border border-none shadow-none;
+  color: var(--brand);
 }
+
+/* 별도 클래스 없이 submit 버튼에 직접 적용 */
+.signup__card button[type="submit"]{
+  background: var(--brand) !important;
+  color: #fff !important;
+  border: none !important;
+}
+.signup__card button[type="submit"]:hover{ filter: brightness(1.03); }
