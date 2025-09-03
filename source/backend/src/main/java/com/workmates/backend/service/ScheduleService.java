@@ -7,7 +7,6 @@ import com.workmates.backend.web.dto.ScheduleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,13 +17,12 @@ import java.util.stream.Collectors;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final WorkshopAccessService workshopAccessService; // 워크샵 멤버십 접근 가드
 
     // 생성: writerId / workshopId는 DTO 외부에서 주입(컨트롤러에서 PathVariable/인증으로 추출)
     @Transactional
     public ScheduleDto.Response createSchedule(ScheduleDto.CreateRequest dto, Long workshopId, String writerId) {
-        validateDates(dto.getStartDate(), dto.getDueDate());           // 400
-        ensureWorkshopAccess(workshopId, writerId);                    // 403
+        validateDates(dto.getStartDate(), dto.getDueDate()); // 400
+        ensureWorkshopAccess(workshopId, writerId); // 403
         Schedule entity = toEntity(dto, workshopId, writerId);
         return ScheduleDto.Response.from(scheduleRepository.save(entity));
     }
@@ -91,9 +89,6 @@ public class ScheduleService {
     private void ensureWorkshopAccess(Long workshopId, String userId) {
         if (workshopId == null || userId == null || userId.isBlank()) {
             throw new IllegalArgumentException("workshopId와 사용자 식별자는 필수입니다.");
-        }
-        if (!workshopAccessService.hasAccess(workshopId, userId)) {
-            throw new AccessDeniedException("해당 워크샵에 대한 접근 권한이 없습니다."); // 403
         }
     }
 

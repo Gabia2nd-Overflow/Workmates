@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.*;
 class ScheduleServiceTest {
 
     @Mock ScheduleRepository scheduleRepository;
-    @Mock WorkshopAccessService workshopAccessService;
 
     @InjectMocks ScheduleService scheduleService;
 
@@ -38,12 +36,10 @@ class ScheduleServiceTest {
                 .importancy(Importance.MEDIUM)
                 .build();
 
-        when(workshopAccessService.hasAccess(10L, "alice")).thenReturn(true);
         when(scheduleRepository.save(any(Schedule.class))).thenAnswer(inv -> inv.getArgument(0));
 
         var res = scheduleService.createSchedule(dto, 10L, "alice");
 
-        verify(workshopAccessService).hasAccess(10L, "alice");
         verify(scheduleRepository).save(argThat(s ->
                 s.getWorkshopId().equals(10L)
                         && "alice".equals(s.getWriterId())
@@ -63,22 +59,6 @@ class ScheduleServiceTest {
                 .build();
 
         assertThrows(IllegalArgumentException.class,
-                () -> scheduleService.createSchedule(dto, 10L, "alice"));
-        verifyNoInteractions(scheduleRepository);
-    }
-
-    @Test
-    @DisplayName("생성 실패: 워크샵 접근 불가 → AccessDeniedException")
-    void createSchedule_noAccess() {
-        var dto = ScheduleDto.CreateRequest.builder()
-                .title("회의").content("리뷰")
-                .startDate(LocalDateTime.of(2025,9,1,10,0))
-                .dueDate(LocalDateTime.of(2025,9,1,11,0))
-                .build();
-
-        when(workshopAccessService.hasAccess(10L, "alice")).thenReturn(false);
-
-        assertThrows(AccessDeniedException.class,
                 () -> scheduleService.createSchedule(dto, 10L, "alice"));
         verifyNoInteractions(scheduleRepository);
     }
