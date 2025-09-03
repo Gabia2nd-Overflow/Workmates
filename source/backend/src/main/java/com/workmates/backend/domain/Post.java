@@ -23,6 +23,7 @@ public class Post {
     @Column(name = "content", nullable = false, length = 2048)
     private String content;
 
+    @Builder.Default
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
@@ -32,18 +33,22 @@ public class Post {
     @Column(name = "title")
     private String title;
 
+    @Builder.Default
     @Column(name = "writer_id", nullable = false, length = 32)
     private String writerId = "unknown";
 
+    @Builder.Default
     private Integer views = 0;
 
+    @Builder.Default
     @Column(name = "writer_nickname", nullable = false, length = 32)
     private String writerNickname = "unknown";
 
-
+    @Builder.Default
     @Column(name = "written_at", nullable = false)
     private LocalDateTime writtenAt = LocalDateTime.now();
 
+    @Builder.Default
     @Column(name = "written_in", nullable = false)
     private String writtenIn = "unknown";
 

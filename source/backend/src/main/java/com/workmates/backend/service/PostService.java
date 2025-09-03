@@ -1,6 +1,6 @@
 package com.workmates.backend.service;
 
-import com.Util.JwtUtil;
+import com.workmates.backend.Util.JwtUtil;
 import com.workmates.backend.domain.Post;
 import com.workmates.backend.repository.PostRepository;
 import com.workmates.backend.web.dto.PostDto;
