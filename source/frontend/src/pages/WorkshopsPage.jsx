@@ -1,5 +1,6 @@
 // src/pages/WorkshopsPage.jsx
 import Header from "../Components/Header";
+import UserFooter from "../Components/UserFooter";
 import Sidebar from "../Components/Sidebar";
 import "./WorkshopsPage.css";
 
@@ -13,6 +14,7 @@ export default function WorkshopsPage() {
         <div className="workshops__empty">
           좌측에서 워크샵을 선택하거나 + 로 생성하세요.
         </div>
+        <UserFooter />
       </div>
     </div>
   );

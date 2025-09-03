@@ -2,7 +2,6 @@ package com.workmates.backend.web.dto;
 
 import java.util.List;
 
-import com.workmates.backend.domain.Mate;
 import com.workmates.backend.service.MateService.MateInfo;
 
 import lombok.AllArgsConstructor;
