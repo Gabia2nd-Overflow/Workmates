@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class BlockId implements Serializable{
+public class BlockId implements Serializable {
     private String id;
     private String targetId;
 }
