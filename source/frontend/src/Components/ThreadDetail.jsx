@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function ThreadDetail() {
-  const { threadId, workshopId } = useParams(); // workshopId도 가져오기
+  const { threadId, workshopId } = useParams();
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
@@ -11,31 +11,9 @@ export default function ThreadDetail() {
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortKey, setSortKey] = useState("createdAt"); // 정렬 기준
-  const [sortOrder, setSortOrder] = useState("desc");   // asc / desc
+  const [sortKey, setSortKey] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState("desc");
 
-  // 필터 + 정렬 적용
-  const displayedPosts = posts
-    .filter(post =>
-      post.title.includes(searchTerm) ||
-      post.content.includes(searchTerm) ||
-      post.writerNickname?.includes(searchTerm)
-    )
-    .sort((a, b) => {
-      let valA = a[sortKey];
-      let valB = b[sortKey];
-
-      if (sortKey === "createdAt") {
-        valA = new Date(valA);
-        valB = new Date(valB);
-      }
-
-      if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-      if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
-
-  // 게시글 불러오기
   const fetchPosts = async () => {
     try {
       const { data } = await axios.get(`http://localhost:8080/api/threads/${threadId}/posts`);
@@ -50,18 +28,13 @@ export default function ThreadDetail() {
     if (threadId) fetchPosts();
   }, [threadId]);
 
-  // 새 글 작성
   const createPost = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
       const { data } = await axios.post(
         `http://localhost:8080/api/threads/${threadId}/posts`,
-        {
-          title: postTitle,
-          content: postContent,
-          category: "일반"
-        },
+        { title: postTitle, content: postContent, category: "일반" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPosts(prev => [...prev, data]);
@@ -73,28 +46,42 @@ export default function ThreadDetail() {
     }
   };
 
-  // 게시글 클릭 시 조회수 증가 + PostDetail 이동
   const handlePostClick = async (postId) => {
-  try {
-    const token = localStorage.getItem("token"); // JWT
-    await axios.post(
-      `http://localhost:8080/api/posts/${postId}/views`,
-      {}, // body가 필요 없으면 빈 객체
-      { headers: { Authorization: `Bearer ${token}` } } // 헤더 추가
-    );
+    try {
+      // 조회수 증가 시도
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `http://localhost:8080/api/posts/${postId}/views`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // 로컬 상태 업데이트
+      setPosts(prev =>
+        prev.map(post =>
+          post.id === postId ? { ...post, views: (post.views || 0) + 1 } : post
+        )
+      );
+    } catch (err) {
+      console.warn("조회수 증가 실패:", err);
+    } finally {
+      // 실패해도 상세 페이지 이동
+      navigate(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`);
+    }
+  };
 
-    setPosts(prev =>
-      prev.map(post =>
-        post.id === postId ? { ...post, views: (post.views || 0) + 1 } : post
-      )
-    );
-
-    navigate(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`);
-  } catch (err) {
-    console.error("조회수 증가 오류:", err);
-  }
-};
-
+  const displayedPosts = posts
+    .filter(p =>
+      p.title.includes(searchTerm) ||
+      p.content.includes(searchTerm) ||
+      p.writerNickname?.includes(searchTerm)
+    )
+    .sort((a, b) => {
+      let valA = sortKey === "createdAt" ? new Date(a[sortKey]) : a[sortKey] || 0;
+      let valB = sortKey === "createdAt" ? new Date(b[sortKey]) : b[sortKey] || 0;
+      if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+      if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
 
   return (
     <section className="flex-1 p-4">
@@ -129,7 +116,6 @@ export default function ThreadDetail() {
         </form>
       )}
 
-      {/* 검색 + 정렬 UI */}
       <div className="flex items-center justify-between mb-2 gap-2">
         <input
           className="border p-2 rounded flex-1"
@@ -148,7 +134,7 @@ export default function ThreadDetail() {
         </select>
         <button
           className="px-2 py-1 border rounded"
-          onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
+          onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
         >
           {sortOrder === "asc" ? "오름차순" : "내림차순"}
         </button>
@@ -167,18 +153,16 @@ export default function ThreadDetail() {
           </tr>
         </thead>
         <tbody>
-          {displayedPosts.map((post, index) => (
+          {displayedPosts.map((post, idx) => (
             <tr
               key={post.id}
               className="hover:bg-pink-50 cursor-pointer"
               onClick={() => handlePostClick(post.id)}
             >
-              <td className="border px-3 py-2 text-center">{index + 1}</td>
+              <td className="border px-3 py-2 text-center">{idx + 1}</td>
               <td className="border px-3 py-2">{post.title}</td>
               <td className="border px-3 py-2 text-center">{post.writerNickname || "작성자"}</td>
-              <td className="border px-3 py-2 text-center">
-                {post.createdAt ? new Date(post.createdAt).toLocaleDateString("ko-KR") : "-"}
-              </td>
+              <td className="border px-3 py-2 text-center">{post.createdAt ? new Date(post.createdAt).toLocaleDateString("ko-KR") : "-"}</td>
               <td className="border px-3 py-2 text-center">{post.views || 0}</td>
               <td className="border px-3 py-2 text-center">{post.replyCount || 0}</td>
               <td className="border px-3 py-2 text-center">{post.category || "-"}</td>

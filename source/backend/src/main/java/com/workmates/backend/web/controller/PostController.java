@@ -1,50 +1,51 @@
 package com.workmates.backend.web.controller;
 
-import com.workmates.backend.web.dto.PostDto;
+import com.workmates.backend.domain.Post;
 import com.workmates.backend.service.PostService;
+import com.workmates.backend.web.dto.PostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/threads/{threadId}/posts")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
-    // 새 글 작성
-    @PostMapping
-    public ResponseEntity<?> createPost(@PathVariable Long threadId,
-                                        @RequestBody PostDto.Request request,
-                                        @RequestHeader("Authorization") String authHeader) {
-        try {
-            String token = authHeader.replace("Bearer ", "");
-            PostDto.Response response = postService.createPost(threadId, request, token);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+    // 특정 게시글 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<PostDto.Response> getPost(@PathVariable Long id) {
+        Post post = postService.getPostById(id);
+        return ResponseEntity.ok(PostDto.Response.from(post));
     }
 
-    // 특정 Thread 게시글 조회
-    @GetMapping
-    public List<PostDto.Response> getPosts(@PathVariable Long threadId) {
-        return postService.getPostsByThread(threadId);
+    // 게시글 조회수 증가 (JWT 필요없음, 누구나 증가 가능)
+    @PostMapping("/{id}/views")
+    public ResponseEntity<Void> increaseViews(@PathVariable Long id) {
+        postService.increaseViews(id);
+        return ResponseEntity.ok().build();
     }
 
-    // 조회수 증가 (모든 사용자 허용)
-    @PostMapping("/{postId}/views")
-    public ResponseEntity<?> increaseViews(@PathVariable Long postId) {
-        try {
-            postService.increaseViews(postId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+    // 특정 게시글 댓글 조회
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<PostDto.CommentResponse>> getComments(@PathVariable Long id) {
+        List<PostDto.CommentResponse> comments = postService.getComments(id);
+        return ResponseEntity.ok(comments);
+    }
+
+    // 댓글 작성 (JWT 필요)
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<PostDto.CommentResponse> createComment(
+            @PathVariable Long id,
+            @RequestBody @Valid PostDto.CommentRequest request,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+        PostDto.CommentResponse comment = postService.createComment(id, request, token);
+        return ResponseEntity.ok(comment);
     }
 }

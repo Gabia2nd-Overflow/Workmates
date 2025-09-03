@@ -1,35 +1,45 @@
-package com.workmates.backend.Util;
+// package com.workmates.backend.Util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+// import io.jsonwebtoken.Claims;
+// import io.jsonwebtoken.Jwts;
+// import io.jsonwebtoken.security.Keys;
+// import io.jsonwebtoken.SignatureAlgorithm;
 
-import javax.crypto.SecretKey;
+// import java.nio.charset.StandardCharsets;
+// import java.security.Key;
+// import java.util.Date;
 
-import org.springframework.stereotype.Component;
+// public class JwtUtil {
 
-@Component
-public class JwtUtil {
-    private final String SECRET_KEY = "this-is-a-very-long-secret-key-at-least-32-bytes!"; 
-    private final SecretKey signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+//     // HS512용 안전한 최소 64바이트 이상 키 (512비트)
+//     private static final String SECRET = "this-is-a-very-long-secret-key-for-hs512-which-is-more-than-64-bytes-long-to-be-safe!!!";
+//     private static final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
-    public String getNicknameFromToken(String token) {
-        Claims claims = parseToken(token);
-        return claims.get("nickname", String.class); // JWT payload에 nickname이 있어야 함
-    }
+//     // 토큰 생성
+//     public static String generateToken(String nickname) {
+//         long nowMillis = System.currentTimeMillis();
+//         long expMillis = nowMillis + 1000 * 60 * 60; // 1시간
+//         Date now = new Date(nowMillis);
+//         Date exp = new Date(expMillis);
 
-    public String getUserIdFromToken(String token) {
-        Claims claims = parseToken(token);
-        return claims.getSubject(); // 일반적으로 sub에 userId
-    }
+//         return Jwts.builder()
+//                 .setSubject(nickname)
+//                 .setIssuedAt(now)
+//                 .setExpiration(exp)
+//                 .signWith(key, SignatureAlgorithm.HS512) // HS512 명시
+//                 .compact();
+//     }
 
-    private Claims parseToken(String token) {
-        return Jwts.parser()              // 0.12.x에서는 parserBuilder() 필요 없음
-                .verifyWith(signingKey)   // setSigningKey 대신 verifyWith
-                .build()
-                .parseSignedClaims(token) // ✅ parseClaimsJws → parseSignedClaims
-                .getPayload();
-    }
+//     // Claims 파싱
+//     private static Claims parseToken(String token) {
+//         return Jwts.parser()
+//                 .setSigningKey(key)
+//                 .parseClaimsJws(token)
+//                 .getBody();
+//     }
 
-
-}
+//     // 닉네임 추출
+//     public static String getNicknameFromToken(String token) {
+//         return parseToken(token).getSubject();
+//     }
+// }

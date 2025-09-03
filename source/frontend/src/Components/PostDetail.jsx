@@ -29,14 +29,25 @@ export default function PostDetail() {
     }
   };
 
+  // 조회수 증가
+  const increaseViews = async () => {
+    try {
+      await axios.post(`http://localhost:8080/api/posts/${postId}/views`);
+      setPost(prev => prev ? { ...prev, views: prev.views + 1 } : prev);
+    } catch (err) {
+      console.error("조회수 증가 오류:", err);
+    }
+  };
+
   useEffect(() => {
     if (postId) {
       fetchPost();
       fetchComments();
+      increaseViews();
     }
   }, [postId]);
 
-  // 새 댓글 작성
+  // 댓글 작성
   const createComment = async (e) => {
     e.preventDefault();
     try {
