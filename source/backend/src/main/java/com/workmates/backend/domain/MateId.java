@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MateId implements Serializable{
+public class MateId implements Serializable {
     private String senderId;
     private String receiverId;
 }

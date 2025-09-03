@@ -2,11 +2,11 @@
 package com.workmates.backend.web.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,29 +53,17 @@ public class AuthController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    //토큰 파싱을 직접 하지 말고 똑같이 @AuthenticationPrincipal로 바꿀 수 있다. 기존코드와 차이 확인.
     @GetMapping("/me")
-    public ResponseEntity<UserDto.UserResponse> getMyInfo(@RequestHeader("Authorization") String token) {
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwt = token.substring(7);
-            if (jwtTokenProvider.validateToken(jwt)) {
-                String username = jwtTokenProvider.getUsernameFromToken(jwt);
-                return ResponseEntity.ok(userService.getUserInfo(username));
-            }
-        }
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<UserDto.UserResponse> getMyInfo(
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return ResponseEntity.ok(userService.getUserInfo(principal.getUsername()));
     }
 
     @PutMapping("/me")
     public ResponseEntity<UserDto.UserResponse> updateMyInfo(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
             @Valid @RequestBody UserDto.UpdateRequest request) {
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwt = token.substring(7);
-            if (jwtTokenProvider.validateToken(jwt)) {
-                String username = jwtTokenProvider.getUsernameFromToken(jwt);
-                return ResponseEntity.ok(userService.updateUser(username, request));
-            }
-        }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(userService.updateUser(principal.getUsername(), request));
     }
 }
