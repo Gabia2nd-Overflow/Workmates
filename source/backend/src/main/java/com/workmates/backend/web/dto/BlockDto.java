@@ -62,6 +62,6 @@ public class BlockDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BlocklistResponse { // 차단목록 조회 요청 응답
-        private List<BlockService.BlockedUserInfo> blockedlist; 
+        private List<BlockService.BlockedUserInfo> blocklist; 
     };
 }

@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/threads/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/mate/**").permitAll()
+                .requestMatchers("/api/block/**").permitAll()
+                // 나머지(필요 시 잠금)
                 .anyRequest().authenticated()
             );
 
