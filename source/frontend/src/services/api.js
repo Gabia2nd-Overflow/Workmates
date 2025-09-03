@@ -6,29 +6,14 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-const getUserId = () => {
-  const direct = localStorage.getItem("userId");
-  if (direct) return direct;
-  try {
-    const u = JSON.parse(localStorage.getItem("user") || "null");
-    return u?.id ?? u?.userId ?? u?.username ?? null;
-  } catch { return null; }
-};
-
+// ✅ 모든 요청에 JWT 자동 첨부
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
-
-  // ✅ DEV: /workshops 경로에만 X-User-Id 자동 첨부
-  const url = config.url || "";
-  const path = url.startsWith("/") ? url : `/${url}`;
-  if (path.startsWith("/workshops")) {
-    const uid = getUserId();
-    if (uid) config.headers["X-User-Id"] = uid;
-  }
   return config;
 });
 
+// ✅ 401 시 토큰 정리 후 로그인으로
 api.interceptors.response.use(
   (res) => res,
   (error) => {
@@ -41,19 +26,18 @@ api.interceptors.response.use(
   }
 );
 
-// 회원 관련 API만 남김
+/* ===== Auth ===== */
 export const authAPI = {
-  checkId: (data) => api.post('/auth/check-id', data), // 아이디 중복확인
-  verifyEmail: (data) => api.post('/auth/verify-email', data), // 인증코드 전송 요청 및 재전송 요청
-  confirmEmail: (data) => api.post('/auth/confirm-email', data), // 인증코드 입력 확인
-
-  signUp: (data) => api.post('/auth/signup', data),
-  login: (data) => api.post('/auth/login', data),
-  getMyInfo: () => api.get('/auth/me'),
-  updateMyInfo: (data) => api.put('/auth/me', data),
+  checkId: (data) => api.post("/auth/check-id", data),        // 아이디 중복확인
+  verifyEmail: (data) => api.post("/auth/verify-email", data),// 인증코드 전송/재전송
+  confirmEmail: (data) => api.post("/auth/confirm-email", data),
+  signUp: (data) => api.post("/auth/signup", data),
+  login: (data) => api.post("/auth/login", data),             // 응답 token을 localStorage.setItem('token', token) 로 저장
+  getMyInfo: () => api.get("/auth/me"),
+  updateMyInfo: (data) => api.put("/auth/me", data),
 };
 
-// workshops
+/* ===== Workshops ===== */
 export const workshopAPI = {
   list: () => api.get("/workshops"),
   get: (workshopId) => api.get(`/workshops/${workshopId}`),
@@ -62,6 +46,7 @@ export const workshopAPI = {
   remove: (workshopId) => api.delete(`/workshops/${workshopId}`),
 };
 
+/* ===== Threads ===== */
 export const threadAPI = {
   list: (workshopId) => api.get(`/workshops/${workshopId}/threads`),
   get: (workshopId, threadId) => api.get(`/workshops/${workshopId}/threads/${threadId}`),
@@ -70,8 +55,7 @@ export const threadAPI = {
   remove: (workshopId, threadId) => api.delete(`/workshops/${workshopId}/threads/${threadId}`),
 };
 
-
-// lounges (workshop 종속)
+/* ===== Lounges ===== */
 export const loungeAPI = {
   list: (workshopId) => api.get(`/workshops/${workshopId}/lounges`),
   get: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}`),
@@ -80,29 +64,29 @@ export const loungeAPI = {
   remove: (workshopId, loungeId) => api.delete(`/workshops/${workshopId}/lounges/${loungeId}`),
 };
 
-// messages (lounge 종속)
+/* ===== Messages ===== */
 export const messageAPI = {
   list: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}/messages`),
   send: (workshopId, loungeId, data) => api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, data),
-  edit: (workshopId, loungeId, messageId, data) => api.patch(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`, data),
-  remove: (workshopId, loungeId, messageId) => api.delete(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`),
+  edit: (workshopId, loungeId, messageId, data) =>
+    api.patch(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`, data),
+  remove: (workshopId, loungeId, messageId) =>
+    api.delete(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`),
 };
 
-// files (lounge 종속)
+/* ===== Files ===== */
 export const fileAPI = {
   upload: (workshopId, loungeId, formData) =>
     api.post(`/workshops/${workshopId}/lounges/${loungeId}/files`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
   download: (workshopId, loungeId, fileId) =>
-    api.get(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`, {
-      responseType: "blob",
-    }),
+    api.get(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`, { responseType: "blob" }),
   remove: (workshopId, loungeId, fileId) =>
     api.delete(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`),
 };
 
-// services/api.js 맨 아래 추가
+/* ===== Posts ===== */
 export const postAPI = {
   list: (threadId) => api.get(`/threads/${threadId}/posts`),
   create: (threadId, data) => api.post(`/threads/${threadId}/posts`, data),
@@ -110,6 +94,5 @@ export const postAPI = {
   update: (postId, data) => api.patch(`/posts/${postId}`, data),
   remove: (postId) => api.delete(`/posts/${postId}`),
 };
-
 
 export default api;

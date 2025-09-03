@@ -2,33 +2,35 @@
 
 .signup__container { @apply sm:mx-auto sm:w-full sm:max-w-md; }
 .signup__container--spaced { @apply mt-8; }
+
 .signup__brand { @apply text-3xl font-bold text-gray-900 text-center; }
 .signup__subtitle { @apply mt-2 text-sm text-gray-600; }
 
 .signup__card { @apply bg-white shadow sm:rounded-lg py-8 px-4 sm:px-10; }
 .signup__form { @apply space-y-6; }
 
-/* ✅ (A) 가로 배치: 입력창 + 옆 버튼 */
-.signup__row { @apply flex items-end gap-2; }           /* items-end: 라벨이 위에 있어도 두 요소의 바닥선 맞춤 */
-.signup__input-grow { @apply flex-1; }                  /* Input이 가로를 먹고 */
-.signup__sidebtn {                                      /* 옆 버튼 높이를 입력창에 맞춰줌 */
+/* ✅ 입력칸 + 옆 버튼(중복확인/인증코드/코드확인) */
+.signup__row { @apply flex items-end gap-2; }
+.signup__input-grow { @apply flex-1; }
+.signup__sidebtn {
   @apply px-3 py-2 border rounded-md text-sm shadow-sm
          text-gray-700 bg-white hover:bg-gray-50
          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500;
-  height: 42px; /* ← Input 컴포넌트 높이에 맞춰 조절(보통 40~44px). 필요 시 40px로 바꿔도 OK */
+  height: 42px; /* Input 높이에 맞춰 필요시 40~44px 조정 */
 }
 
-/* ✅ (B) 비밀번호 행만 absolute 토글 유지 */
+/* ✅ 비밀번호 토글(눈 아이콘)은 입력칸 안쪽 우상단 고정 */
 .signup__field-box { @apply relative; }
 .signup__toggle { @apply absolute right-3 top-8 text-gray-400 hover:text-gray-600; }
 
-/* 구분선/하단 영역 동일 */
+/* 구분선 / 하단 링크 */
 .signup__hr { @apply mt-6; }
 .signup__hr-box { @apply relative; }
 .signup__hr-rail { @apply absolute inset-0 flex items-center; }
 .signup__hr-line { @apply w-full border-t border-gray-300; }
 .signup__hr-label { @apply relative flex justify-center text-sm; }
 .signup__hr-chip { @apply px-2 bg-white text-gray-500; }
+
 .signup__actions { @apply mt-6; }
 .signup__alt-link {
   @apply w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
