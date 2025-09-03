@@ -2,6 +2,8 @@ package com.workmates.backend.web.controller;
 
 import com.workmates.backend.service.ScheduleService;
 import com.workmates.backend.web.dto.ScheduleDto;
+import com.workmates.backend.web.dto.ScheduleStatsDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,5 +72,23 @@ public class ScheduleController {
             throw new IllegalArgumentException("인증 정보가 유효하지 않습니다. 로그인 상태를 확인해 주세요.");
         }
         return auth.getName();
+    }
+
+    //워크샵별 대시보드 통계 (연체 포함)
+    @GetMapping("/workshops/{workshopId}/schedules/stats")
+    public ResponseEntity<ScheduleStatsDto> getWorkshopStats(@PathVariable Long workshopId) {
+        ScheduleStatsDto dto = scheduleService.getWorkshopStats(workshopId);
+        return ResponseEntity.ok(dto);
+    }
+
+    //워크샵별 미완료 목록 (마감일 오름차순)
+    @GetMapping("/workshops/{workshopId}/schedules")
+    public ResponseEntity<List<ScheduleDto.Response>> listIncompleteForWorkshop(
+            @PathVariable Long workshopId,
+            @RequestParam(name = "status", required = false, defaultValue = "incomplete") String status,
+            @RequestParam(name = "sort", required = false, defaultValue = "dueDate,asc") String sort
+    ) {
+    List<ScheduleDto.Response> list = scheduleService.listIncompleteForWorkshop(workshopId);
+    return ResponseEntity.ok(list);
     }
 }
