@@ -1,6 +1,7 @@
 // src/components/LoungeSection.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loungeAPI } from "../services/api"; // ⬅️ 상단 import 추가
 
 export default function LoungeSection({ workshopId, lounges, setLounges }) {
   const navigate = useNavigate();
@@ -8,22 +9,21 @@ export default function LoungeSection({ workshopId, lounges, setLounges }) {
   const [loungeName, setLoungeName] = useState("");
 
   const createLounge = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await fetch(`/api/workshops/${workshopId}/lounges`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: loungeName }),
-      }).then((res) => res.json());
+  e.preventDefault();
+  try {
+    // axios 인스턴스를 사용 → 인터셉터가 JWT 자동 첨부
+    const { data } = await loungeAPI.create(workshopId, { name: loungeName });
 
-      setLounges((prev) => [...prev, data]);
-      setLoungeName("");
-      setCreatingLounge(false);
-      navigate(`lounges/${data.id}`);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    setLounges((prev) => [...prev, data]);
+    setLoungeName("");
+    setCreatingLounge(false);
+    navigate(`lounges/${data.id}`);
+  } catch (err) {
+    // 403/401 처리 가독성
+    console.error("라운지 생성 실패:", err.response?.status, err.response?.data || err.message);
+    alert(err.response?.data?.message || "라운지 생성에 실패했습니다.");
+  }
+};
 
   return (
     <div className="mb-4">

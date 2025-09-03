@@ -38,7 +38,7 @@ public class JwtTokenProvider {
                 .signWith(getSigningKey())
                 .compact();
     }
-    // 생성한토큰에 username을 부여
+    // 생성한토큰에 id 부여
     public String generateToken(String username) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
@@ -51,7 +51,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    //토큰으로 가져온 정보중 USERNAME 추출
+    //토큰으로 가져온 정보중 id 추출
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(getSigningKey())
