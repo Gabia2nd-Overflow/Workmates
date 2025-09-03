@@ -67,3 +67,22 @@
   .input-help { @apply text-sm; }
   .input-help--error { @apply text-red-600; }
 }
+
+
+/* =============================================================
+   Font
+================================================================= */
+@font-face {
+  font-family: 'Cafe24Ssurround';
+  src: url('/font/Cafe24Ssurround-v2.0.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Katuri';
+  src: url('/font/KATURI.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
