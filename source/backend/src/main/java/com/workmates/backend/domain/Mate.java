@@ -35,3 +35,4 @@ public class Mate { // 사용자 친구 등록 여부
     @Builder.Default
     private Boolean isAccepted = false; // sender가 보낸 친구 요청의 수락 여부. 기본적으로 false
 }
+
