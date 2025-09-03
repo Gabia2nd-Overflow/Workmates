@@ -1,0 +1,12 @@
+- UserFooter.css 조정
+- Header.css 조정
+- WorkshopPage 조정
+- UserFooter에 Sidebar 가려지는 거 수정
+
+- 로그인 페이지 디자인 변경
+- font 전역으로 등록.
+  > base: ["Cafe24Ssurround", "Noto Sans KR", "Malgun Gothic", "sans-serif"],
+    brand: ["Cafe24Ssurround", "sans-serif"],
+    cute: ["Katuri", "sans-serif"],
+ > index.css에 기본 base font로 등록해놨으나 다른걸로 교체 원할 시 font 골라서 사용 가능
+   
