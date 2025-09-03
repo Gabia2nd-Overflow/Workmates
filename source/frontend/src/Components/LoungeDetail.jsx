@@ -8,12 +8,18 @@ import "./LoungeDetail.css"
 
 export default function LoungeDetail() {
   const { workshopId, loungeId } = useParams();
+
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editInput, setEditInput] = useState("");
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user?.id;
+
+  const user = (() => {
+    try { return JSON.parse(localStorage.getItem("user") || "null"); }
+    catch { return null; }
+  })();
+  const userId = user?.id ?? user?.userId ?? user?.username ?? null;
+
   const stompClient = useRef(null);
   const scrollRef = useRef(null);
 
@@ -22,7 +28,7 @@ export default function LoungeDetail() {
     if (!workshopId || !loungeId) return;
     messageAPI
       .list(workshopId, loungeId)
-      .then(({ data }) => setMessages(data ?? []))
+      .then(({ data }) => setMessages(Array.isArray(data) ? data : []))
       .catch(() => setMessages([]));
   }, [workshopId, loungeId]);
 
@@ -31,22 +37,17 @@ export default function LoungeDetail() {
     if (!workshopId || !loungeId) return;
 
     const client = new Client({
-      // HTTPS이면 wss:// 로 바꾸세요.
       brokerURL: import.meta.env.VITE_WS_URL || "ws://localhost:8080/ws-stomp",
       reconnectDelay: 5000,
-      // JWT 쓰면 여기에 Authorization 넣기
       connectHeaders: (() => {
         const token = localStorage.getItem("token");
         return token ? { Authorization: `Bearer ${token}` } : {};
       })(),
-      // 로그 보고 싶으면 켜기
       // debug: (str) => console.log(str),
       onConnect: () => {
-        // ✅ 서버 브로드캐스트 목적지에 맞춰 구독 경로 통일 (dot 경로)
         const SUB_TOPIC = `/sub/workshops.${workshopId}.lounges.${loungeId}`;
 
         const sub = client.subscribe(SUB_TOPIC, (frame) => {
-          // 서버가 { type, message } 형태로 주는 경우와, 곧바로 메시지 객체를 주는 경우 모두 대응
           const payload = JSON.parse(frame.body);
           const msg = payload?.message ?? payload;
 
@@ -57,7 +58,6 @@ export default function LoungeDetail() {
           });
         });
 
-        // clean-up 시 해제
         client._workmatesSub = sub;
       },
     });
@@ -66,13 +66,8 @@ export default function LoungeDetail() {
     stompClient.current = client;
 
     return () => {
-      try {
-        client._workmatesSub?.unsubscribe();
-      } catch {
-        console.error("에러발생.")
-      }
-        client.deactivate();
-      
+      try { client._workmatesSub?.unsubscribe(); } catch(e) {console.error(e)}
+      client.deactivate();
     };
   }, [workshopId, loungeId]);
 
@@ -83,18 +78,17 @@ export default function LoungeDetail() {
 
   // === 메시지 전송 (WebSocket 발행) ===
   const handleSend = () => {
-    if (!input.trim() || !stompClient.current || !workshopId || !loungeId)
-      return;
+    if (!input.trim() || !stompClient.current || !workshopId || !loungeId) return;
 
-    // ✅ 서버 @MessageMapping("/workshops.{workshopId}.lounges.{loungeId}.send") 와 1:1 매칭
     const PUB_DEST = `/pub/workshops.${workshopId}.lounges.${loungeId}.send`;
 
     stompClient.current.publish({
       destination: PUB_DEST,
       body: JSON.stringify({
-        // 컨트롤러가 body를 MessageDto.SendMessageRequest(body)로 받음 → 필드명 맞추기
-        // 백엔드 DTO가 writerId 라면 writerId로, senderId라면 senderId로!
-        writerId: userId, // ← 백엔드가 writerId를 받는다면 이대로. (senderId 사용 시 키 이름 변경)
+        // ★ 백엔드에서 ChatSocketRequest가 writerId/workshopId/loungeId/content 를 쓸 수 있으므로 같이 보냄
+        writerId: userId,
+        workshopId: Number(workshopId),
+        loungeId: Number(loungeId),
         content: input,
       }),
       headers: { "content-type": "application/json" },
@@ -106,10 +100,9 @@ export default function LoungeDetail() {
   // === 메시지 수정 (REST) ===
   const handleEdit = async (messageId) => {
     try {
+      // 백엔드가 writerId를 요구하면 아래 같이, 아니라면 content만
       await messageAPI.edit(workshopId, loungeId, messageId, {
-        // ⚠️ 백엔드 REST가 senderId/ writerId 중 무엇을 받는지 확인.
-        // 기존 문서에선 senderId 사용 예시가 많았음. 필요 시 writerId로 변경.
-        senderId: userId,
+        writerId: userId,
         content: editInput,
       });
       setMessages((prev) =>
@@ -135,23 +128,22 @@ export default function LoungeDetail() {
   return (
     <div className="flex flex-col h-full">
       {/* 헤더 */}
-      <div className="lounge-header">
-        라운지 #{loungeId}
-      </div>
+      <div className="lounge-header">라운지 #{loungeId}</div>
 
       {/* 메시지 영역 */}
       <div className="lounge-messages">
         {messages.map((msg) => (
-          <div key={`${msg.id}-${msg.updatedAt || ""}`} className="mb-3">
+          <div key={`${msg.id}-${msg.updatedAt || msg.writtenAt || ""}`} className="mb-3">
             <div className="lounge-msg-meta">
               <span>
-                {msg.senderNickname ?? msg.senderId}
-                {msg.senderId === userId && (
+                {/* ★ 백엔드 표준 필드명으로 표시 */}
+                {msg.writerNickname ?? msg.writerId ?? "익명"}
+                {String(msg.writerId) === String(userId) && (
                   <>
                     <button
                       onClick={() => {
                         setEditingMessageId(msg.id);
-                        setEditInput(msg.content);
+                        setEditInput(msg.content || "");
                       }}
                       className="btn-inline btn-inline--edit"
                     >
@@ -167,8 +159,8 @@ export default function LoungeDetail() {
                 )}
               </span>
               <span className="meta-time">
-                {msg.createdAt
-                  ? new Date(msg.createdAt).toLocaleTimeString([], {
+                {msg.writtenAt
+                  ? new Date(msg.writtenAt).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })
@@ -183,20 +175,15 @@ export default function LoungeDetail() {
                   onChange={(e) => setEditInput(e.target.value)}
                   className="textarea-sm"
                 />
-                <button
-                  onClick={() => handleEdit(msg.id)}
-                  className="btn btn--success-sm mt-1"
-                >
+                <button onClick={() => handleEdit(msg.id)} className="btn btn--success-sm mt-1">
                   수정 완료
                 </button>
               </div>
             ) : msg.type === "FILE" ? (
               <>
-                <div className="file-note">
-                  📎 파일 업로드가 완료되었습니다.
-                </div>
+                <div className="file-note">📎 파일 업로드가 완료되었습니다.</div>
                 <a
-                  href={msg.fileUrl}
+                  href={msg.attachmentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 underline text-sm"
@@ -205,9 +192,7 @@ export default function LoungeDetail() {
                 </a>
               </>
             ) : (
-              <div className="msg-content">
-                {msg.content}
-              </div>
+              <div className="msg-content">{msg.content}</div>
             )}
           </div>
         ))}
@@ -216,7 +201,6 @@ export default function LoungeDetail() {
 
       {/* 입력/파일 */}
       <div className="composer">
-        {/* ⬇ FileUploadButton 내부도 chatroomId → (workshopId, loungeId)로 변경 필요 */}
         <FileUploadButton
           workshopId={workshopId}
           loungeId={loungeId}
@@ -238,10 +222,7 @@ export default function LoungeDetail() {
           }}
         />
 
-        <button
-          onClick={handleSend}
-          className="btn btn--primary"
-        >
+        <button onClick={handleSend} className="btn btn--primary">
           전송
         </button>
       </div>

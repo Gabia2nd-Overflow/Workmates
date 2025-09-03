@@ -3,16 +3,9 @@ package com.workmates.backend.web.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User; // 스프링 기본 User
+import org.springframework.web.bind.annotation.*;
 
 import com.workmates.backend.service.WorkshopService;
 import com.workmates.backend.web.dto.WorkshopDto;
@@ -29,27 +22,24 @@ public class WorkshopController {
 
     @PostMapping
     public WorkshopDto.Response create(
-            @RequestHeader("X-User-Id") String userId,      // ✅ DEV 헤더
+            @AuthenticationPrincipal User principal,
             @RequestBody @Valid WorkshopDto.CreateRequest req
     ) {
+        String userId = principal.getUsername(); // = JWT subject (id)
         return workshopService.create(userId, req);
     }
 
-    // ✅ DEV 전용: 헤더로 받은 userId 기준 "내 워크샵만" 목록
     @GetMapping
-    public List<WorkshopDto.Response> list(
-            @RequestHeader("X-User-Id") String userId
-    ) {
-        return workshopService.listForUser(userId);
+    public List<WorkshopDto.Response> list(@AuthenticationPrincipal User principal) {
+        return workshopService.listForUser(principal.getUsername());
     }
 
-    // ✅ DEV 전용: 헤더로 받은 userId 기준 상세 (멤버십 체크 포함)
     @GetMapping("/{id}")
     public WorkshopDto.Response get(
             @PathVariable Long id,
-            @RequestHeader("X-User-Id") String userId
+            @AuthenticationPrincipal User principal
     ) {
-        return workshopService.getForUser(id, userId);
+        return workshopService.getForUser(id, principal.getUsername());
     }
 
     @PatchMapping("/{id}")
@@ -64,5 +54,4 @@ public class WorkshopController {
     public void delete(@PathVariable Long id) {
         workshopService.softDelete(id);
     }
-
 }

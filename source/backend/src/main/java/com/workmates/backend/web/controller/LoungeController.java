@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 
 import jakarta.validation.Valid;
 
@@ -22,9 +24,13 @@ public class LoungeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LoungeDto.Response create(@PathVariable Long workshopId,
-                                     @RequestBody @Valid LoungeDto.CreateRequest req) {
-        return loungeService.create(workshopId, req);
+        public LoungeDto.Response create(
+            @PathVariable Long workshopId,
+            @RequestBody @Valid LoungeDto.CreateRequest req,
+            @AuthenticationPrincipal User principal
+    ) {
+        String userId = principal.getUsername();
+        return loungeService.create(workshopId, req /*, userId 필요하면 여기서 넘김*/);
     }
 
     @GetMapping
