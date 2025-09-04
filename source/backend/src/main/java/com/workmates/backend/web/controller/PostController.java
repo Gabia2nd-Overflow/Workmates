@@ -6,8 +6,11 @@ import com.workmates.backend.web.dto.PostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import jakarta.validation.Valid;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/posts")
@@ -16,11 +19,21 @@ public class PostController {
 
     private final PostService postService;
 
+    @PostMapping
+    public ResponseEntity<PostDto.Response> createPost(
+            @RequestBody PostDto.Request request,
+            @AuthenticationPrincipal User principal
+    ) {
+        String username = principal.getUsername(); // JWT에서 추출된 username
+        PostDto.Response response = postService.createPost(request, username);
+        return ResponseEntity.ok(response);
+    }
+
     // 특정 게시글 조회
     @GetMapping("/{id}")
     public ResponseEntity<PostDto.Response> getPost(@PathVariable Long id) {
-        Post post = postService.getPostById(id);
-        return ResponseEntity.ok(PostDto.Response.from(post));
+        PostDto.Response response = postService.getPostById(id);
+        return ResponseEntity.ok(response);
     }
 
     // 게시글 조회수 증가 (JWT 필요없음, 누구나 증가 가능)
@@ -28,24 +41,5 @@ public class PostController {
     public ResponseEntity<Void> increaseViews(@PathVariable Long id) {
         postService.increaseViews(id);
         return ResponseEntity.ok().build();
-    }
-
-    // 특정 게시글 댓글 조회
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<List<PostDto.CommentResponse>> getComments(@PathVariable Long id) {
-        List<PostDto.CommentResponse> comments = postService.getComments(id);
-        return ResponseEntity.ok(comments);
-    }
-
-    // 댓글 작성 (JWT 필요)
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<PostDto.CommentResponse> createComment(
-            @PathVariable Long id,
-            @RequestBody @Valid PostDto.CommentRequest request,
-            @RequestHeader("Authorization") String authorizationHeader) {
-
-        String token = authorizationHeader.replace("Bearer ", "");
-        PostDto.CommentResponse comment = postService.createComment(id, request, token);
-        return ResponseEntity.ok(comment);
     }
 }
