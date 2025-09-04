@@ -78,9 +78,17 @@ public class ScheduleController {
     }
 
     //워크샵별 미완료 목록 (마감일 오름차순)
+<<<<<<< HEAD
     @GetMapping("/workshops/{workshopId}/schedules/incomplete")
     public ResponseEntity<List<ScheduleDto.Response>> listIncompleteForWorkshop(
             @PathVariable Long workshopId
+=======
+    @GetMapping("/workshops/{workshopId}/schedules")
+    public ResponseEntity<List<ScheduleDto.Response>> listIncompleteForWorkshop(
+            @PathVariable Long workshopId,
+            @RequestParam(name = "status", required = false, defaultValue = "incomplete") String status,
+            @RequestParam(name = "sort", required = false, defaultValue = "dueDate,asc") String sort
+>>>>>>> d778ad57e020f51dd9d4180fe51b5f6b793a7335
     ) {
     List<ScheduleDto.Response> list = scheduleService.listIncompleteForWorkshop(workshopId);
     return ResponseEntity.ok(list);
