@@ -4,6 +4,7 @@ import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
 import com.workmates.backend.repository.ScheduleRepository;
 import com.workmates.backend.web.dto.ScheduleDto;
+import com.workmates.backend.web.dto.ScheduleStatsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    // 생성: writerId / workshopId는 DTO 외부에서 주입(컨트롤러에서 PathVariable/인증으로 추출)
+    // 생성
     @Transactional
     public ScheduleDto.Response createSchedule(ScheduleDto.CreateRequest dto, Long workshopId, String writerId) {
         validateDates(dto.getStartDate(), dto.getDueDate()); // 400
@@ -27,7 +28,7 @@ public class ScheduleService {
         return ScheduleDto.Response.from(scheduleRepository.save(entity));
     }
 
-    // 수정: (현재 접근 제어 파라미터 없음 — 정책 확정 후 currentUserId 받아서 가드 추가 권장)
+    // 수정
     @Transactional
     public ScheduleDto.Response updateSchedule(Long id, ScheduleDto.UpdateRequest dto) {
         return scheduleRepository.findById(id).map(sched -> {
@@ -115,5 +116,41 @@ public class ScheduleService {
             // 잘못된 값이 들어오면 기본값으로 보정
             return Importance.MEDIUM;
         }
+    }
+
+    public ScheduleStatsDto getWorkshopStats(Long workshopId) {
+        long total = scheduleRepository.countByWorkshopIdAndIsDeletedFalse(workshopId);
+        long completed = scheduleRepository.countByWorkshopIdAndIsCompletedTrueAndIsDeletedFalse(workshopId);
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime plus7 = now.plusDays(7);
+
+        long dueSoon = scheduleRepository
+                .countByWorkshopIdAndIsCompletedFalseAndIsDeletedFalseAndDueDateBetween(workshopId, now, plus7);
+
+        long overdue = scheduleRepository
+                .countByWorkshopIdAndIsCompletedFalseAndIsDeletedFalseAndDueDateLessThan(workshopId, now);
+
+        Map<Importance, Long> byImportance = new EnumMap<>(Importance.class);
+        for (Importance i : Importance.values()) byImportance.put(i, 0L);
+        scheduleRepository.countIncompleteGroupByImportanceForWorkshop(workshopId)
+                .forEach(row -> byImportance.put(row.getImportancy(), row.getCnt()));
+
+        double rate = (total == 0) ? 0.0 : (completed * 100.0 / total);
+
+        return new ScheduleStatsDto(
+                total,
+                completed,
+                rate,
+                dueSoon,
+                overdue,     // ← 연체 카운트 추가
+                byImportance
+        );
+    }
+
+    public List<ScheduleDto.Response> listIncompleteForWorkshop(Long workshopId) {
+        List<Schedule> entities =
+                scheduleRepository.findByWorkshopIdAndIsCompletedFalseAndIsDeletedFalseOrderByDueDateAsc(workshopId);
+        return entities.stream().map(ScheduleDto.Response::from).toList();
     }
 }

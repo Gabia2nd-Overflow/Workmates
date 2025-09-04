@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -115,4 +116,66 @@ class ScheduleServiceTest {
         scheduleService.deleteSchedule(1L);
         verify(scheduleRepository).deleteById(1L);
     }
+
+    @Test
+@DisplayName("미완료 목록: dueDate 오름차순으로 반환")
+void listIncompleteForWorkshop_ordersByDueDateAsc() {
+    // given
+    Schedule a = Schedule.builder()
+            .id(2L).title("A")
+            .startDate(LocalDateTime.of(2025,9,1,10,0))
+            .dueDate(LocalDateTime.of(2025,9,1,10,30))
+            .importancy(Importance.MEDIUM).isCompleted(false).isDeleted(false)
+            .workshopId(10L).writerId("alice").build();
+
+    Schedule b = Schedule.builder()
+            .id(3L).title("B")
+            .startDate(LocalDateTime.of(2025,9,1,10,0))
+            .dueDate(LocalDateTime.of(2025,9,1,11,0))
+            .importancy(Importance.HIGH).isCompleted(false).isDeleted(false)
+            .workshopId(10L).writerId("alice").build();
+
+    when(scheduleRepository.findByWorkshopIdAndIsCompletedFalseAndIsDeletedFalseOrderByDueDateAsc(10L))
+            .thenReturn(List.of(a, b));
+
+    // when
+    var list = scheduleService.listIncompleteForWorkshop(10L);
+
+    // then
+    assertEquals(List.of(2L, 3L), list.stream().map(ScheduleDto.Response::getId).toList());
+    }
+
+    @Test
+@DisplayName("워크샵 통계: total/completed/dueSoon/overdue 및 중요도별 미완료 카운트")
+void getWorkshopStats_aggregates() {
+    Long workshopId = 10L;
+
+    when(scheduleRepository.countByWorkshopIdAndIsDeletedFalse(workshopId)).thenReturn(10L);
+    when(scheduleRepository.countByWorkshopIdAndIsCompletedTrueAndIsDeletedFalse(workshopId)).thenReturn(4L);
+    when(scheduleRepository.countByWorkshopIdAndIsCompletedFalseAndIsDeletedFalseAndDueDateBetween(eq(workshopId), any(), any()))
+            .thenReturn(2L);
+    when(scheduleRepository.countByWorkshopIdAndIsCompletedFalseAndIsDeletedFalseAndDueDateLessThan(eq(workshopId), any()))
+            .thenReturn(1L);
+
+    var rowHigh = new com.workmates.backend.repository.projection.ImportanceCount() {
+        @Override public com.workmates.backend.domain.Importance getImportancy() { return com.workmates.backend.domain.Importance.HIGH; }
+        @Override public Long getCnt() { return 3L; }
+    };
+    var rowMed = new com.workmates.backend.repository.projection.ImportanceCount() {
+        @Override public com.workmates.backend.domain.Importance getImportancy() { return com.workmates.backend.domain.Importance.MEDIUM; }
+        @Override public Long getCnt() { return 2L; }
+    };
+    when(scheduleRepository.countIncompleteGroupByImportanceForWorkshop(workshopId))
+            .thenReturn(List.of(rowHigh, rowMed));
+
+    var dto = scheduleService.getWorkshopStats(workshopId);
+
+    assertEquals(10, dto.getTotal());
+    assertEquals(4, dto.getCompletedCount());      // ← DTO 게터명이 중요!
+    assertEquals(40.0, dto.getCompletionRate());
+    assertEquals(2, dto.getDueSoonCount());
+    assertEquals(1, dto.getOverdueCount());
+    assertEquals(3L, dto.getIncompleteByImportance().get(Importance.HIGH));
+    assertEquals(2L, dto.getIncompleteByImportance().get(Importance.MEDIUM));
+}
 }
