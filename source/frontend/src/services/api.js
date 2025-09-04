@@ -28,11 +28,11 @@ api.interceptors.response.use(
 
 /* ===== Auth ===== */
 export const authAPI = {
-  checkId: (data) => api.post("/auth/check-id", data),        // 아이디 중복확인
-  verifyEmail: (data) => api.post("/auth/verify-email", data),// 인증코드 전송/재전송
+  checkId: (data) => api.post("/auth/check-id", data), // 아이디 중복확인
+  verifyEmail: (data) => api.post("/auth/verify-email", data), // 인증코드 전송/재전송
   confirmEmail: (data) => api.post("/auth/confirm-email", data),
   signUp: (data) => api.post("/auth/signup", data),
-  login: (data) => api.post("/auth/login", data),             // 응답 token을 localStorage.setItem('token', token) 로 저장
+  login: (data) => api.post("/auth/login", data), // 응답 token을 localStorage.setItem('token', token) 로 저장
   getMyInfo: () => api.get("/auth/me"),
   updateMyInfo: (data) => api.put("/auth/me", data),
 };
@@ -49,29 +49,44 @@ export const workshopAPI = {
 /* ===== Threads ===== */
 export const threadAPI = {
   list: (workshopId) => api.get(`/workshops/${workshopId}/threads`),
-  get: (workshopId, threadId) => api.get(`/workshops/${workshopId}/threads/${threadId}`),
-  create: (workshopId, data) => api.post(`/workshops/${workshopId}/threads`, data),
-  update: (workshopId, threadId, data) => api.patch(`/workshops/${workshopId}/threads/${threadId}`, data),
-  remove: (workshopId, threadId) => api.delete(`/workshops/${workshopId}/threads/${threadId}`),
+  get: (workshopId, threadId) =>
+    api.get(`/workshops/${workshopId}/threads/${threadId}`),
+  create: (workshopId, data) =>
+    api.post(`/workshops/${workshopId}/threads`, data),
+  update: (workshopId, threadId, data) =>
+    api.patch(`/workshops/${workshopId}/threads/${threadId}`, data),
+  remove: (workshopId, threadId) =>
+    api.delete(`/workshops/${workshopId}/threads/${threadId}`),
 };
 
 /* ===== Lounges ===== */
 export const loungeAPI = {
   list: (workshopId) => api.get(`/workshops/${workshopId}/lounges`),
-  get: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}`),
-  create: (workshopId, data) => api.post(`/workshops/${workshopId}/lounges`, data),
-  update: (workshopId, loungeId, data) => api.patch(`/workshops/${workshopId}/lounges/${loungeId}`, data),
-  remove: (workshopId, loungeId) => api.delete(`/workshops/${workshopId}/lounges/${loungeId}`),
+  get: (workshopId, loungeId) =>
+    api.get(`/workshops/${workshopId}/lounges/${loungeId}`),
+  create: (workshopId, data) =>
+    api.post(`/workshops/${workshopId}/lounges`, data),
+  update: (workshopId, loungeId, data) =>
+    api.patch(`/workshops/${workshopId}/lounges/${loungeId}`, data),
+  remove: (workshopId, loungeId) =>
+    api.delete(`/workshops/${workshopId}/lounges/${loungeId}`),
 };
 
 /* ===== Messages ===== */
 export const messageAPI = {
-  list: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}/messages`),
-  send: (workshopId, loungeId, data) => api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, data),
+  list: (workshopId, loungeId) =>
+    api.get(`/workshops/${workshopId}/lounges/${loungeId}/messages`),
+  send: (workshopId, loungeId, data) =>
+    api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, data),
   edit: (workshopId, loungeId, messageId, data) =>
-    api.patch(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`, data),
+    api.patch(
+      `/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`,
+      data
+    ),
   remove: (workshopId, loungeId, messageId) =>
-    api.delete(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`),
+    api.delete(
+      `/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`
+    ),
 };
 
 /* ===== Files ===== */
@@ -81,7 +96,9 @@ export const fileAPI = {
       headers: { "Content-Type": "multipart/form-data" },
     }),
   download: (workshopId, loungeId, fileId) =>
-    api.get(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`, { responseType: "blob" }),
+    api.get(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`, {
+      responseType: "blob",
+    }),
   remove: (workshopId, loungeId, fileId) =>
     api.delete(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`),
 };
@@ -94,6 +111,16 @@ export const postAPI = {
     }),
   create: (threadId, post) =>
     axios.post(`/api/threads/${threadId}/posts`, post),
+};
+
+/* ===== Mates ===== */
+export const mateApi = {
+  getList: (id) => api.get(`/mates/${id}`), // 친구 목록 조회
+  search: (id) => api.post("/mates/search", { id }), // 사용자 검색
+  append: (senderId, receverId) => api.post("/append", { senderId, receverId }), // 친구 추가
+  remove: (id, targetId) => api.post("/remove", { id, targetId }), // 친구 삭제
+  handle: (senderId, receverId, isAccepted) =>
+    api.post("/appendHandle", { senderId, receverId, isAccepted }), // 친구 요청 처리
 };
 
 export default api;
