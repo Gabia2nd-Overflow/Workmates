@@ -10,6 +10,10 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (config.data instanceof FormData) {
+    // boundary 자동 설정하게 두기
+    delete config.headers["Content-Type"];
+  }
   return config;
 });
 
@@ -72,20 +76,21 @@ export const messageAPI = {
     api.patch(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`, data),
   remove: (workshopId, loungeId, messageId) =>
     api.delete(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`),
+  create: (workshopId, loungeId, payload) =>
+    api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, payload),
 };
 
-/* ===== Files ===== */
 export const fileAPI = {
-  upload: (workshopId, loungeId, formData) =>
-    api.post(`/workshops/${workshopId}/lounges/${loungeId}/files`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
-  download: (workshopId, loungeId, fileId) =>
-    api.get(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`, { responseType: "blob" }),
-  remove: (workshopId, loungeId, fileId) =>
-    api.delete(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`),
+  // 백엔드: POST /api/messages/files (multipart)
+  uploadToMessage: (workshopId, loungeId, messageId, file) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("workshopId", String(workshopId));
+    fd.append("loungeId", String(loungeId));
+    fd.append("messageId", String(messageId));
+    return api.post(`/messages/files`, fd); // baseURL에 /api 포함
+  },
 };
-
 /* ===== Posts ===== */
 export const postAPI = {
   list: (threadId, { sort, keyword }) =>

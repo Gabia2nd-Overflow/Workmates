@@ -50,7 +50,17 @@ public class MessageService {
         Lounge lounge = requireLounge(workshopId, loungeId);
         User sender = requireUser(userId);
 
-        Message saved = messageRepository.save(new Message(lounge.getId(), sender.getId(), content));
+            // 기존 생성 방식 유지
+        Message m = new Message(lounge.getId(), sender.getId(), content);
+
+        // ✅ 닉네임 채워주기 (null/blank면 userId로 대체)
+        String nickname = (sender.getNickname() != null && !sender.getNickname().isBlank())
+                ? sender.getNickname()
+                : sender.getId();
+        m.setWriterNickname(nickname);   // ★ 이 한 줄이 핵심
+
+        Message saved = messageRepository.save(m);
+
 
         MessageDto.ChatSocketResponse dto = MessageDto.ChatSocketResponse.from(saved, workshopId);
         broadcastService.sendCreated(dto);
