@@ -1,10 +1,25 @@
+package com.workmates.backend.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.workmates.backend.domain.Comment;
+import com.workmates.backend.domain.Post;
+import com.workmates.backend.repository.CommentRepository;
+import com.workmates.backend.repository.PostRepository;
+import com.workmates.backend.web.dto.*;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private final JwtUtil jwtUtil;
+    // private final JwtUtil jwtUtil;
 
     // 게시글 조회
     public Post getPostById(Long id) {
@@ -16,12 +31,12 @@ public class PostService {
     @Transactional
     public void increaseViews(Long postId) {
         Post post = getPostById(postId);
-        post.setViews(post.getViews() + 1);
+        post.setViewCount(post.getViewCount() + 1);
     }
 
     // 댓글 조회
     public List<PostDto.CommentResponse> getComments(Long postId) {
-        return commentRepository.findByPostId(postId)
+        return commentRepository.findAllByPostId(postId)
                 .stream()
                 .map(PostDto.CommentResponse::from)
                 .toList();
@@ -30,11 +45,11 @@ public class PostService {
     // 댓글 작성
     @Transactional
     public PostDto.CommentResponse createComment(Long postId, PostDto.CommentRequest request, String token) {
-        String nickname = jwtUtil.extractNickname(token);
+        // String nickname = jwtUtil.extractNickname(token);
         Post post = getPostById(postId);
 
         Comment comment = Comment.builder()
-                .post(post)
+                .postId(postId)
                 .content(request.getContent())
                 .writerNickname(nickname)
                 .build();
