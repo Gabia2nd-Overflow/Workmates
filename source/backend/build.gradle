@@ -51,6 +51,7 @@ dependencies {
 
 	// OpenAI API
 	implementation("org.springframework.ai:spring-ai-openai:1.0.0") 
+
 }
 
 tasks.named('test') {

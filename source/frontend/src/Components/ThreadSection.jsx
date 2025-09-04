@@ -2,35 +2,38 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ThreadSection({ workshopId, threads, setThreads }) {
+
+export default function ThreadSection({ workshopId, threads, setThreads  }) {
   const navigate = useNavigate();
   const [creatingThread, setCreatingThread] = useState(false);
   const [threadName, setThreadName] = useState("");
 
-  const createThread = async (e) => {
-    e.preventDefault();
-    try {
-      // 스레드 생성 API 호출
-      const res = await fetch(`/api/workshops/${workshopId}/threads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: threadName }),
-      }).then((res) => res.json());
+const createThread = async (e) => {
+  e.preventDefault();
 
-      // 백엔드 응답 구조에 따라 data 안에 스레드 정보가 있을 수 있음
-      const thread = res.data || res;
+  try {
+    const response = await fetch(`/api/workshops/${workshopId}/threads`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name: threadName }),
+});
 
-      // 상태 업데이트
-      setThreads((prev) => [...prev, thread]);
-      setThreadName("");
-      setCreatingThread(false);
 
-      // ThreadDetail로 이동
-      navigate(`/workshops/${workshopId}/threads/${thread.id}`);
-    } catch (err) {
-      console.error("스레드 생성 중 오류:", err);
+    if (!response.ok) {
+      throw new Error(`서버 오류: ${response.status} - ${await response.text()}`);
     }
-  };
+
+    const newThread = await response.json();
+    setThreads((prev) => [...prev, newThread]);
+    setThreadName("");
+    setCreatingThread(false);
+  } catch (error) {
+    console.error("스레드 생성 중 오류:", error);
+  }
+};
+
+
+
 
   return (
     <div className="space-y-2 mt-4">

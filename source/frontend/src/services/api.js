@@ -88,11 +88,12 @@ export const fileAPI = {
 
 /* ===== Posts ===== */
 export const postAPI = {
-  list: (threadId) => api.get(`/threads/${threadId}/posts`),
-  create: (threadId, data) => api.post(`/threads/${threadId}/posts`, data),
-  get: (postId) => api.get(`/posts/${postId}`),
-  update: (postId, data) => api.patch(`/posts/${postId}`, data),
-  remove: (postId) => api.delete(`/posts/${postId}`),
+  list: (threadId, { sort, keyword }) =>
+    axios.get(`/api/threads/${threadId}/posts`, {
+      params: { sort, keyword },
+    }),
+  create: (threadId, post) =>
+    axios.post(`/api/threads/${threadId}/posts`, post),
 };
 
 export default api;

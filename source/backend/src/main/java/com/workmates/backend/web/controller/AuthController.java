@@ -18,34 +18,34 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/check-id") // 회원가입 - 아이디 중복확인
+    @PostMapping("/auth/check-id") // 회원가입 - 아이디 중복확인
     public ResponseEntity<UserDto.CheckIdResponse> checkId(@Valid @RequestBody UserDto.CheckIdRequest request) {
         return ResponseEntity.ok(userService.checkId(request));
     }
     
-    @PostMapping("/verify-email") // 회원가입 - 이메일 중복확인 및 인증 절차 시작/인증 코드 재전송
+    @PostMapping("/auth/verify-email") // 회원가입 - 이메일 중복확인 및 인증 절차 시작/인증 코드 재전송
     public ResponseEntity<UserDto.VerifyEmailResponse> verifyEmail(@Valid @RequestBody UserDto.VerifyEmailRequest request) {
         return ResponseEntity.ok(userService.verifyEmail(request));
     }
 
-    @PostMapping("/confirm-email") // 회원가입 - 이메일 인증 시도
+    @PostMapping("/auth/confirm-email") // 회원가입 - 이메일 인증 시도
     public ResponseEntity<UserDto.ConfirmEmailResponse> confirmEmail(@Valid @RequestBody UserDto.ConfirmEmailRequest request) {
         return ResponseEntity.ok(userService.confirmEmail(request));
     }
     
-    @PostMapping("/signup") // 회원가입
+    @PostMapping("/auth/signup") // 회원가입
     public ResponseEntity<UserDto.UserResponse> signUp(@Valid @RequestBody UserDto.SignUpRequest request) {
         return ResponseEntity.ok(userService.signUp(request));
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<UserDto.LoginResponse> login(@Valid @RequestBody UserDto.LoginRequest request) {
         UserDto.LoginResponse loginResponse = userService.login(request);
         String token = jwtTokenProvider.generateToken(loginResponse.getId());
@@ -54,13 +54,13 @@ public class AuthController {
     }
 
     //토큰 파싱을 직접 하지 말고 똑같이 @AuthenticationPrincipal로 바꿀 수 있다. 기존코드와 차이 확인.
-    @GetMapping("/me")
+    @GetMapping("/user-info")
     public ResponseEntity<UserDto.UserResponse> getMyInfo(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return ResponseEntity.ok(userService.getUserInfo(principal.getUsername()));
     }
 
-    @PutMapping("/me")
+    @PutMapping("/user-info")
     public ResponseEntity<UserDto.UserResponse> updateMyInfo(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
             @Valid @RequestBody UserDto.UpdateRequest request) {
