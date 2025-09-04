@@ -46,12 +46,11 @@ public class PostService {
     @Transactional
     public PostDto.CommentResponse createComment(Long postId, PostDto.CommentRequest request, String token) {
         // String nickname = jwtUtil.extractNickname(token);
-        Post post = getPostById(postId);
 
         Comment comment = Comment.builder()
                 .postId(postId)
                 .content(request.getContent())
-                .writerNickname(nickname)
+                .writerNickname(request.)
                 .build();
 
         commentRepository.save(comment);

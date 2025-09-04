@@ -1,5 +1,6 @@
 package com.workmates.backend.service;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.workmates.backend.config.JwtTokenProvider;
 import com.workmates.backend.constant.DomainConstants;
 import com.workmates.backend.constant.ServiceConstants;
 import com.workmates.backend.domain.EmailVerification;
@@ -32,6 +34,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
     
     @Value("${spring.mail.username}")
     private String from;
@@ -148,29 +151,40 @@ public class UserService {
     }
 
     public UserDto.LoginResponse login(UserDto.LoginRequest request) {
-        User user = userRepository.findById(request.getId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        Optional<User> user = userRepository.findById(request.getId());
+        
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("사용자가 존재하지 않습니다.");
+        }
+        if (!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+        String token = jwtTokenProvider.generateToken(request.getId());
+
         return UserDto.LoginResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
+                .id(user.get().getId())
+                .email(user.get().getEmail())
+                .nickname(user.get().getNickname())
+                .token(token)
                 .build();
     }
 
-    public UserDto.UserResponse getUserInfo(String id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    public UserDto.UserResponse getUserInfo(String id) { // 마이페이지 
+        if(!Pattern.matches(ServiceConstants.ID_REGEX, id)) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
         
-        return UserDto.UserResponse.from(user);
+        return UserDto.UserResponse.from(user.get());
     }
 
     @Transactional
-    public UserDto.UserResponse updateUser(String id, UserDto.UpdateRequest request) {
+    public UserDto.UserResponse updateUserInfo(String id, UserDto.UpdateRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 

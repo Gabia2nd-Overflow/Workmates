@@ -108,7 +108,7 @@ public class UserDto {
         private String password;
     }
 
-    // 로그인 응답.
+    // 로그인 응답
     @Data
     @Builder
     @Getter
@@ -129,12 +129,16 @@ public class UserDto {
         private String id;
         private String nickname;
         private String email;
-        
+        private String emailPassword;
+        private String imageUrl;
+
         public static UserResponse from(User user) {
             return UserResponse.builder()
                     .id(user.getId())
-                    .email(user.getEmail())
                     .nickname(user.getNickname())
+                    .email(user.getEmail())
+                    .emailPassword(user.getEmailPassword())
+                    .imageUrl(user.getImageUrl())
                     .build();
         }
     }
@@ -145,7 +149,52 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateRequest {
-        private String nickname;
-        private String email;
+        private String currentPassword;
+        private String newPassword;
+        private String newNickname;
+        private String newEmailPassword;
+        private String newImageUrl;
+        private Boolean deleteAccount;
+    }
+
+    // 마이 페이지 정보 수정 응답
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateResponse {
+        Boolean isUpdated;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdatePasswordRequest {
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdatePasswordResponse {
+        
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuitRequest {
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuitResponse {
+        
     }
 }

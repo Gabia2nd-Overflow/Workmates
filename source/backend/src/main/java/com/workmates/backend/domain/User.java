@@ -33,8 +33,8 @@ public class User { // 사용자
     @Column(name = "password", nullable = false, length = DomainConstants.POST_MAX_LEN) // 암호화때문에 32로는 택도없음
     private String password; // 사용자 비밀번호
     
-    @Column(name = "bio", length = DomainConstants.COMMENT_MAX_LEN)
-    private String bio; // 사용자 프로필 소개
+    // @Column(name = "bio", length = DomainConstants.COMMENT_MAX_LEN)
+    // private String bio; // 사용자 프로필 소개
     
     @Column(name = "image_url", unique = true)
     @Builder.Default
@@ -48,7 +48,7 @@ public class User { // 사용자
     private String email; // 이메일 계정 주소
 
     @Column(name = "email_password", length = DomainConstants.COMMENT_MAX_LEN)
-    private String emailPassword; // 이메일 계정이 사용하는 비밀번호
+    private String emailPassword; // 이메일 계정이 사용하는 비밀번호 - 구글 앱 비밀번호 등
     
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default

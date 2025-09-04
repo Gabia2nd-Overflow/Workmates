@@ -17,8 +17,8 @@ public class PostController {
     private final PostService postService;
 
     // 특정 게시글 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto.Response> getPost(@PathVariable Long id) {
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDto.Response> getPost(@PathVariable Long postId) {
         Post post = postService.getPostById(id);
         return ResponseEntity.ok(PostDto.Response.from(post));
     }
