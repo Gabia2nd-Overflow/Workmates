@@ -3,6 +3,8 @@ package com.workmates.backend.web.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,9 +52,11 @@ public class MessageController {
     public MessageDto.ChatSocketResponse send(
             @PathVariable Long workshopId,
             @PathVariable Long loungeId,
-            @RequestBody @Valid MessageDto.SendMessageRequest body
+            @RequestBody @Valid MessageDto.SendMessageRequest body,
+            @AuthenticationPrincipal User principal // ★ 토큰에서 들어온 principal
     ) {
-        return messageService.sendMessage(workshopId, loungeId, body.getWriterId(), body.getContent());
+        String userId = principal.getUsername(); // ★ subject = userId
+        return messageService.sendMessage(workshopId, loungeId, userId, body.getContent());
     }
 
     /**
@@ -65,11 +69,11 @@ public class MessageController {
             @PathVariable Long workshopId,
             @PathVariable Long loungeId,
             @PathVariable Long messageId,
-            @RequestBody @Valid MessageDto.EditMessageRequest body
+            @RequestBody @Valid MessageDto.EditMessageRequest body,
+            @AuthenticationPrincipal User principal
     ) {
-        return messageService.editMessage(
-                workshopId, loungeId, messageId, body.getWriterId(), body.getContent()
-        );
+        String editorId = principal.getUsername();
+        return messageService.editMessage(workshopId, loungeId, messageId, editorId, body.getContent());
     }
 
     /**
@@ -83,8 +87,9 @@ public class MessageController {
             @PathVariable Long workshopId,
             @PathVariable Long loungeId,
             @PathVariable Long messageId,
-            @RequestBody @Valid MessageDto.DeleteMessageRequest body
+            @AuthenticationPrincipal User principal
     ) {
-        messageService.deleteMessage(workshopId, loungeId, messageId, body.getWriterId());
+        String requesterId = principal.getUsername();
+        messageService.deleteMessage(workshopId, loungeId, messageId, requesterId);
     }
 }
