@@ -5,6 +5,8 @@ import com.workmates.backend.domain.Importance;
 import com.workmates.backend.service.ScheduleService;
 import com.workmates.backend.web.controller.ScheduleController;
 import com.workmates.backend.web.dto.ScheduleDto;
+import com.workmates.backend.web.dto.ScheduleStatsDto;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,6 +18,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.EnumMap;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -137,4 +141,60 @@ class ScheduleControllerTest {
                .andDo(print())
                .andExpect(status().isNoContent());
     }
+
+    @Test
+    @DisplayName("미완료 목록: GET /api/workshops/{id}/schedules/incomplete → 200 & dueDate 오름차순")
+    @WithMockUser(username = "alice")
+    void listIncompleteForWorkshop_ok() throws Exception {
+        Long workshopId = 10L;
+
+        List<ScheduleDto.Response> list = List.of(
+                ScheduleDto.Response.builder()
+                        .id(2L).title("보드 리팩터링")
+                        .startDate(LocalDateTime.of(2025, 9, 1, 10, 0))
+                        .dueDate(LocalDateTime.of(2025, 9, 1, 10, 30))
+                        .importancy(Importance.MEDIUM).isCompleted(false).build(),
+                ScheduleDto.Response.builder()
+                        .id(3L).title("디자인 리뷰")
+                        .startDate(LocalDateTime.of(2025, 9, 1, 10, 0))
+                        .dueDate(LocalDateTime.of(2025, 9, 1, 11, 0))
+                        .importancy(Importance.HIGH).isCompleted(false).build()
+        );
+        when(scheduleService.listIncompleteForWorkshop(workshopId)).thenReturn(list);
+
+        mockMvc.perform(get("/api/workshops/{workshopId}/schedules/incomplete", workshopId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(2L))
+                .andExpect(jsonPath("$[1].id").value(3L));
+        }
+
+        @Test
+@DisplayName("워크샵 통계: GET /api/workshops/{id}/schedules/stats → 200")
+@WithMockUser(username = "alice")
+void getWorkshopStats_ok() throws Exception {
+    Long workshopId = 10L;
+    Map<Importance, Long> byImp = new EnumMap<>(Importance.class);
+    byImp.put(Importance.LOW, 1L);
+    byImp.put(Importance.MEDIUM, 2L);
+    byImp.put(Importance.HIGH, 3L);
+
+    var dto = new ScheduleStatsDto(
+            10,   // total
+            4,    // completedCount
+            40.0, // completionRate
+            2,    // dueSoonCount
+            1,    // overdueCount
+            byImp // incompleteByImportance
+    );
+    when(scheduleService.getWorkshopStats(workshopId)).thenReturn(dto);
+
+    mockMvc.perform(get("/api/workshops/{workshopId}/schedules/stats", workshopId))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.total").value(10))
+           .andExpect(jsonPath("$.completedCount").value(4))
+           .andExpect(jsonPath("$.completionRate").value(40.0))
+           .andExpect(jsonPath("$.dueSoonCount").value(2))
+           .andExpect(jsonPath("$.overdueCount").value(1))
+           .andExpect(jsonPath("$.incompleteByImportance.HIGH").value(3));
+}
 }
