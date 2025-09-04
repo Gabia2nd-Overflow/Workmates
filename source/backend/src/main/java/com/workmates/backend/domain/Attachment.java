@@ -2,8 +2,22 @@
 package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
-import jakarta.persistence.*;
-import lombok.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "attachment",
@@ -20,20 +34,22 @@ public class Attachment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false) private String fileUrl;
-    @Column(nullable=false) private String fileName;
-    @Column(nullable=false) private String uploaderId;
+    @Column(nullable = false, length = 500)
+    private String fileUrl;        // ✅ URL만 관리
 
-    private Long workshopId;   // nullable
-    private Long loungeId;     // nullable
+    @Column(nullable = false)
+    private String uploaderId;
+
+    private Long workshopId;       // nullable
+    private Long loungeId;         // nullable
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    private TargetType targetType; // UNASSIGNED, MESSAGE(→추후 POST/COMMENT 추가)
+    @Column(nullable = false)
+    private TargetType targetType; // UNASSIGNED / MESSAGE (→ 추후 POST/COMMENT 추가)
 
-    private Long targetId;     // Message.id (→추후 Post/Comment id)
+    private Long targetId;         // Message.id (→ 추후 Post/Comment id)
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private LocalDateTime uploadedAt;
 
     @PrePersist
