@@ -80,9 +80,8 @@ public class MessageDto {
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class FileUploadResponse {
         private String fileUrl;
-        private String fileName;
-        public static FileUploadResponse from(String fileUrl, String fileName) {
-            return FileUploadResponse.builder().fileUrl(fileUrl).fileName(fileName).build();
+        public static FileUploadResponse from(String fileUrl) {
+            return FileUploadResponse.builder().fileUrl(fileUrl).build();
         }
     }
 

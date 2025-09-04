@@ -1,6 +1,9 @@
 package com.workmates.backend.web.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,11 +22,16 @@ public class MessageFileController {
 
     private final FileUploadService fileUploadService;
 
-    @PostMapping("/files")
-    public ResponseEntity<MessageDto.FileUploadResponse> uploadFile(
-            @RequestParam("file") MultipartFile file) {
-
-        MessageDto.FileUploadResponse response = fileUploadService.upload(file);
-        return ResponseEntity.ok(response);
+    @PostMapping(value = "/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<MessageDto.FileUploadResponse> uploadAndBindToMessage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("workshopId") Long workshopId,
+            @RequestParam("loungeId")   Long loungeId,
+            @RequestParam("messageId")  Long messageId,
+            @AuthenticationPrincipal User principal
+    ) {
+        String uploaderId = principal.getUsername();
+        var resp = fileUploadService.uploadForMessage(file, uploaderId, workshopId, loungeId, messageId);
+        return ResponseEntity.ok(resp); // { fileUrl }
     }
 }
