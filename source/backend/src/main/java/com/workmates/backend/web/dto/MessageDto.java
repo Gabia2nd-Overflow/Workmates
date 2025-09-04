@@ -80,24 +80,17 @@ public class MessageDto {
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class FileUploadResponse {
         private String fileUrl;
-        private String fileName;
-        public static FileUploadResponse from(String fileUrl, String fileName) {
-            return FileUploadResponse.builder().fileUrl(fileUrl).fileName(fileName).build();
+        public static FileUploadResponse from(String fileUrl) {
+            return FileUploadResponse.builder().fileUrl(fileUrl).build();
         }
     }
 
     // ======= 수정/삭제 =======
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EditMessageRequest {
-        @NotNull private Long messageId;
-        @NotBlank private String writerId;
         @NotBlank private String content;
         private String fileUrl;
     }
 
-    @Data @Builder @NoArgsConstructor @AllArgsConstructor
-    public static class DeleteMessageRequest {
-        @NotNull private Long messageId;
-        @NotBlank private String writerId;
-    }
+
 }
