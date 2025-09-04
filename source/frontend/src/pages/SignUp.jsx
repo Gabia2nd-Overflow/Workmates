@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff, Lock, User, Mail, UserCheck } from "lucide-react";
 import { authAPI } from "../services/api";
 import Button from "../Components/Button";
 import Input from "../Components/Input";
@@ -81,8 +80,12 @@ export default function SignUp() {
     clearErrors("id");
     try {
       setIdState("checking");
-      const res = await authAPI.checkId(id);
-      if (res?.isOk) {
+      const res = await authAPI.checkId({ id }); // ✅ { id }
+      const isOk =
+        res?.data?.isOk ??
+        (typeof res?.data?.available === "boolean" ? res.data.available : false);
+
+      if (isOk) {
         setIdState("ok");
         toast.success("사용 가능한 아이디입니다.");
       } else {
@@ -107,13 +110,14 @@ export default function SignUp() {
 
     try {
       setEmailState("sending");
-      const res = await authAPI.verifyEmail(email);
-      if (res?.isCodeSent) {
+      const res = await authAPI.verifyEmail({ email, requestTime: new Date().toISOString(),}); // ✅ { email }
+      const ok = res?.data?.isCodeSent ?? true; // 없으면 true로 가정
+      if (ok) {
         setEmailState("sent");
         toast.success("인증코드를 전송했습니다. 메일함을 확인하세요.");
+        const expires = Number(res?.data?.expiresInSec ?? 60);
+        setCooldown(Number.isFinite(expires) ? Math.max(0, expires) : 60);
 
-        // 60초 쿨다운
-        setCooldown(60);
         timerRef.current = setInterval(() => {
           setCooldown((sec) => {
             if (sec <= 1) {
@@ -143,8 +147,14 @@ export default function SignUp() {
     }
     try {
       setEmailState("confirming");
-      const res = await authAPI.confirmEmail(email, code);
-      if (res?.isConfirmed) {
+      const res = await authAPI.confirmEmail({
+        email,
+        verificationCode: code, // ✅ { email, verificationCode }
+        requestTime: new Date().toISOString(),
+      });
+      const confirmed =
+        res?.data?.isConfirmed ?? res?.data?.confirmed ?? false;
+      if (confirmed) {
         setEmailState("confirmed");
         toast.success("이메일 인증이 완료되었습니다.");
       } else {
@@ -189,27 +199,25 @@ export default function SignUp() {
 
   return (
     <div className="page page--signup">
-
-       {/* 카드 내부에 헤더 배치 */}
-       <div className="signup__container signup__container--spaced">
+      {/* 카드 내부에 헤더 배치 */}
+      <div className="signup__container signup__container--spaced">
         <div className="signup__card">
-        <div className="text-center">
-          
-          <h2 onClick={() => navigate("/")}  className="signup__brand">workmates
-
-          {/* 로고 이미지 */}
-          <img
+          <div className="text-center">
+            <h2 onClick={() => navigate("/")} className="signup__brand">
+              workmates
+              <img
                 src={BRAND_LOGO_SRC}
                 alt="Workmates brand logo"
                 className="signup__logo"
-                onError={(e) => { e.currentTarget.style.display = "none"; }}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
               />
-              </h2>
+            </h2>
+            <p className="signup__subtitle">새로운 계정을 만드세요</p>
+          </div>
 
-          <p className="signup__subtitle">새로운 계정을 만드세요</p>
-        </div>
-      
-          {/* 폼/필드/검증 */}      
+          {/* 폼/필드/검증 */}
           <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
             {/* 아이디 + 중복확인 (가로 배치) */}
             <div>
@@ -222,20 +230,28 @@ export default function SignUp() {
                     {...register("id", {
                       required: "아이디를 입력해주세요.",
                       pattern: { value: ID_REGEX, message: "소문자/숫자/_ 4~20자" },
+                      onChange: () => {
+                        if (idState !== "ok") setIdState("idle");
+                      },
                     })}
                     error={errors.id?.message}
-                    icon={<User className="w-4 h-4" />}
                   />
                 </div>
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   className="signup__sidebtn"
                   onClick={handleCheckId}
                   disabled={!id || idState === "checking" || idState === "ok"}
                   title="아이디 중복확인"
                 >
-                  {idState === "checking" ? "확인중..." : idState === "ok" ? "확인완료" : "중복확인"}
-                </button>
+                  {idState === "checking"
+                    ? "확인중..."
+                    : idState === "ok"
+                    ? "확인완료"
+                    : "중복확인"}
+                </Button>
               </div>
               <p className="text-xs mt-1">
                 {idState === "invalid" && "형식이 올바르지 않습니다."}
@@ -260,11 +276,12 @@ export default function SignUp() {
                       },
                     })}
                     error={errors.email?.message}
-                    icon={<Mail className="w-4 h-4" />}
                   />
                 </div>
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   className="signup__sidebtn"
                   onClick={handleSendEmail}
                   disabled={
@@ -282,7 +299,7 @@ export default function SignUp() {
                     : cooldown > 0
                     ? `재전송(${cooldown}s)`
                     : "인증코드 전송"}
-                </button>
+                </Button>
               </div>
 
               {/* 인증코드 + 코드확인 (가로 배치) */}
@@ -294,18 +311,22 @@ export default function SignUp() {
                       type="text"
                       placeholder="이메일로 받은 6자리 코드"
                       value={code}
-                      onChange={(e) => setCode(e.target.value)}
+                      onChange={(e) =>
+                        setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                      }
                     />
                   </div>
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
+                    size="sm"
                     className="signup__sidebtn"
                     onClick={handleConfirmEmail}
                     disabled={emailState === "confirming" || !code.trim()}
                     title="코드 확인"
                   >
                     {emailState === "confirming" ? "확인중..." : "코드확인"}
-                  </button>
+                  </Button>
                 </div>
               )}
 
@@ -325,7 +346,6 @@ export default function SignUp() {
                   pattern: { value: NICK_REGEX, message: "닉네임 형식을 확인하세요." },
                 })}
                 error={errors.nickname?.message}
-                icon={<UserCheck className="w-4 h-4" />}
               />
             </div>
 
@@ -341,14 +361,14 @@ export default function SignUp() {
                     pattern: { value: PW_REGEX, message: "8~20자 영문/숫자" },
                   })}
                   error={errors.password?.message}
-                  icon={<Lock className="w-4 h-4" />}
                 />
                 <button
                   type="button"
                   className="signup__toggle"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label="비밀번호 표시 토글"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? "숨기기" : "표시"}
                 </button>
               </div>
             </div>
@@ -362,17 +382,18 @@ export default function SignUp() {
                   placeholder="비밀번호를 다시 입력하세요"
                   {...register("confirmPassword", {
                     required: "비밀번호 확인을 입력해주세요.",
-                    validate: (value) => value === password || "비밀번호가 일치하지 않습니다.",
+                    validate: (value) =>
+                      value === password || "비밀번호가 일치하지 않습니다.",
                   })}
                   error={errors.confirmPassword?.message}
-                  icon={<Lock className="w-4 h-4" />}
                 />
                 <button
                   type="button"
                   className="signup__toggle"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label="비밀번호 확인 표시 토글"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showConfirmPassword ? "숨기기" : "표시"}
                 </button>
               </div>
             </div>
