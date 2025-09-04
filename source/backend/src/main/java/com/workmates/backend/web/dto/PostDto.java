@@ -1,7 +1,22 @@
+package com.workmates.backend.web.dto;
+import java.time.LocalDateTime;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import com.workmates.backend.domain.Comment;
+import com.workmates.backend.domain.Post;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 public class PostDto {
+
 
     @Getter
     @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Response {
         private Long id;
         private String title;
@@ -21,6 +36,16 @@ public class PostDto {
             return dto;
         }
     }
+    
+
+    @Getter
+    @Setter
+    public static class Request {
+        private String title;
+        private String content;
+        private String category;
+        private String writerId; // JWT에서 추출된 username
+    }
 
     @Getter
     @Setter
@@ -36,13 +61,5 @@ public class PostDto {
         private String writerNickname;
         private String createdAt;
 
-        public static CommentResponse from(Comment comment) {
-            CommentResponse dto = new CommentResponse();
-            dto.setId(comment.getId());
-            dto.setContent(comment.getContent());
-            dto.setWriterNickname(comment.getWriterNickname());
-            dto.setCreatedAt(comment.getCreatedAt().toString());
-            return dto;
-        }
     }
 }
