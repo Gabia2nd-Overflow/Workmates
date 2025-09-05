@@ -1,16 +1,10 @@
 package com.workmates.backend.web.dto;
+
+import lombok.*;
 import java.time.LocalDateTime;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
-import com.workmates.backend.domain.Comment;
 import com.workmates.backend.domain.Post;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 public class PostDto {
-
 
     @Getter
     @Setter
@@ -22,21 +16,20 @@ public class PostDto {
         private String title;
         private String content;
         private String writerNickname;
-        private Integer viewCount;
-        private String writtenAt;
+        private Integer views;
+        private String createdAt;
 
-        public static PostRequest from(Post post) {
-            PostRequest dto = new PostRequest();
-            dto.setId(post.getId());
-            dto.setTitle(post.getTitle());
-            dto.setContent(post.getContent());
-            dto.setWriterNickname(post.getWriterNickname());
-            dto.setViewCount(post.getViewCount());
-            dto.setWrittenAt(post.getWrittenAt().toString());
-            return dto;
+        public static Response from(Post post) {
+            return Response.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .writerNickname(post.getWriterNickname())
+                    .views(post.getViews())
+                    .createdAt(post.getCreatedAt() != null ? post.getCreatedAt().toString() : "")
+                    .build();
         }
     }
-    
 
     @Getter
     @Setter
@@ -44,47 +37,6 @@ public class PostDto {
         private String title;
         private String content;
         private String category;
-        private String writerId; // JWT에서 추출된 username
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PostResponse {
-        private Long id;
-        private String title;
-        private String content;
-        private String writerNickname;
-        private Integer viewCount;
-        private String writtenAt;
-
-        public static PostResponse from(Post post) {
-            PostResponse dto = new PostResponse();
-            dto.setId(post.getId());
-            dto.setTitle(post.getTitle());
-            dto.setContent(post.getContent());
-            dto.setWriterNickname(post.getWriterNickname());
-            dto.setViewCount(post.getViewCount());
-            dto.setWrittenAt(post.getWrittenAt().toString());
-            return dto;
-        }
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CommentRequest {
-        private String content;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CommentResponse {
-        private Long id;
-        private String content;
-        private String writerNickname;
-        private String writtenAt;
-
+        private Long threadId; // 필수
     }
 }

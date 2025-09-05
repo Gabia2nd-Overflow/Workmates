@@ -1,39 +1,28 @@
-// src/components/ThreadSection.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { threadAPI } from "../services/api"; // <- api.js import
 
-
-export default function ThreadSection({ workshopId, threads, setThreads  }) {
+export default function ThreadSection({ workshopId, threads, setThreads }) {
   const navigate = useNavigate();
   const [creatingThread, setCreatingThread] = useState(false);
   const [threadName, setThreadName] = useState("");
 
-const createThread = async (e) => {
-  e.preventDefault();
+  const createThread = async (e) => {
+    e.preventDefault();
+    try {
+      // Axios 사용, JWT 자동 첨부
+      const { data: newThread } = await threadAPI.create(workshopId, {
+        name: threadName,
+      });
 
-  try {
-    const response = await fetch(`/api/workshops/${workshopId}/threads`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ name: threadName }),
-});
-
-
-    if (!response.ok) {
-      throw new Error(`서버 오류: ${response.status} - ${await response.text()}`);
+      setThreads((prev) => [...prev, newThread]);
+      setThreadName("");
+      setCreatingThread(false);
+    } catch (error) {
+      console.error("스레드 생성 중 오류:", error.response?.data || error.message);
+      alert("스레드 생성 실패: " + (error.response?.data?.message || error.message));
     }
-
-    const newThread = await response.json();
-    setThreads((prev) => [...prev, newThread]);
-    setThreadName("");
-    setCreatingThread(false);
-  } catch (error) {
-    console.error("스레드 생성 중 오류:", error);
-  }
-};
-
-
-
+  };
 
   return (
     <div className="space-y-2 mt-4">
