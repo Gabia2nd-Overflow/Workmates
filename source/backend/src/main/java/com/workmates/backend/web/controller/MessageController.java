@@ -87,7 +87,6 @@ public class MessageController {
             @PathVariable Long workshopId,
             @PathVariable Long loungeId,
             @PathVariable Long messageId,
-            @RequestBody @Valid MessageDto.DeleteMessageRequest body, // ← body 없어도 되면 제거 가능
             @AuthenticationPrincipal User principal
     ) {
         String requesterId = principal.getUsername();

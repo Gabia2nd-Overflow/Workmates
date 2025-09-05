@@ -88,15 +88,9 @@ public class MessageDto {
     // ======= 수정/삭제 =======
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EditMessageRequest {
-        @NotNull private Long messageId;
-        @NotBlank private String writerId;
         @NotBlank private String content;
         private String fileUrl;
     }
 
-    @Data @Builder @NoArgsConstructor @AllArgsConstructor
-    public static class DeleteMessageRequest {
-        @NotNull private Long messageId;
-        @NotBlank private String writerId;
-    }
+
 }
