@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,10 +24,10 @@ import lombok.Setter;
 public class Block { // 사용자 차단 여부 - 차단은 구현하면 +@. 안해도 무관
     
     @Id
-    @Column(name = "id", length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "id", length = DomainUtil.ID_MAX_LEN)
     private String id; // 사용자 아이디
 
     @Id
-    @Column(name = "target_id", length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "target_id", length = DomainUtil.ID_MAX_LEN)
     private String targetId; // 차단의 대상이 된 사용자 아이디
 }

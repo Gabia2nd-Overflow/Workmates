@@ -166,6 +166,7 @@ public class UserService {
                 .id(user.get().getId())
                 .email(user.get().getEmail())
                 .nickname(user.get().getNickname())
+                .imageUrl(user.get().getImageUrl())
                 .token(token)
                 .build();
     }
@@ -185,18 +186,52 @@ public class UserService {
 
     @Transactional
     public UserDto.UserResponse updateUserInfo(String id, UserDto.UpdateRequest request) {
+        if(!Pattern.matches(ServiceConstants.ID_REGEX, id)) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다. - 아이디");
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }
+
+        User userEntity = user.get();
+        if(request.getNewNickname() != null) {
+            if(!Pattern.matches(ServiceConstants.NICKNAME_REGEX, request.getNewNickname())) {
+                throw new IllegalArgumentException("올바르지 않은 요청입니다. - 닉네임");
+            }
+            userEntity.setNickname(request.getNewNickname());
+        }
+        if(request.getNewEmailPassword() != null) {
+            userEntity.setEmailPassword(request.getNewEmailPassword());
+        }
+        if(request.getNewImageUrl() != null) {
+            // 파일 업로드/다운로드 컨트롤러 거쳐서 url 처리 필요
+            String newUrl = request.getNewImageUrl();
+            userEntity.setImageUrl(newUrl);
+        }
+
+        return UserDto.UserResponse.from(userEntity);
+    }
+
+    @Transactional
+    public UserDto.UpdatePasswordResponse updateUserPassword(String id, UserDto.UpdatePasswordRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        if (request.getNickname() != null) {
-            user.setNickname(request.getNickname());
-        }
-        
-        if (request.getEmail() != null) {
-            user.setEmail(request.getEmail());
-        }
+        return UserDto.UpdatePasswordResponse.builder()
+                    .isPasswordUpdated(true)
+                    .build();
+    }
 
-        return UserDto.UserResponse.from(user);
+    @Transactional
+    public UserDto.QuitResponse quit(String id, UserDto.QuitRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        return UserDto.QuitResponse.builder()
+                    .isUserDeleted(true)
+                    .build();
     }
 
     private String generateCode() {

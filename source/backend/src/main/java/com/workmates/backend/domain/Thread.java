@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,7 @@ public class Thread { // 게시판
     @Column(name = "id")
     private Long id; // 스레드 아이디
 
-    @Column(name = "name", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "name", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String name; // 스레드 이름
 
     @Column(name = "is_deleted", nullable = false)

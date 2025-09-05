@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,13 +24,13 @@ import lombok.Setter;
 public class User { // 사용자
     
     @Id
-    @Column(name = "id", length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "id", length = DomainUtil.ID_MAX_LEN)
     private String id; // 사용자 아이디
 
-    @Column(name = "nickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "nickname", nullable = false, unique = true, length = DomainUtil.ID_MAX_LEN)
     private String nickname; // 사용자 닉네임
     
-    @Column(name = "password", nullable = false, length = DomainConstants.POST_MAX_LEN) // 암호화때문에 32로는 택도없음
+    @Column(name = "password", nullable = false, length = DomainUtil.POST_MAX_LEN) // 암호화때문에 32로는 택도없음
     private String password; // 사용자 비밀번호
     
     // @Column(name = "bio", length = DomainConstants.COMMENT_MAX_LEN)
@@ -44,10 +44,10 @@ public class User { // 사용자
     // @Builder.Default
     // private String language = DomainConstants.DEFAULT_LANGUAGE; // 사용자가 사용하는 언어. 기본적으로 한국어
 
-    @Column(name = "email", unique = true, length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "email", unique = true, length = DomainUtil.COMMENT_MAX_LEN)
     private String email; // 이메일 계정 주소
 
-    @Column(name = "email_password", length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "email_password", length = DomainUtil.COMMENT_MAX_LEN)
     private String emailPassword; // 이메일 계정이 사용하는 비밀번호 - 구글 앱 비밀번호 등
     
     @Column(name = "is_deleted", nullable = false)

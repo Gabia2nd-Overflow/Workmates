@@ -2,7 +2,7 @@ package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +31,7 @@ public class Message { // 메세지
     @Column(name = "id")
     private Long id; // 메세지 아이디
 
-    @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "content", nullable = false, length = DomainUtil.COMMENT_MAX_LEN)
     private String content; // 메세지 내용
 
     @Column(name = "attachment_url")
@@ -50,10 +50,10 @@ public class Message { // 메세지
     @Builder.Default
     private boolean isDeleted = false; // 메세지 삭제 여부. 기본적으로 false
 
-    @Column(name = "writer_id", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_id", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String writerId; // 메세지를 작성한 사용자 아이디
 
-    @Column(name = "writer_nickname", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_nickname", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String writerNickname; // 메세지를 작성한 사용자의 닉네임
 
     @Column(name = "lounge_id", nullable = false)

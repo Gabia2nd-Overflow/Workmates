@@ -119,6 +119,7 @@ public class UserDto {
         private String token;
         private String email;
         private String nickname;
+        private String imageUrl;
     }
 
     @Data
@@ -149,12 +150,9 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateRequest {
-        private String currentPassword;
-        private String newPassword;
         private String newNickname;
         private String newEmailPassword;
         private String newImageUrl;
-        private Boolean deleteAccount;
     }
 
     // 마이 페이지 정보 수정 응답
@@ -163,7 +161,11 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateResponse {
-        Boolean isUpdated;
+        private String id;
+        private String nickname;
+        private String email;
+        private String emailPassword;
+        private String imageUrl;
     }
 
     @Data
@@ -171,7 +173,8 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdatePasswordRequest {
-
+        private String currentPassword;
+        private String newPassword;
     }
 
     @Data
@@ -179,7 +182,7 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdatePasswordResponse {
-        
+        private Boolean isPasswordUpdated;
     }
 
     @Data
@@ -187,7 +190,7 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class QuitRequest {
-
+        private String password;
     }
 
     @Data
@@ -195,6 +198,6 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class QuitResponse {
-        
+        private Boolean isUserDeleted;
     }
 }

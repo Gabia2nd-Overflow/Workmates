@@ -53,37 +53,33 @@ public class AuthController {
     }
 
     //토큰 파싱을 직접 하지 말고 똑같이 @AuthenticationPrincipal로 바꿀 수 있다. 기존코드와 차이 확인.
-    @GetMapping("/user-info/{id}")
+    @GetMapping("/user-info")
     public ResponseEntity<UserDto.UserResponse> getUserInfo(
-            @PathVariable String id,
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return ResponseEntity.ok(userService.getUserInfo(principal.getUsername()));
     }
 
-    @PostMapping("/user-info/{id}")
+    @PostMapping("/user-info")
     public ResponseEntity<UserDto.UserResponse> updateUserInfo(
-            @PathVariable String id,
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
             @Valid @RequestBody UserDto.UpdateRequest request) {
-        return ResponseEntity.ok(userService.updateUserInfo(id, request));
+        return ResponseEntity.ok(userService.updateUserInfo(principal.getUsername(), request));
     }
 
-    @PostMapping("/user-info/{id}/update-password")
+    @PostMapping("/user-info/update-password")
     public ResponseEntity<UserDto.UpdatePasswordResponse> updateUserPassword(
-        @PathVariable String id,
         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
         @Valid @RequestBody UserDto.UpdatePasswordRequest request
     ) {
-        return ResponseEntity.ok(userService.updateUserPassword(id, request));
+        return ResponseEntity.ok(userService.updateUserPassword(principal.getUsername(), request));
     }
 
-    @PostMapping("user-info/{id}/quit")
+    @PostMapping("/user-info/quit")
     public ResponseEntity<UserDto.QuitResponse> quit(
-        @PathVariable String id,
         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
         @Valid @RequestBody UserDto.QuitRequest request
     ) {
-        return ResponseEntity.ok(userService.quit(id, request));
+        return ResponseEntity.ok(userService.quit(principal.getUsername(), request));
     }
 
 }

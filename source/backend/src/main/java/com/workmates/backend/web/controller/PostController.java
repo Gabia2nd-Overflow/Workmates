@@ -30,17 +30,10 @@ public class PostController {
     }
 
     // 특정 게시글 조회
-<<<<<<< HEAD
-    @GetMapping("/{postId}")
-    public ResponseEntity<PostDto.Response> getPost(@PathVariable Long postId) {
-        Post post = postService.getPostById(id);
-        return ResponseEntity.ok(PostDto.Response.from(post));
-=======
     @GetMapping("/{id}")
     public ResponseEntity<PostDto.Response> getPost(@PathVariable Long id) {
         PostDto.Response response = postService.getPostById(id);
         return ResponseEntity.ok(response);
->>>>>>> 5d4567d3411b5da87b8597c527f310d468205364
     }
 
     // 게시글 조회수 증가 (JWT 필요없음, 누구나 증가 가능)

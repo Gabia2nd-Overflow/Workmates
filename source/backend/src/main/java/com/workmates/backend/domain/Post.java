@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 @Entity
 @Table(name = "POST")
@@ -23,7 +23,7 @@ public class Post {
     @Column(name = "attachment_url", unique = true)
     private String attachmentUrl = null;
 
-    @Column(name = "content", nullable = false, length = DomainConstants.POST_MAX_LEN)
+    @Column(name = "content", nullable = false, length = DomainUtil.POST_MAX_LEN)
     private String content;
 
     @Builder.Default
@@ -37,7 +37,7 @@ public class Post {
     private String title;
 
     @Builder.Default
-    @Column(name = "writer_id", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_id", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String writerId = "unknown";
 
     @Builder.Default
@@ -45,7 +45,7 @@ public class Post {
     private Integer viewCount = 0;
 
     @Builder.Default
-    @Column(name = "writer_nickname", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_nickname", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String writerNickname = "unknown";
 
     @Builder.Default
