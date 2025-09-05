@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workmates.backend.repository.UserRepository;
-import com.workmates.backend.constant.ServiceConstants;
+import com.workmates.backend.util.ServiceUtil;
 import com.workmates.backend.domain.Block;
 import com.workmates.backend.domain.BlockId;
 import com.workmates.backend.domain.User;
@@ -34,7 +34,7 @@ public class BlockService {
     private final UserRepository userRepository;
     
     public BlocklistResponse blocklist(String id) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, id)) {
+        if(!Pattern.matches(ServiceUtil.ID_REGEX, id)) {
             throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }
 
@@ -60,8 +60,8 @@ public class BlockService {
 
     @Transactional
     public BlockResponse block(BlockRequest request) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId()) ||
-        !Pattern.matches(ServiceConstants.ID_REGEX, request.getTargetId()) ||
+        if(!Pattern.matches(ServiceUtil.ID_REGEX, request.getId()) ||
+        !Pattern.matches(ServiceUtil.ID_REGEX, request.getTargetId()) ||
         request.getId().equals(request.getTargetId())) {
             throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }
@@ -90,8 +90,8 @@ public class BlockService {
 
     @Transactional
     public UnblockResponse unblock(UnblockRequest request) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId()) ||
-        !Pattern.matches(ServiceConstants.ID_REGEX, request.getTargetId()) ||
+        if(!Pattern.matches(ServiceUtil.ID_REGEX, request.getId()) ||
+        !Pattern.matches(ServiceUtil.ID_REGEX, request.getTargetId()) ||
         request.getId().equals(request.getTargetId())) {
             throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }

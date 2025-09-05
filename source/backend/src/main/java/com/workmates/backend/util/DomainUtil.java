@@ -1,6 +1,6 @@
-package com.workmates.backend.constant;
+package com.workmates.backend.util;
 
-public class DomainConstants { // domain 패키지에서 사용될 상수값 정의
+public class DomainUtil {
     
     // 이메일 인증 제한 시간
     public static final int CODE_EXPIRES_IN = 5;

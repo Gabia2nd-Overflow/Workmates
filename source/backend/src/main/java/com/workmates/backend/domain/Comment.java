@@ -2,7 +2,7 @@ package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,7 +38,7 @@ public class Comment { // 댓글
     @Builder.Default
     private Integer depth = 0; // 현재 댓글이 달린 깊이(대댓글이라면 값이 1 이상). 기본적으로 0
 
-    @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "content", nullable = false, length = DomainUtil.COMMENT_MAX_LEN)
     private String content; // 댓글 내용
 
     @Column(name = "written_at", nullable = false)
@@ -57,10 +57,10 @@ public class Comment { // 댓글
     @Builder.Default
     private Boolean isDeleted = false; // 댓글 삭제 여부. 기본적으로 false
 
-    @Column(name = "writer_id", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_id", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String writerId; // 댓글 작성자 아이디
 
-    @Column(name = "writer_nickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "writer_nickname", nullable = false, unique = true, length = DomainUtil.ID_MAX_LEN)
     private String writerNickname; // 댓글 작성자 닉네임
 
     @Column(name = "post_id", nullable = false)

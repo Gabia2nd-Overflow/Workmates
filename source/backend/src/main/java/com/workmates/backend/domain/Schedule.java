@@ -2,12 +2,12 @@ package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
 
-import com.workmates.backend.constant.DomainConstants;
-
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import com.workmates.backend.util.DomainUtil;
 
 @Entity
 @Table(name = "schedule")
@@ -27,10 +27,10 @@ public class Schedule { // 작업 일정
     @Column(name = "id")
     private long id; // 스케쥴 아이디
 
-    @Column(name = "title", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "title", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String title; // 스케쥴 제목
 
-    @Column(name = "content", nullable = false, length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "content", nullable = false, length = DomainUtil.COMMENT_MAX_LEN)
     private String content; // 스케쥴 설명
 
     @Column(name = "start_date", nullable = false)
