@@ -163,13 +163,14 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+        User userEntity = user.get();
         String token = jwtTokenProvider.generateToken(request.getId());
 
         return UserDto.LoginResponse.builder()
-                .id(user.get().getId())
-                .email(user.get().getEmail())
-                .nickname(user.get().getNickname())
-                .imageUrl(user.get().getImageUrl())
+                .id(userEntity.getId())
+                .email(userEntity.getEmail())
+                .nickname(userEntity.getNickname())
+                .imageUrl(userEntity.getImageUrl())
                 .token(token)
                 .build();
     }
@@ -219,8 +220,23 @@ public class UserService {
 
     @Transactional
     public UserDto.UpdatePasswordResponse updateUserPassword(String id, UserDto.UpdatePasswordRequest request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        if(!ServiceUtil.validateId(id) || 
+            !ServiceUtil.validatePassword(request.getCurrentPassword()) ||
+            !ServiceUtil.validatePassword(request.getNewPassword())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.");
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }
+
+        if(!passwordEncoder.matches(request.getCurrentPassword(), user.get().getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        User userEntity = user.get();
+        userEntity.setPassword(request.getNewPassword());
 
         return UserDto.UpdatePasswordResponse.builder()
                     .isPasswordUpdated(true)
@@ -229,11 +245,25 @@ public class UserService {
 
     @Transactional
     public UserDto.QuitResponse quit(String id, UserDto.QuitRequest request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        if(!ServiceUtil.validateId(id) || 
+            !ServiceUtil.validatePassword(request.getPassword())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.");
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }
+
+        if(!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        User userEntity = user.get();
+        userEntity.setIsDeleted(true);
 
         return UserDto.QuitResponse.builder()
-                    .isUserDeleted(true)
+                    .isUserDeleted(userEntity.getIsDeleted())
                     .build();
     }
 
