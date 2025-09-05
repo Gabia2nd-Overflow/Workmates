@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // ← 추가
 import { cn } from "../utils/cn";
 import AuthButtons from "../Components/AuthButtons";
 import "./Header.css";
+import DashboardButton from "./DashboardButton";
 
 const Header = () => {
   const navigate = useNavigate(); 
@@ -24,8 +25,9 @@ const Header = () => {
         <span className="header__title">Workmates</span>
       </div>
 
-      {/* 우측: AuthButtons */}
+      {/* 우측: DashboardButton + AuthButtons */}
       <div className="header__right">
+        <DashboardButton />
         <AuthButtons />
       </div>
     </header>

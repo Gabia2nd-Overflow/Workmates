@@ -147,4 +147,16 @@ export const mateApi = {
     api.post("/appendHandle", { senderId, receverId, isAccepted }), // 친구 요청 처리
 };
 
+// ===== Schedules =====
+export const scheduleApi = {
+  async getStats(workshopId) {
+    const { data } = await api.get(`/workshops/${workshopId}/schedules/stats`);
+    return data;
+  },
+  async listIncomplete(workshopId) {
+    const { data } = await api.get(`/workshops/${workshopId}/schedules/incomplete`);
+    return data; // [{ id, title, dueDate, importancy, isCompleted, ... }, ...]
+  },
+};
+
 export default api;
