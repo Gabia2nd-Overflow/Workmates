@@ -1,16 +1,10 @@
 package com.workmates.backend.web.dto;
+
+import lombok.*;
 import java.time.LocalDateTime;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
-import com.workmates.backend.domain.Comment;
 import com.workmates.backend.domain.Post;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 public class PostDto {
-
 
     @Getter
     @Setter
@@ -25,6 +19,17 @@ public class PostDto {
         private Integer viewCount;
         private String writtenAt;
 
+<<<<<<< HEAD
+        public static Response from(Post post) {
+            return Response.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .writerNickname(post.getWriterNickname())
+                    .views(post.getViews())
+                    .createdAt(post.getCreatedAt() != null ? post.getCreatedAt().toString() : "")
+                    .build();
+=======
         public static PostRequest from(Post post) {
             PostRequest dto = new PostRequest();
             dto.setId(post.getId());
@@ -34,9 +39,9 @@ public class PostDto {
             dto.setViewCount(post.getViewCount());
             dto.setWrittenAt(post.getWrittenAt().toString());
             return dto;
+>>>>>>> 227c7e06314ef4113cc579db29de93b0af1794a1
         }
     }
-    
 
     @Getter
     @Setter
@@ -44,6 +49,9 @@ public class PostDto {
         private String title;
         private String content;
         private String category;
+<<<<<<< HEAD
+        private Long threadId; // 필수
+=======
         private String writerId; // JWT에서 추출된 username
     }
 
@@ -86,5 +94,6 @@ public class PostDto {
         private String writerNickname;
         private String writtenAt;
 
+>>>>>>> 227c7e06314ef4113cc579db29de93b0af1794a1
     }
 }
