@@ -33,11 +33,8 @@ api.interceptors.response.use(
 /* ===== Auth =====
    ✅ 백엔드 DTO와 동일한 바디/경로로 보냄 */
 export const authAPI = {
-  checkId: (data) => api.post("/auth/check-id", data), // 아이디 중복확인
-  verifyEmail: (data) => api.post("/auth/verify-email", data), // 인증코드 전송/재전송
   // 아이디 중복확인: POST /auth/check-id  { id }
   checkId: (data) => api.post("/auth/check-id", data),
-
   // 이메일 인증 시작/재전송: POST /auth/verify-email  { email, requestTime }
   verifyEmail: (data) => api.post("/auth/verify-email", data),
 
@@ -46,13 +43,10 @@ export const authAPI = {
 
   // 회원가입: POST /auth/signup  { id, password, nickname, email }
   signUp: (data) => api.post("/auth/signup", data),
-  login: (data) => api.post("/auth/login", data), // 응답 token을 localStorage.setItem('token', token) 로 저장
-  getMyInfo: () => api.get("/auth/me"),
-  updateMyInfo: (data) => api.put("/auth/me", data),
 
+  // 응답 token을 localStorage.setItem('token', token) 로 저장
   // 로그인: POST /auth/login  { id, password } → token은 응답으로 돌아옴
   login: (data) => api.post("/auth/login", data),
-
   // ✅ 내정보: GET/PUT /user-info  (AuthController 기준으로 변경)
   getMyInfo: () => api.get("/user-info"),
   updateMyInfo: (data) => api.put("/user-info", data),
