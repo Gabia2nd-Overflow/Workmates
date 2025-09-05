@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,10 +28,10 @@ public class Workshop { // 워크샵
     @Column(name = "id")
     private Long id; // 워크샵 아이디
 
-    @Column(name = "name", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "name", nullable = false, unique = true, length = DomainUtil.ID_MAX_LEN)
     private String name; // 워크샵 이름
 
-    @Column(name = "workshop_creator", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "workshop_creator", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String workshopCreator;
 
     @Column(name = "image_url")
@@ -39,7 +39,7 @@ public class Workshop { // 워크샵
     private String imageUrl = null; // 워크샵 아이콘 이미지 url. 기본적으로 null
     //unique넣으면 빈 이미지를 넣은 서버가 2개이상 만들어지지 않음.
 
-    @Column(name = "description", length = DomainConstants.COMMENT_MAX_LEN)
+    @Column(name = "description", length = DomainUtil.COMMENT_MAX_LEN)
     private String description; // 워크샵 설명
 
     @Column(name = "is_deleted", nullable = false)

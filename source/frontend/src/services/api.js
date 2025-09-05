@@ -30,11 +30,21 @@ api.interceptors.response.use(
 export const authAPI = {
   checkId: (data) => api.post("/auth/check-id", data),        // 아이디 중복확인
   verifyEmail: (data) => api.post("/auth/verify-email", data),// 인증코드 전송/재전송
+  // 아이디 중복확인: POST /auth/check-id  { id }
+  checkId: (data) => api.post("/auth/check-id", data),
+  // 이메일 인증 시작/재전송: POST /auth/verify-email  { email, requestTime }
+  verifyEmail: (data) => api.post("/auth/verify-email", data),
+
+  // 이메일 인증 확인: POST /auth/confirm-email  { email, verificationCode, requestTime }
   confirmEmail: (data) => api.post("/auth/confirm-email", data),
   signUp: (data) => api.post("/auth/signup", data),
-  login: (data) => api.post("/auth/login", data),             // 응답 token을 localStorage.setItem('token', token) 로 저장
-  getMyInfo: () => api.get("/auth/me"),
-  updateMyInfo: (data) => api.put("/auth/me", data),
+
+  // 응답 token을 localStorage.setItem('token', token) 로 저장
+  // 로그인: POST /auth/login  { id, password } → token은 응답으로 돌아옴
+  login: (data) => api.post("/auth/login", data),
+  // ✅ 내정보: GET/PUT /user-info  (AuthController 기준으로 변경)
+  getMyInfo: () => api.get("/user-info"),
+  updateMyInfo: (data) => api.put("/user-info", data),
 };
 
 /* ===== Workshops ===== */
@@ -49,29 +59,44 @@ export const workshopAPI = {
 /* ===== Threads ===== */
 export const threadAPI = {
   list: (workshopId) => api.get(`/workshops/${workshopId}/threads`),
-  get: (workshopId, threadId) => api.get(`/workshops/${workshopId}/threads/${threadId}`),
-  create: (workshopId, data) => api.post(`/workshops/${workshopId}/threads`, data),
-  update: (workshopId, threadId, data) => api.patch(`/workshops/${workshopId}/threads/${threadId}`, data),
-  remove: (workshopId, threadId) => api.delete(`/workshops/${workshopId}/threads/${threadId}`),
+  get: (workshopId, threadId) =>
+    api.get(`/workshops/${workshopId}/threads/${threadId}`),
+  create: (workshopId, data) =>
+    api.post(`/workshops/${workshopId}/threads`, data),
+  update: (workshopId, threadId, data) =>
+    api.patch(`/workshops/${workshopId}/threads/${threadId}`, data),
+  remove: (workshopId, threadId) =>
+    api.delete(`/workshops/${workshopId}/threads/${threadId}`),
 };
 
 /* ===== Lounges ===== */
 export const loungeAPI = {
   list: (workshopId) => api.get(`/workshops/${workshopId}/lounges`),
-  get: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}`),
-  create: (workshopId, data) => api.post(`/workshops/${workshopId}/lounges`, data),
-  update: (workshopId, loungeId, data) => api.patch(`/workshops/${workshopId}/lounges/${loungeId}`, data),
-  remove: (workshopId, loungeId) => api.delete(`/workshops/${workshopId}/lounges/${loungeId}`),
+  get: (workshopId, loungeId) =>
+    api.get(`/workshops/${workshopId}/lounges/${loungeId}`),
+  create: (workshopId, data) =>
+    api.post(`/workshops/${workshopId}/lounges`, data),
+  update: (workshopId, loungeId, data) =>
+    api.patch(`/workshops/${workshopId}/lounges/${loungeId}`, data),
+  remove: (workshopId, loungeId) =>
+    api.delete(`/workshops/${workshopId}/lounges/${loungeId}`),
 };
 
 /* ===== Messages ===== */
 export const messageAPI = {
-  list: (workshopId, loungeId) => api.get(`/workshops/${workshopId}/lounges/${loungeId}/messages`),
-  send: (workshopId, loungeId, data) => api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, data),
+  list: (workshopId, loungeId) =>
+    api.get(`/workshops/${workshopId}/lounges/${loungeId}/messages`),
+  send: (workshopId, loungeId, data) =>
+    api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, data),
   edit: (workshopId, loungeId, messageId, data) =>
-    api.patch(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`, data),
+    api.patch(
+      `/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`,
+      data
+    ),
   remove: (workshopId, loungeId, messageId) =>
     api.delete(`/workshops/${workshopId}/lounges/${loungeId}/messages/${messageId}`),
+  create: (workshopId, loungeId, payload) =>
+    api.post(`/workshops/${workshopId}/lounges/${loungeId}/messages`, payload),
 };
 
 /* ===== Files ===== */
@@ -84,6 +109,15 @@ export const fileAPI = {
     api.get(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`, { responseType: "blob" }),
   remove: (workshopId, loungeId, fileId) =>
     api.delete(`/workshops/${workshopId}/lounges/${loungeId}/files/${fileId}`),
+  // 백엔드: POST /api/messages/files (multipart)
+  uploadToMessage: (workshopId, loungeId, messageId, file) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("workshopId", String(workshopId));
+    fd.append("loungeId", String(loungeId));
+    fd.append("messageId", String(messageId));
+    return api.post(`/messages/files`, fd); // baseURL에 /api 포함
+  },
 };
 
 /* ===== Posts ===== */
@@ -102,5 +136,14 @@ export const postAPI = {
 
 
 
+/* ===== Mates ===== */
+export const mateApi = {
+  getList: (id) => api.get(`/mates/${id}`), // 친구 목록 조회
+  search: (id) => api.post("/mates/search", { id }), // 사용자 검색
+  append: (senderId, receverId) => api.post("/append", { senderId, receverId }), // 친구 추가
+  remove: (id, targetId) => api.post("/remove", { id, targetId }), // 친구 삭제
+  handle: (senderId, receverId, isAccepted) =>
+    api.post("/appendHandle", { senderId, receverId, isAccepted }), // 친구 요청 처리
+};
 
 export default api;

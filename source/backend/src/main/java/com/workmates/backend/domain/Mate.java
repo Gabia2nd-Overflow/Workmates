@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,11 +24,11 @@ import lombok.Setter;
 public class Mate { // 사용자 친구 등록 여부
     
     @Id
-    @Column(name = "sender_id", length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "sender_id", length = DomainUtil.ID_MAX_LEN)
     private String senderId; // 친구 요청을 보낸 사용자 아이디
 
     @Id
-    @Column(name = "receiver_id", length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "receiver_id", length = DomainUtil.ID_MAX_LEN)
     private String receiverId; // 친구 요청의 대상이 된 사용자 아이디
 
     @Column(name = "is_accepted", nullable = false)

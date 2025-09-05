@@ -1,7 +1,7 @@
 package com.workmates.backend.service;
 
+import java.util.Optional;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,12 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.workmates.backend.constant.DomainConstants;
-import com.workmates.backend.constant.ServiceConstants;
+import com.workmates.backend.config.JwtTokenProvider;
 import com.workmates.backend.domain.EmailVerification;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.EmailVerificationRepository;
 import com.workmates.backend.repository.UserRepository;
+import com.workmates.backend.util.DomainUtil;
+import com.workmates.backend.util.ServiceUtil;
 import com.workmates.backend.web.dto.UserDto;
 
 import jakarta.mail.MessagingException;
@@ -32,6 +33,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
     
     @Value("${spring.mail.username}")
     private String from;
@@ -40,7 +42,7 @@ public class UserService {
     private JavaMailSenderImpl javaMailSender;
 
     public UserDto.CheckIdResponse checkId(UserDto.CheckIdRequest request) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId())) { // 정규표현식에 위반되는 아이디가 요청으로 전달된 경우
+        if(!ServiceUtil.validateId(request.getId())) { // 정규표현식에 위반되는 아이디가 요청으로 전달된 경우
             throw new IllegalArgumentException("올바르지 않은 아이디입니다.");
         }
 
@@ -55,7 +57,7 @@ public class UserService {
 
     @Transactional
     public UserDto.VerifyEmailResponse verifyEmail(UserDto.VerifyEmailRequest request) {
-        if(!Pattern.matches(ServiceConstants.EMAIL_REGEX, request.getEmail())) { // 정규표현식에 위반되는 이메일이 요청으로 전달된 경우
+        if(!ServiceUtil.validateEmail(request.getEmail())) { // 정규표현식에 위반되는 이메일이 요청으로 전달된 경우
             throw new IllegalArgumentException("올바르지 않은 이메일입니다.");
         }
 
@@ -76,8 +78,8 @@ public class UserService {
 
     @Transactional
     public UserDto.ConfirmEmailResponse confirmEmail(UserDto.ConfirmEmailRequest request) {
-        if(!Pattern.matches(ServiceConstants.EMAIL_REGEX, request.getEmail()) ||
-           !Pattern.matches(ServiceConstants.CODE_REGEX, request.getVerificationCode())) { // 정규표현식에 위반되는 이메일이 요청으로 전달된 경우 또는 잘못된 코드가 요청으로 전달된 경우
+        if(!ServiceUtil.validateEmail(request.getEmail()) ||
+           !ServiceUtil.validateCode(request.getVerificationCode())) { // 정규표현식에 위반되는 이메일이 요청으로 전달된 경우 또는 잘못된 코드가 요청으로 전달된 경우
                 throw new IllegalArgumentException("잘못된 인증 확인 요청입니다.");
         }
 
@@ -103,16 +105,16 @@ public class UserService {
     @Transactional
     public UserDto.UserResponse signUp(UserDto.SignUpRequest request) {
 
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId())) {
+        if(!ServiceUtil.validateId(request.getId())) {
             throw new IllegalArgumentException("잘못된 가입 요청입니다. - 아이디");
         }
-        if(!Pattern.matches(ServiceConstants.PW_REGEX, request.getPassword())) {
+        if(!ServiceUtil.validatePassword(request.getPassword())) {
             throw new IllegalArgumentException("잘못된 가입 요청입니다. - 비밀번호");
         }
-        if(!Pattern.matches(ServiceConstants.NICKNAME_REGEX, request.getNickname())) {
+        if(!ServiceUtil.validateNickname(request.getNickname())) {
             throw new IllegalArgumentException("잘못된 가입 요청입니다. - 닉네임");
         }
-        if(!Pattern.matches(ServiceConstants.EMAIL_REGEX, request.getEmail())) {
+        if(!ServiceUtil.validateEmail(request.getEmail())) {
             throw new IllegalArgumentException("잘못된 가입 요청입니다. - 이메일");
         }
 
@@ -148,48 +150,127 @@ public class UserService {
     }
 
     public UserDto.LoginResponse login(UserDto.LoginRequest request) {
-        User user = userRepository.findById(request.getId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if(!ServiceUtil.validateId(request.getId()) || !ServiceUtil.validatePassword(request.getPassword())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+        Optional<User> user = userRepository.findById(request.getId());
+        
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("사용자가 존재하지 않습니다.");
+        }
+        if (!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+        User userEntity = user.get();
+        String token = jwtTokenProvider.generateToken(request.getId());
+
         return UserDto.LoginResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
+                .id(userEntity.getId())
+                .email(userEntity.getEmail())
+                .nickname(userEntity.getNickname())
+                .imageUrl(userEntity.getImageUrl())
+                .token(token)
                 .build();
     }
 
-    public UserDto.UserResponse getUserInfo(String id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    public UserDto.UserResponse getUserInfo(String id) { // 마이페이지 
+        if(!ServiceUtil.validateId(id)) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다. - 아이디");
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
         
-        return UserDto.UserResponse.from(user);
+        return UserDto.UserResponse.from(user.get());
     }
 
     @Transactional
-    public UserDto.UserResponse updateUser(String id, UserDto.UpdateRequest request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        if (request.getNickname() != null) {
-            user.setNickname(request.getNickname());
-        }
-        
-        if (request.getEmail() != null) {
-            user.setEmail(request.getEmail());
+    public UserDto.UserResponse updateUserInfo(String id, UserDto.UpdateRequest request) {
+        if(!ServiceUtil.validateId(id)) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다. - 아이디");
         }
 
-        return UserDto.UserResponse.from(user);
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }
+
+        User userEntity = user.get();
+        if(request.getNewNickname() != null) {
+            if(!ServiceUtil.validateNickname(request.getNewNickname())) {
+                throw new IllegalArgumentException("올바르지 않은 요청입니다. - 닉네임");
+            }
+            userEntity.setNickname(request.getNewNickname());
+        }
+        if(request.getNewEmailPassword() != null) {
+            userEntity.setEmailPassword(request.getNewEmailPassword());
+        }
+        if(request.getNewImageUrl() != null) {
+            // 파일 업로드/다운로드 컨트롤러 거쳐서 url 처리 필요
+            String newUrl = request.getNewImageUrl();
+            userEntity.setImageUrl(newUrl);
+        }
+
+        return UserDto.UserResponse.from(userEntity);
+    }
+
+    @Transactional
+    public UserDto.UpdatePasswordResponse updateUserPassword(String id, UserDto.UpdatePasswordRequest request) {
+        if(!ServiceUtil.validateId(id) || 
+            !ServiceUtil.validatePassword(request.getCurrentPassword()) ||
+            !ServiceUtil.validatePassword(request.getNewPassword())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.");
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }
+
+        if(!passwordEncoder.matches(request.getCurrentPassword(), user.get().getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        User userEntity = user.get();
+        userEntity.setPassword(request.getNewPassword());
+
+        return UserDto.UpdatePasswordResponse.builder()
+                    .isPasswordUpdated(true)
+                    .build();
+    }
+
+    @Transactional
+    public UserDto.QuitResponse quit(String id, UserDto.QuitRequest request) {
+        if(!ServiceUtil.validateId(id) || 
+            !ServiceUtil.validatePassword(request.getPassword())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.");
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }
+
+        if(!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        User userEntity = user.get();
+        userEntity.setIsDeleted(true);
+
+        return UserDto.QuitResponse.builder()
+                    .isUserDeleted(userEntity.getIsDeleted())
+                    .build();
     }
 
     private String generateCode() {
         StringBuilder codeBuilder = new StringBuilder();
         Random random = new Random(System.nanoTime());
 
-        for(int i = 0; i < DomainConstants.CODE_LENGTH; ++i) {
+        for(int i = 0; i < DomainUtil.CODE_LENGTH; ++i) {
             codeBuilder.append((char)(random.nextInt(10) + '0'));
         }
 
