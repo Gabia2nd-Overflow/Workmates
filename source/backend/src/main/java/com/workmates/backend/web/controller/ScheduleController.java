@@ -2,6 +2,8 @@ package com.workmates.backend.web.controller;
 
 import com.workmates.backend.service.ScheduleService;
 import com.workmates.backend.web.dto.ScheduleDto;
+import com.workmates.backend.web.dto.ScheduleStatsDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,6 @@ import java.util.List;
  * 워크샵 단위 스케줄 컨트롤러
  * - 목록/생성: /api/workshops/{workshopId}/schedules
  * - 수정/삭제: /api/schedules/{id}
- *
- * 주의:
- *  - writerId는 요청 바디로 받지 않고, 인증 컨텍스트에서 추출.
- *  - 서비스에서 워크샵 접근 제어(WorkshopAccessService.hasAccess) 및 날짜 검증이 수행.
  */
 @RestController
 @RequestMapping("/api")
@@ -70,5 +68,21 @@ public class ScheduleController {
             throw new IllegalArgumentException("인증 정보가 유효하지 않습니다. 로그인 상태를 확인해 주세요.");
         }
         return auth.getName();
+    }
+
+    //워크샵별 대시보드 통계 (연체 포함)
+    @GetMapping("/workshops/{workshopId}/schedules/stats")
+    public ResponseEntity<ScheduleStatsDto> getWorkshopStats(@PathVariable Long workshopId) {
+        ScheduleStatsDto dto = scheduleService.getWorkshopStats(workshopId);
+        return ResponseEntity.ok(dto);
+    }
+
+    //워크샵별 미완료 목록 (마감일 오름차순)
+    @GetMapping("/workshops/{workshopId}/schedules/incomplete") 
+    public ResponseEntity<List<ScheduleDto.Response>> listIncompleteForWorkshop(
+            @PathVariable Long workshopId 
+    ) {
+    List<ScheduleDto.Response> list = scheduleService.listIncompleteForWorkshop(workshopId);
+    return ResponseEntity.ok(list);
     }
 }
