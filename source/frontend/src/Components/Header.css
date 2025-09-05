@@ -19,6 +19,7 @@
     flex: 0 0 33.333%;
     display: flex;
     align-items: center;
+    gap: 8px;
   }
   .header__center { justify-content: center; }
   .header__right { justify-content: flex-end; }

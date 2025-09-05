@@ -11,7 +11,6 @@ import com.workmates.backend.domain.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, String>{
 
-    @SuppressWarnings("null")
     Optional<User> findById(@NonNull String id); // 아이디를 기준으로 사용자 검색
  
     boolean existsById(@NonNull String id); // 아이디 존재여부 검증

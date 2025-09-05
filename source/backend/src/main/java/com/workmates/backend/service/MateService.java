@@ -3,17 +3,16 @@ package com.workmates.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.workmates.backend.constant.ServiceConstants;
 import com.workmates.backend.domain.Mate;
 import com.workmates.backend.domain.MateId;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.MateRepository;
 import com.workmates.backend.repository.UserRepository;
+import com.workmates.backend.util.ServiceUtil;
 import com.workmates.backend.web.dto.MateDto;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +31,7 @@ public class MateService {
     private final UserRepository userRepository;
 
     public MateDto.MatelistResponse matelist(String id) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, id)) {
+        if(!ServiceUtil.validateId(id)) {
             throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
         }
 
@@ -64,7 +63,7 @@ public class MateService {
     }
 
     public MateDto.SearchResponse search(MateDto.SearchRequest request) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 검색 거부
+        if(!ServiceUtil.validateId(request.getId())) { // 정규표현식에 맞지 않은 아이디가 요청될 경우 검색 거부
             throw new IllegalArgumentException("올바르지 않은 사용자 아이디입니다.");
         }
 
@@ -80,11 +79,11 @@ public class MateService {
 
     @Transactional
     public MateDto.AppendResponse append(MateDto.AppendRequest request) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getSenderId()) ||
-           !Pattern.matches(ServiceConstants.ID_REGEX, request.getReceiverId()) ||
+        if(!ServiceUtil.validateId(request.getSenderId()) ||
+           !ServiceUtil.validateId(request.getReceiverId()) ||
            request.getSenderId().equals(request.getReceiverId())
         ) { // 정규표현식에 맞지 않은 아이디 또는 송신자와 수신자가 같은 요청이 전달될 경우 초대 거부
-            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
+            throw new IllegalArgumentException("올바르지 않은 요청입니다. - 아이디 형식 또는 아이디 중복");
         }
 
         MateId id = new MateId(request.getSenderId(), request.getReceiverId());
@@ -108,10 +107,10 @@ public class MateService {
 
     @Transactional
     public MateDto.AppendHandleResponse appendHandle(MateDto.AppendHandleRequest request) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getSenderId()) ||
-           !Pattern.matches(ServiceConstants.ID_REGEX, request.getReceiverId()) ||
+        if(!ServiceUtil.validateId(request.getSenderId()) ||
+           !ServiceUtil.validateId(request.getReceiverId()) ||
            request.getSenderId().equals(request.getReceiverId())) { // 정규표현식에 맞지 않은 아이디 또는 송수신자가 일치하는 요청이 전달될 경우 처리 거부
-            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
+            throw new IllegalArgumentException("올바르지 않은 요청입니다. - 아이디 형식 또는 아이디 중복");
         }
 
         MateId mateId = new MateId(request.getSenderId(), request.getReceiverId());
@@ -133,8 +132,8 @@ public class MateService {
 
     @Transactional
     public MateDto.RemoveResponse remove(MateDto.RemoveRequest request) {
-        if(!Pattern.matches(ServiceConstants.ID_REGEX, request.getId()) ||
-           !Pattern.matches(ServiceConstants.ID_REGEX, request.getTargetId()) ||
+        if(!ServiceUtil.validateId(request.getId()) ||
+           !ServiceUtil.validateId(request.getTargetId()) ||
            request.getId().equals(request.getTargetId())) { // 정규표현식에 맞지 않은 아이디 또는 송수신자가 일치하는 요청이 전달될 경우 처리 거부
             throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }

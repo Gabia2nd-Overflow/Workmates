@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,10 +22,10 @@ import lombok.Setter;
 public class LoungeMember { // 채팅방 참가자
 
     @Id
-    @Column(name = "member_id", length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "member_id", length = DomainUtil.ID_MAX_LEN)
     private String memberId; // 채팅방에 참가한 사용자의 아이디
 
-    @Column(name = "member_nickname", nullable = false, unique = true, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "member_nickname", nullable = false, unique = true, length = DomainUtil.ID_MAX_LEN)
     private String memberNickname; // 채팅방에 참가한 사용자의 닉네임
 
     @Id

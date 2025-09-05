@@ -108,7 +108,7 @@ public class UserDto {
         private String password;
     }
 
-    // 로그인 응답.
+    // 로그인 응답
     @Data
     @Builder
     @Getter
@@ -119,6 +119,7 @@ public class UserDto {
         private String token;
         private String email;
         private String nickname;
+        private String imageUrl;
     }
 
     @Data
@@ -129,12 +130,16 @@ public class UserDto {
         private String id;
         private String nickname;
         private String email;
-        
+        private String emailPassword;
+        private String imageUrl;
+
         public static UserResponse from(User user) {
             return UserResponse.builder()
                     .id(user.getId())
-                    .email(user.getEmail())
                     .nickname(user.getNickname())
+                    .email(user.getEmail())
+                    .emailPassword(user.getEmailPassword())
+                    .imageUrl(user.getImageUrl())
                     .build();
         }
     }
@@ -145,7 +150,54 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateRequest {
+        private String newNickname;
+        private String newEmailPassword;
+        private String newImageUrl;
+    }
+
+    // 마이 페이지 정보 수정 응답
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateResponse {
+        private String id;
         private String nickname;
         private String email;
+        private String emailPassword;
+        private String imageUrl;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdatePasswordRequest {
+        private String currentPassword;
+        private String newPassword;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdatePasswordResponse {
+        private Boolean isPasswordUpdated;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuitRequest {
+        private String password;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuitResponse {
+        private Boolean isUserDeleted;
     }
 }

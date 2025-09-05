@@ -2,7 +2,7 @@ package com.workmates.backend.domain;
 
 import java.time.LocalDateTime;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +25,7 @@ public class EmailVerification { // 이메일 인증
     @Column(name = "email")
     private String email; // 이메일 인증 주소
 
-    @Column(name = "code", nullable = false, length = DomainConstants.CODE_LENGTH)
+    @Column(name = "code", nullable = false, length = DomainUtil.CODE_LENGTH)
     private String code; // 이메일 인증을 위한 6자리 코드값
 
     @Column(name = "expires_at", nullable = false)
@@ -37,7 +37,7 @@ public class EmailVerification { // 이메일 인증
     public EmailVerification(String email, String code, LocalDateTime requestedAt, Boolean isConfirmed) {
         this.email = email;
         this.code = code;
-        this.expiresAt = requestedAt.plusMinutes(DomainConstants.CODE_EXPIRES_IN);
+        this.expiresAt = requestedAt.plusMinutes(DomainUtil.CODE_EXPIRES_IN);
         this.isConfirmed = isConfirmed;
     }
 }

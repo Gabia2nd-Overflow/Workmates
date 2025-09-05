@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +28,7 @@ public class Lounge { // 채팅방
     @Column(name = "id")
     private Long id; // 채팅방 아이디
 
-    @Column(name = "name", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "name", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String name; // 채팅방 이름
 
     @Column(name = "is_deleted", nullable = false)

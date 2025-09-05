@@ -1,6 +1,6 @@
 package com.workmates.backend.domain;
 
-import com.workmates.backend.constant.DomainConstants;
+import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,13 +33,13 @@ import lombok.Setter;
 @EqualsAndHashCode(of = {"memberId","workshopId"})         // ✅ 동일성 안정
 public class WorkshopMember { // 채팅방 참가자
     @Id
-    @Column(name = "member_id", length = DomainConstants.ID_MAX_LEN, nullable = false)
+    @Column(name = "member_id", length = DomainUtil.ID_MAX_LEN, nullable = false)
     private String memberId; // 사용자 ID
 
     @Id
     @Column(name = "workshop_id", nullable = false)
     private Long workshopId; // 워크샵 ID
 
-    @Column(name = "member_nickname", nullable = false, length = DomainConstants.ID_MAX_LEN)
+    @Column(name = "member_nickname", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String memberNickname; // (워크샵 내) 닉네임
 }
