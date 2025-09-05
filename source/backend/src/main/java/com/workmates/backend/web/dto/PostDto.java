@@ -16,8 +16,8 @@ public class PostDto {
         private String title;
         private String content;
         private String writerNickname;
-        private Integer viewCount;
-        private String writtenAt;
+        private Integer views;
+        private String createdAt;
 
         public static Response from(Post post) {
             return Response.builder()
@@ -30,6 +30,13 @@ public class PostDto {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    public static class Request {
+        private String title;
+        private String content;
+        private String category;
         private Long threadId; // 필수
     }
 }
