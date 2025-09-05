@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { postAPI } from "../services/api";
 
 export default function ThreadDetail() {
   const { threadId, workshopId } = useParams();
@@ -14,9 +14,10 @@ export default function ThreadDetail() {
   const [sortKey, setSortKey] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
 
+  // 게시글 목록 조회
   const fetchPosts = async () => {
     try {
-      const { data } = await axios.get(`http://localhost:8080/api/threads/${threadId}/posts`);
+      const { data } = await postAPI.list(workshopId, threadId, { sort: "createdAt" });
       setPosts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("게시글 목록 로드 오류:", err);
@@ -28,52 +29,53 @@ export default function ThreadDetail() {
     if (threadId) fetchPosts();
   }, [threadId]);
 
-  const createPost = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const { data } = await axios.post(
-        `http://localhost:8080/api/threads/${threadId}/posts`,
-        { title: postTitle, content: postContent, category: "일반" },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setPosts(prev => [...prev, data]);
-      setPostTitle("");
-      setPostContent("");
-      setCreatingPost(false);
-    } catch (err) {
-      console.error("게시글 생성 오류:", err);
-    }
-  };
+  // 게시글 생성
+  // 게시글 생성
+const createPost = async (e) => {
+  e.preventDefault();
+  try {
+    const { data } = await postAPI.create(workshopId, threadId, {
+      title: postTitle,
+      content: postContent,
+      category: "일반",
+      threadId: Number(threadId), // ✅ 여기가 중요
+    });
 
+    setPosts((prev) => [...prev, data]);
+    setPostTitle("");
+    setPostContent("");
+    setCreatingPost(false);
+  } catch (err) {
+    console.error("게시글 생성 오류:", err);
+    if (err.response?.status === 403) alert("로그인이 필요합니다.");
+  }
+};
+
+
+  // 게시글 클릭 시 조회수 증가 후 상세 페이지 이동
   const handlePostClick = async (postId) => {
     try {
-      // 조회수 증가 시도
-      const token = localStorage.getItem("token");
-      await axios.post(
-        `http://localhost:8080/api/posts/${postId}/views`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // 로컬 상태 업데이트
-      setPosts(prev =>
-        prev.map(post =>
+      await postAPI.increaseViews(workshopId, threadId, postId);
+
+      setPosts((prev) =>
+        prev.map((post) =>
           post.id === postId ? { ...post, views: (post.views || 0) + 1 } : post
         )
       );
     } catch (err) {
       console.warn("조회수 증가 실패:", err);
     } finally {
-      // 실패해도 상세 페이지 이동
       navigate(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`);
     }
   };
 
+  // 검색 & 정렬 적용
   const displayedPosts = posts
-    .filter(p =>
-      p.title.includes(searchTerm) ||
-      p.content.includes(searchTerm) ||
-      p.writerNickname?.includes(searchTerm)
+    .filter(
+      (p) =>
+        p.title.includes(searchTerm) ||
+        p.content.includes(searchTerm) ||
+        p.writerNickname?.includes(searchTerm)
     )
     .sort((a, b) => {
       let valA = sortKey === "createdAt" ? new Date(a[sortKey]) : a[sortKey] || 0;
@@ -89,7 +91,7 @@ export default function ThreadDetail() {
         <h2 className="font-bold text-xl text-pink-400">게시판 #{threadId}</h2>
         <button
           className="px-3 py-1 bg-pink-500 text-white rounded"
-          onClick={() => setCreatingPost(v => !v)}
+          onClick={() => setCreatingPost((v) => !v)}
         >
           + 새 글 작성
         </button>
@@ -134,7 +136,7 @@ export default function ThreadDetail() {
         </select>
         <button
           className="px-2 py-1 border rounded"
-          onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+          onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
         >
           {sortOrder === "asc" ? "오름차순" : "내림차순"}
         </button>
@@ -162,7 +164,9 @@ export default function ThreadDetail() {
               <td className="border px-3 py-2 text-center">{idx + 1}</td>
               <td className="border px-3 py-2">{post.title}</td>
               <td className="border px-3 py-2 text-center">{post.writerNickname || "작성자"}</td>
-              <td className="border px-3 py-2 text-center">{post.createdAt ? new Date(post.createdAt).toLocaleDateString("ko-KR") : "-"}</td>
+              <td className="border px-3 py-2 text-center">
+                {post.createdAt ? new Date(post.createdAt).toLocaleDateString("ko-KR") : "-"}
+              </td>
               <td className="border px-3 py-2 text-center">{post.views || 0}</td>
               <td className="border px-3 py-2 text-center">{post.replyCount || 0}</td>
               <td className="border px-3 py-2 text-center">{post.category || "-"}</td>
