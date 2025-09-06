@@ -1,8 +1,8 @@
+// com.workmates.backend.service.PostService
 package com.workmates.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,51 +19,69 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    // 단일 게시글 조회
+    @Transactional(readOnly = true)
+    public List<PostDto.Response> getPostsByThread(Long threadId) {
+        return postRepository.findByThreadIdAndIsDeletedFalseOrderByCreatedAtDesc(threadId)
+            .stream().map(PostDto.Response::from).toList();
+    }
+
+    @Transactional(readOnly = true)
     public PostDto.Response getPostById(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
+        Post post = postRepository.findByIdAndIsDeletedFalse(id)
+            .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
         return PostDto.Response.from(post);
     }
 
-    // 특정 thread의 게시글 조회
-    public List<PostDto.Response> getPostsByThread(Long threadId) {
-        return postRepository.findByThreadId(threadId)
-                .stream()
-                .map(PostDto.Response::from)
-                .collect(Collectors.toList());
-    }
-
-    // 게시글 생성
-    public PostDto.Response createPost(PostDto.Request request, String username) {
-        if (request.getThreadId() == null) {
-            throw new IllegalArgumentException("threadId는 필수입니다.");
+    @Transactional
+    public PostDto.Response create(Long threadId, PostDto.CreateRequest req, String username, String nickname) {
+        if (threadId == null) throw new IllegalArgumentException("threadId는 필수입니다.");
+        if (req.getTitle() == null || req.getContent() == null) {
+            throw new IllegalArgumentException("title, content는 필수입니다.");
         }
 
         Post post = Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .category(request.getCategory())
-                .author(username)
-                .writerId(username)
-                .writerNickname(username) // JWT 기반
-                .threadId(request.getThreadId()) // 필수
-                .createdAt(LocalDateTime.now())
-                .writtenAt(LocalDateTime.now())
-                .isDeleted(false)
-                .views(0)
-                .writtenIn("unknown")
-                .build();
+            .threadId(threadId)
+            .title(req.getTitle())
+            .content(req.getContent())
+            .category(req.getCategory())
+            .writerId(username)
+            .writerNickname(nickname != null ? nickname : username)
+            .viewCount(0)
+            .isDeleted(false)
+            .writtenAt(LocalDateTime.now())
+            .createdAt(LocalDateTime.now())
+            .build();
 
         postRepository.save(post);
         return PostDto.Response.from(post);
     }
 
-    // 조회수 증가
+    @Transactional
+    public PostDto.Response update(Long postId, PostDto.UpdateRequest req, String username) {
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
+            .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
+
+        // 소유자 검증(선택): 정책에 따라 주석 해제
+        // if (!post.getWriterId().equals(username)) throw new AccessDeniedException("수정 권한 없음");
+
+        if (req.getTitle() != null) post.setTitle(req.getTitle());
+        if (req.getContent() != null) post.setContent(req.getContent());
+        if (req.getCategory() != null) post.setCategory(req.getCategory());
+        return PostDto.Response.from(post);
+    }
+
+    @Transactional
+    public void softDelete(Long postId, String username) {
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
+            .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
+        // if (!post.getWriterId().equals(username)) throw new AccessDeniedException("삭제 권한 없음");
+        post.setIsDeleted(true);
+    }
+
     @Transactional
     public void increaseViews(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
-        post.setViews(post.getViews() + 1);
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
+            .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
+        post.setViewCount(post.getViewCount() + 1);
     }
 }
