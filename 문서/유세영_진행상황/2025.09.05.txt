@@ -1,0 +1,6 @@
+- UserFooter 프로필 이미지, 닉네임, 이메일 로그인 한 유저 정보 연동
+  (그 과정에서 components의 .jsx .css 추가 및 변동 / services의 api.js 추가)
+
+- 사용자가 프로필 이미지를 등록하지 않았을 때는 public/img/simple_user.png 출력
+
+- 원래 더미 데이터로 사용하던 프로필 이미지인 public/img/Kim_Developer.png 삭제 후 simple_user.png 추가

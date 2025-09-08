@@ -1,14 +1,14 @@
 // src/components/lounge/LoungeDetail.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { data, useParams } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import FileUploadButton from "./FileUploadButton";
-import { messageAPI } from "../services/api";
+import { loungeAPI, messageAPI } from "../services/api";
 import "./LoungeDetail.css"
 
 export default function LoungeDetail() {
   const { workshopId, loungeId } = useParams();
-
+  const [loungeName, setLoungeName] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [editingMessageId, setEditingMessageId] = useState(null);
@@ -32,6 +32,15 @@ export default function LoungeDetail() {
       .catch(() => setMessages([]));
   }, [workshopId, loungeId]);
 
+  useEffect(() => {
+    if(!workshopId || !loungeId) return;
+    loungeAPI
+      .get(workshopId,loungeId)
+      .then(({data}) => {
+         setLoungeName(data?.name ?? data?.loungeName ?? null);
+      })
+      .catch(() => setLoungeName(null));
+  }, [workshopId, loungeId]);
   // === WebSocket 연결 및 구독 (SockJS 미사용, 순수 WS) ===
   useEffect(() => {
     if (!workshopId || !loungeId) return;
@@ -128,7 +137,7 @@ export default function LoungeDetail() {
   return (
     <div className="flex flex-col h-full">
       {/* 헤더 */}
-      <div className="lounge-header">라운지 #{loungeId}</div>
+       <div className="lounge-header">{loungeName ?? `라운지 #${loungeId}`}</div>
 
       {/* 메시지 영역 */}
       <div className="lounge-messages">
@@ -186,7 +195,7 @@ export default function LoungeDetail() {
                   href={msg.attachmentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 underline text-sm"
+                  className="file-link"
                 >
                   {msg.fileName || "파일 열기"}
                 </a>

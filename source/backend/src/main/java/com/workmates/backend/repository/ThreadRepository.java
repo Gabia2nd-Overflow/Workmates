@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ThreadRepository extends JpaRepository<Thread, Long> {
     List<Thread> findByWorkshopIdAndIsDeletedFalse(Long workshopId);
+     boolean existsByIdAndWorkshopId(Long id, Long workshopId);// workshopid 검증용
 }
