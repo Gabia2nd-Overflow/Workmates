@@ -8,6 +8,7 @@
 
 .wsd__sidebar {
   @apply w-64 border-r p-4;
+  background: #ffdfe4; 
 }
 
 .wsd__title {
