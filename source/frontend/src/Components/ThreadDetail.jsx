@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { postAPI } from "../services/api";
+import { postAPI, threadAPI } from "../services/api";
 
 export default function ThreadDetail() {
   const { threadId, workshopId } = useParams();
@@ -15,7 +15,24 @@ export default function ThreadDetail() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [page, setPage] = useState(0);
   const [pageSize] = useState(10); // 한 화면에 보여줄 게시글 수
+  const [threadName, setThreadName] = useState("");
 
+  
+
+  const fetchThreadName = async () => {
+    try {
+      const { data } = await threadAPI.get(workshopId, threadId);
+      setThreadName(data.name || "이름없음");
+    }
+    catch (err) {
+      console.error("스레드 이름 로드 오류:", err);
+      setThreadName("이름없음");
+    }
+  };
+  useEffect(() => {
+    if (threadId) fetchThreadName();
+  }, [threadId]);
+  
   // 게시글 목록 조회
   const fetchPosts = async () => {
     try {
@@ -26,6 +43,9 @@ export default function ThreadDetail() {
       setPosts([]);
     }
   };
+
+
+
 
   useEffect(() => {
     if (threadId) fetchPosts();
@@ -88,11 +108,12 @@ export default function ThreadDetail() {
   const startIndex = page * pageSize;
   const endIndex = startIndex + pageSize;
   const currentPosts = filteredAndSorted.slice(startIndex, endIndex);
+  
 
   return (
     <section className="flex-1 p-4">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-bold text-xl text-pink-400">게시판 #{threadId}</h2>
+        <h2 className="font-bold text-xl text-pink-400">{threadName||"로딩중.."}</h2>
         <button
           className="px-3 py-1 bg-pink-500 text-white rounded"
           onClick={() => setCreatingPost((v) => !v)}
