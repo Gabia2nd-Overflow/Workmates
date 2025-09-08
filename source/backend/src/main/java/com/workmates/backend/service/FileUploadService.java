@@ -81,4 +81,32 @@ public class FileUploadService {
             throw new RuntimeException("파일 업로드 실패", e);
         }
     }
+
+    @Transactional
+    public String uploadFile(MultipartFile file, String uploaderId) {
+        try {
+            String original = file.getOriginalFilename();
+            String unique = UUID.randomUUID() + "_" + (original == null ? "file" : original);
+            Path path = Paths.get(uploadDir, unique);
+            Files.createDirectories(path.getParent());
+            file.transferTo(path.toFile());
+            String url = "/files/" + unique;
+
+
+            attachmentRepository.save(
+                Attachment.builder()
+                    .fileUrl(url)
+                    .uploaderId(uploaderId)
+                    // .workshopId(workshopId)
+                    // .loungeId(loungeId)
+                    // .targetType(TargetType.MESSAGE)
+                    // .targetId(messageId)
+                    .build()
+            );
+
+            return url;
+        } catch (IOException e) {
+            throw new RuntimeException("파일 업로드 실패", e);
+        }
+    }
 }

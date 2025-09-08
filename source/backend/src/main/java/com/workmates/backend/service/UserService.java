@@ -34,6 +34,7 @@ public class UserService {
     private final EmailVerificationRepository emailVerificationRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final FileUploadService fileUploadService;
     
     @Value("${spring.mail.username}")
     private String from;
@@ -208,9 +209,8 @@ public class UserService {
         if(request.getNewEmailPassword() != null) {
             userEntity.setEmailPassword(request.getNewEmailPassword());
         }
-        if(request.getNewImageUrl() != null) {
-            // 파일 업로드/다운로드 컨트롤러 거쳐서 url 처리 필요
-            String newUrl = request.getNewImageUrl();
+        if(request.getNewImageFile() != null) {
+            String newUrl = fileUploadService.uploadFile(request.getNewImageFile(), id);
             userEntity.setImageUrl(newUrl);
         }
 
