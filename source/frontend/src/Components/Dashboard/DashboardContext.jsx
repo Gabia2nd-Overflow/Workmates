@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { DashboardContext } from "./DashboardContext";
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+
+export const DashboardContext = createContext(null);
 
 export default function DashboardProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,12 +27,10 @@ export default function DashboardProvider({ children }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // 열릴 때 body 스크롤 락
+  // body 스크롤 락 (단순/안전)
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = prev || "";
-    return () => { document.body.style.overflow = prev || ""; };
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
   const value = useMemo(
@@ -45,4 +45,11 @@ export default function DashboardProvider({ children }) {
   );
 
   return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
+}
+
+// 훅도 이 파일에서 함께 export (한 파일 통합 운영)
+export function useDashboard() {
+  const ctx = useContext(DashboardContext);
+  if (!ctx) throw new Error("useDashboard must be used within DashboardProvider");
+  return ctx;
 }
