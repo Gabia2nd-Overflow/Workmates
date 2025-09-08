@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { DashboardContext } from "../DashboardContext";
+import { DashboardContext } from "./DashboardContext";
 
 export default function DashboardProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
