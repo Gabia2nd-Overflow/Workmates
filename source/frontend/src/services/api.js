@@ -28,8 +28,6 @@ api.interceptors.response.use(
 
 /* ===== Auth ===== */
 export const authAPI = {
-  checkId: (data) => api.post("/auth/check-id", data),        // 아이디 중복확인
-  verifyEmail: (data) => api.post("/auth/verify-email", data),// 인증코드 전송/재전송
   // 아이디 중복확인: POST /auth/check-id  { id }
   checkId: (data) => api.post("/auth/check-id", data),
   // 이메일 인증 시작/재전송: POST /auth/verify-email  { email, requestTime }
@@ -141,7 +139,16 @@ export const postAPI = {
     api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
 };
 
-
+export const commentAPI = {
+    list: (wid, tid, pid, page=0, size=50) =>
+    api.get(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { params: { page, size } }),
+  create: (wid, tid, pid, content, parentId=null) =>
+    api.post(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { content, parentId }),
+  update: (wid, tid, pid, cid, content) =>
+    api.patch(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`, { content }),
+  remove: (wid, tid, pid, cid) =>
+    api.delete(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`),
+};
 
 /* ===== Mates ===== */
 export const mateApi = {

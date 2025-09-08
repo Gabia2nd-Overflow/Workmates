@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { postAPI } from "../services/api";
+import { postAPI, threadAPI } from "../services/api";
 
 export default function ThreadDetail() {
   const { threadId, workshopId } = useParams();
@@ -13,7 +13,26 @@ export default function ThreadDetail() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(10); // 한 화면에 보여줄 게시글 수
+  const [threadName, setThreadName] = useState("");
 
+  
+
+  const fetchThreadName = async () => {
+    try {
+      const { data } = await threadAPI.get(workshopId, threadId);
+      setThreadName(data.name || "이름없음");
+    }
+    catch (err) {
+      console.error("스레드 이름 로드 오류:", err);
+      setThreadName("이름없음");
+    }
+  };
+  useEffect(() => {
+    if (threadId) fetchThreadName();
+  }, [threadId]);
+  
   // 게시글 목록 조회
   const fetchPosts = async () => {
     try {
@@ -25,38 +44,38 @@ export default function ThreadDetail() {
     }
   };
 
+
+
+
   useEffect(() => {
     if (threadId) fetchPosts();
   }, [threadId]);
 
   // 게시글 생성
-  // 게시글 생성
-const createPost = async (e) => {
-  e.preventDefault();
-  try {
-    const { data } = await postAPI.create(workshopId, threadId, {
-      title: postTitle,
-      content: postContent,
-      category: "일반",
-      threadId: Number(threadId), // ✅ 여기가 중요
-    });
+  const createPost = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await postAPI.create(workshopId, threadId, {
+        title: postTitle,
+        content: postContent,
+        category: "일반",
+        threadId: Number(threadId),
+      });
 
-    setPosts((prev) => [...prev, data]);
-    setPostTitle("");
-    setPostContent("");
-    setCreatingPost(false);
-  } catch (err) {
-    console.error("게시글 생성 오류:", err);
-    if (err.response?.status === 403) alert("로그인이 필요합니다.");
-  }
-};
-
+      setPosts((prev) => [...prev, data]);
+      setPostTitle("");
+      setPostContent("");
+      setCreatingPost(false);
+    } catch (err) {
+      console.error("게시글 생성 오류:", err);
+      if (err.response?.status === 403) alert("로그인이 필요합니다.");
+    }
+  };
 
   // 게시글 클릭 시 조회수 증가 후 상세 페이지 이동
   const handlePostClick = async (postId) => {
     try {
       await postAPI.increaseViews(workshopId, threadId, postId);
-
       setPosts((prev) =>
         prev.map((post) =>
           post.id === postId ? { ...post, views: (post.views || 0) + 1 } : post
@@ -69,8 +88,8 @@ const createPost = async (e) => {
     }
   };
 
-  // 검색 & 정렬 적용
-  const displayedPosts = posts
+  // 검색 + 정렬 후 페이지네이션 적용
+  const filteredAndSorted = posts
     .filter(
       (p) =>
         p.title.includes(searchTerm) ||
@@ -85,10 +104,16 @@ const createPost = async (e) => {
       return 0;
     });
 
+  const totalPages = Math.ceil(filteredAndSorted.length / pageSize);
+  const startIndex = page * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentPosts = filteredAndSorted.slice(startIndex, endIndex);
+  
+
   return (
     <section className="flex-1 p-4">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-bold text-xl text-pink-400">게시판 #{threadId}</h2>
+        <h2 className="font-bold text-xl text-pink-400">{threadName||"로딩중.."}</h2>
         <button
           className="px-3 py-1 bg-pink-500 text-white rounded"
           onClick={() => setCreatingPost((v) => !v)}
@@ -155,13 +180,13 @@ const createPost = async (e) => {
           </tr>
         </thead>
         <tbody>
-          {displayedPosts.map((post, idx) => (
+          {currentPosts.map((post, idx) => (
             <tr
               key={post.id}
               className="hover:bg-pink-50 cursor-pointer"
               onClick={() => handlePostClick(post.id)}
             >
-              <td className="border px-3 py-2 text-center">{idx + 1}</td>
+              <td className="border px-3 py-2 text-center">{page * pageSize + idx + 1}</td>
               <td className="border px-3 py-2">{post.title}</td>
               <td className="border px-3 py-2 text-center">{post.writerNickname || "작성자"}</td>
               <td className="border px-3 py-2 text-center">
@@ -174,6 +199,21 @@ const createPost = async (e) => {
           ))}
         </tbody>
       </table>
+
+       {/* 페이지 번호 네모박스 */}
+      <div className="flex justify-center gap-2 mt-4 flex-wrap">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setPage(i)}
+            className={`px-3 py-1 border rounded ${
+              i === page ? "bg-pink-500 text-white" : "bg-white text-pink-500"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
     </section>
   );
 }
