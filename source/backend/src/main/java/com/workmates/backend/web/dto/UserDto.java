@@ -2,6 +2,8 @@ package com.workmates.backend.web.dto;
 
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.workmates.backend.domain.User;
 
 import lombok.AllArgsConstructor;
@@ -152,7 +154,7 @@ public class UserDto {
     public static class UpdateRequest {
         private String newNickname;
         private String newEmailPassword;
-        private String newImageUrl;
+        private MultipartFile newImageFile;
     }
 
     // 마이 페이지 정보 수정 응답

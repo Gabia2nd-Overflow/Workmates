@@ -28,8 +28,6 @@ api.interceptors.response.use(
 
 /* ===== Auth ===== */
 export const authAPI = {
-  checkId: (data) => api.post("/auth/check-id", data),        // 아이디 중복확인
-  verifyEmail: (data) => api.post("/auth/verify-email", data),// 인증코드 전송/재전송
   // 아이디 중복확인: POST /auth/check-id  { id }
   checkId: (data) => api.post("/auth/check-id", data),
   // 이메일 인증 시작/재전송: POST /auth/verify-email  { email, requestTime }
@@ -122,19 +120,35 @@ export const fileAPI = {
 
 /* ===== Posts ===== */
 export const postAPI = {
-  list: (workshopId, threadId, { sort, keyword } = {}) =>
-    api.get(`/workshops/${workshopId}/threads/${threadId}/posts`, { params: { sort, keyword } }),
+  // 게시글 목록
+  list: (workshopId, threadId, { page, size, sort, keyword } = {}) =>
+    api.get(`/workshops/${workshopId}/threads/${threadId}/posts`, {
+      params: { page, size, sort, keyword },
+    }),
 
-  create: (workshopId, threadId, post) =>
-    api.post(`/workshops/${workshopId}/threads/${threadId}/posts`, post),
+  // 게시글 단건
+  get: (workshopId, threadId, postId) =>
+    api.get(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`),
 
+  // (옵션) 생성 — 지금은 본문표시만 필요하므로 사용 안 함
+  create: (workshopId, threadId, payload) =>
+    api.post(`/workshops/${workshopId}/threads/${threadId}/posts`, payload),
+
+  // 조회수 증가 (백엔드가 PATCH /views 라우트일 때)
   increaseViews: (workshopId, threadId, postId) =>
-    api.post(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
+    api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
 };
 
-
-
-
+export const commentAPI = {
+    list: (wid, tid, pid, page=0, size=50) =>
+    api.get(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { params: { page, size } }),
+  create: (wid, tid, pid, content, parentId=null) =>
+    api.post(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { content, parentId }),
+  update: (wid, tid, pid, cid, content) =>
+    api.patch(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`, { content }),
+  remove: (wid, tid, pid, cid) =>
+    api.delete(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`),
+};
 
 /* ===== Mates ===== */
 export const mateApi = {
