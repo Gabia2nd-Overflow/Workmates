@@ -13,7 +13,7 @@ import com.workmates.backend.domain.Post;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByThreadIdAndIsDeletedFalseOrderByCreatedAtDesc(Long threadId);
-    boolean existsByIdAndThreadIdAndWorkshopId(Long id, Long threadId, Long workshopId); // 댓글 계층일치 검증용.
+    boolean existsByIdAndThreadId(Long id, Long threadId); // 댓글 계층일치 검증용.
     Optional<Post> findByIdAndIsDeletedFalse(Long id);
 
     Page<Post> findAllByCategoryContainingIgnoreCase(String category, Pageable pageable);

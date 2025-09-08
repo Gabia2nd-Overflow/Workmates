@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.workmates.backend.repository.CommentRepository;
 import com.workmates.backend.repository.PostRepository;
+import com.workmates.backend.repository.ThreadRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -22,26 +23,24 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final ThreadRepository threadRepository;
 
     @Transactional(readOnly = true)
-    public Page<CommentDto.Response> list(Long workshopId, Long threadId, Long postId, Pageable pageable) {
-        ensurePostHierarchyOrThrow(workshopId, threadId, postId);
-        return commentRepository
-            .findByPostIdAndIsDeletedFalseOrderByIdAsc(postId, pageable)
-            .map(CommentDto.Response::from);
+    public Page<CommentDto.Response> list(Long wid, Long tid, Long pid, Pageable pageable) {
+        ensurePathOrThrow(wid, tid, pid);
+        return commentRepository.pageByPostIdOrderByThreaded(pid, pageable)
+                .map(CommentDto.Response::from);
     }
 
-    public CommentDto.Response create(Long workshopId, Long threadId, Long postId,
+    public CommentDto.Response create(Long wid, Long tid, Long pid,
                                       String userId, String nickname, CommentDto.CreateRequest req) {
-        ensurePostHierarchyOrThrow(workshopId, threadId, postId);
+        ensurePathOrThrow(wid, tid, pid);
 
-        // 부모/깊이 계산
-        Long rootId = null;
-        int depth = 0;
+        Long rootId = null; int depth = 0;
         if (req.getParentId() != null) {
             Comment parent = commentRepository.findById(req.getParentId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent comment not found"));
-            if (!parent.getPostId().equals(postId))
+            if (!parent.getPostId().equals(pid))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent belongs to another post");
             rootId = parent.getRootId() != null ? parent.getRootId() : parent.getId();
             depth = parent.getDepth() + 1;
@@ -49,28 +48,27 @@ public class CommentService {
 
         String nick = (nickname == null || nickname.isBlank()) ? userId : nickname;
 
-        Comment saved = commentRepository.save(
-            Comment.builder()
-                .postId(postId)
-                .rootId(rootId)
-                .depth(depth)
-                .content(req.getContent().trim())
-                .attachmentUrl(req.getAttachmentUrl())
-                .writerId(userId)
-                .writerNickname(nick)
-                .build()
-        );
+        Comment saved = commentRepository.save(Comment.builder()
+            .postId(pid)
+            .rootId(rootId)
+            .depth(depth)
+            .content(req.getContent().trim())
+            .attachmentUrl(req.getAttachmentUrl())
+            .writerId(userId)
+            .writerNickname(nick)
+            .build());
+
         return CommentDto.Response.from(saved);
     }
 
-    public CommentDto.Response update(Long workshopId, Long threadId, Long postId,
+    public CommentDto.Response update(Long wid, Long tid, Long pid,
                                       Long commentId, String userId, CommentDto.UpdateRequest req) {
-        ensurePostHierarchyOrThrow(workshopId, threadId, postId);
+        ensurePathOrThrow(wid, tid, pid);
 
         Comment c = commentRepository.findById(commentId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found"));
 
-        if (!c.getPostId().equals(postId))
+        if (!c.getPostId().equals(pid))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatched postId");
         if (Boolean.TRUE.equals(c.getIsDeleted()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already deleted");
@@ -82,25 +80,29 @@ public class CommentService {
         return CommentDto.Response.from(c);
     }
 
-    public void delete(Long workshopId, Long threadId, Long postId, Long commentId, String userId) {
-        ensurePostHierarchyOrThrow(workshopId, threadId, postId);
+    public void delete(Long wid, Long tid, Long pid, Long commentId, String userId) {
+        ensurePathOrThrow(wid, tid, pid);
 
         Comment c = commentRepository.findById(commentId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found"));
 
-        if (!c.getPostId().equals(postId))
+        if (!c.getPostId().equals(pid))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatched postId");
         if (!c.getWriterId().equals(userId))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not owner");
-        if (Boolean.TRUE.equals(c.getIsDeleted())) return; // 멱등
+        if (Boolean.TRUE.equals(c.getIsDeleted())) return;
 
         c.setIsDeleted(true);
         c.setContent("");
         c.setAttachmentUrl(null);
     }
 
-    private void ensurePostHierarchyOrThrow(Long workshopId, Long threadId, Long postId) {
-        boolean ok = postRepository.existsByIdAndThreadIdAndWorkshopId(postId, threadId, workshopId);
-        if (!ok) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found in given path");
+    private void ensurePathOrThrow(Long wid, Long tid, Long pid) {
+        // post ∈ thread ?
+        if (!postRepository.existsByIdAndThreadId(pid, tid))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not in thread");
+        // thread ∈ workshop ?
+        if (!threadRepository.existsByIdAndWorkshopId(tid, wid))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not in workshop");
     }
 }

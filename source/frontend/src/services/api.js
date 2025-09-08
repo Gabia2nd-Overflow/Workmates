@@ -139,7 +139,16 @@ export const postAPI = {
     api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
 };
 
-
+export const commentAPI = {
+    list: (wid, tid, pid, page=0, size=50) =>
+    api.get(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { params: { page, size } }),
+  create: (wid, tid, pid, content, parentId=null) =>
+    api.post(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { content, parentId }),
+  update: (wid, tid, pid, cid, content) =>
+    api.patch(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`, { content }),
+  remove: (wid, tid, pid, cid) =>
+    api.delete(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`),
+};
 
 /* ===== Mates ===== */
 export const mateApi = {

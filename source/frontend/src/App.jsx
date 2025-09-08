@@ -4,7 +4,7 @@ import WorkshopsPage from "./pages/WorkshopsPage";
 import WorkshopDetail from "./pages/WorkShopDetail";
 import LoungeDetail from "./Components/LoungeDetail";
 import ThreadDetail from "./components/ThreadDetail";
-import PostDetail from "./components/PostDetail"; // 추가
+import PostDetail from "./Components/PostDetail"; // 추가
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { postAPI } from "../services/api"; // ✅ 공통 axios 인스턴스 사용
+import PostComments from "./PostComments";
 
 export default function PostDetail() {
   const { workshopId, threadId, postId } = useParams();
@@ -34,6 +35,11 @@ export default function PostDetail() {
 
       {/* 댓글 영역은 추후 Comment API 붙인 뒤 활성화 */}
       {/* <Comments ... /> */}
+      <PostComments
+        workshopId={Number(workshopId)}
+        threadId={Number(threadId)}
+        postId={Number(postId)}
+      />
     </section>
   );
 }
