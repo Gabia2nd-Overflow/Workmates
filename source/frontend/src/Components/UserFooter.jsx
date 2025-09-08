@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./UserFooter.css";
 import { authAPI } from "../services/api";
+import AuthButtons from "./AuthButtons";
 
 const FALLBACK_AVATAR = "/img/simple_user.png";
 
@@ -86,7 +87,7 @@ export default function UserFooter() {
 
   return (
     <div className="user-footer">
-      <div className="uf-grid">{/* ★ grid 간격/열 정의는 CSS로 이동 */}
+      <div className="uf-grid">{/* grid 간격/열 정의는 CSS */}
         {/* 아바타 */}
         <img
           className="uf-avatar"
@@ -96,22 +97,32 @@ export default function UserFooter() {
           onError={(e) => { e.currentTarget.src = FALLBACK_AVATAR; }}
         />
 
-        {/* ★ CHANGED: 닉네임/이메일을 col2 한 셀에서 세로 스택 */}
+        {/* 닉네임/이메일 */}
         <div className="uf-col2stack">
           <div className="uf-nickname">{user.nickname || " "}</div>
           <div className="uf-email">{user.email || " "}</div>
         </div>
 
-        {/* ★ CHANGED: 전원 아이콘 수직 중앙 + 1px 미세보정 */}
-        <button className="uf-power uf-power--align" aria-label="전원" title="전원">
-          <img className="uf-power-icon" src="/img/btn_power.png" alt="" />
-        </button>
+        {/* 전원 아이콘 닉네임 라인 중앙 맞추기 */}
+        <AuthButtons
+          mode="logout-icon"
+          className="uf-power uf-power--align"           /* 기존 위치/정렬 재사용 */
+          imgSrc="/img/btn_power.png"
+          imgAlt=""                                      /* 장식 이미지이므로 빈 alt */
+        />
 
-        {/* ★ CHANGED: 하단 버튼 행 — 좌우 64px 대칭 그리드 */}
+        {/* 하단 버튼 */}
         <div className="uf-bottomrow">
-          <button className="uf-btn uf-btn--settings" aria-label="설정" title="설정" />
-          <button className="uf-btn uf-btn--mail" aria-label="메일" title="메일" />
-          <button className="uf-btn uf-btn--friends" aria-label="친구" title="친구" />
+          <button className="uf-btn" aria-label="설정" title="설정">
+            {/* 이미지가 버튼 박스에 맞춰 리사이즈됨 */}
+            <img src="/img/btn_settings.png" alt="" />
+          </button>
+          <button className="uf-btn" aria-label="메일" title="메일">
+            <img src="/img/btn_mail.png" alt="" />
+          </button>
+          <button className="uf-btn" aria-label="친구" title="친구">
+            <img src="/img/btn_friends.png" alt="" />
+          </button>
         </div>
       </div>
     </div>

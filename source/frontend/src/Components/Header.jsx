@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // ← 추가
 import { cn } from "../utils/cn";
-import AuthButtons from "../Components/AuthButtons";
 import "./Header.css";
 // import DashboardButton from "./Dashboard/DashboardButton";
 
@@ -27,8 +26,6 @@ const Header = () => {
 
       {/* 우측: DashboardButton + AuthButtons */}
       <div className="header__right">
-        {/* <DashboardButton /> */}
-        <AuthButtons />
       </div>
     </header>
   );

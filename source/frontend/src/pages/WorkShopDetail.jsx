@@ -1,6 +1,7 @@
 import { Outlet, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../Components/Header";
+import UserFooter from '../Components/UserFooter';
 import Sidebar from "../Components/Sidebar";
 import LoungeSection from "../Components/LoungeSection";
 import ThreadSection from "../Components/ThreadSection";
@@ -38,6 +39,7 @@ export default function WorkshopDetail() {
           <Outlet />
         </section>
       </div>
+      <UserFooter />
     </div>
   );
 }
