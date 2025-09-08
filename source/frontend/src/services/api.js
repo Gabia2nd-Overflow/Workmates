@@ -28,8 +28,6 @@ api.interceptors.response.use(
 
 /* ===== Auth ===== */
 export const authAPI = {
-  checkId: (data) => api.post("/auth/check-id", data),        // 아이디 중복확인
-  verifyEmail: (data) => api.post("/auth/verify-email", data),// 인증코드 전송/재전송
   // 아이디 중복확인: POST /auth/check-id  { id }
   checkId: (data) => api.post("/auth/check-id", data),
   // 이메일 인증 시작/재전송: POST /auth/verify-email  { email, requestTime }

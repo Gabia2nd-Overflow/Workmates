@@ -60,7 +60,7 @@ public class Comment { // 댓글
     @Column(name = "writer_id", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String writerId; // 댓글 작성자 아이디
 
-    @Column(name = "writer_nickname", nullable = false, unique = true, length = DomainUtil.ID_MAX_LEN)
+    @Column(name = "writer_nickname", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String writerNickname; // 댓글 작성자 닉네임
 
     @Column(name = "post_id", nullable = false)
