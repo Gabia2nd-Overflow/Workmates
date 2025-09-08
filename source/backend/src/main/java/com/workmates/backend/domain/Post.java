@@ -30,7 +30,7 @@ public class Post {
     private String title;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT") // ← 명시
     private String content;
 
     @Column(length = 100)
