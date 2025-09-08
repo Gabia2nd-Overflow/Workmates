@@ -1,0 +1,11 @@
+- css 수정
+  > Header - 글씨 크기와 로고 도형 변경
+  > UserFooter - WorkShopDetail.jsx 규격에 맞게 UserFooter 조정 후 css 조정
+  > Sidebar - Header의 로고 이미지 모양과 사이드바 워크샵 목록 모양 동일하게 변경
+  > Login - 가로 사이즈 조정
+  > SignUp - 
+
+- 공용 로그아웃 훅 추가
+src/hooks/useLogout.js 추가. 기존 로그인/회원가입/로그아웃 AuthButtons Components는 AuthButtons_backup로 백업 이후 AuthButtons.jsx 변경
+=> logout 매커니즘 변경 후 UserFooter 전원 아이콘에 연결
+=> 로그아웃 되는지 확인 후 Header에 로그아웃 버튼 삭제

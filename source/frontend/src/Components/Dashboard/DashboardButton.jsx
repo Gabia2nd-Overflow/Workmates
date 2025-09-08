@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../Button";
-import { useDashboard } from "../../hooks/useDashboard";
+import { useDashboard } from "./DashboardContext";
 
 export default function DashboardButton({ className = "" }) {
   const { toggle, currentWorkshopId } = useDashboard();

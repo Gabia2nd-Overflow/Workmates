@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, matchPath } from "react-router-dom";
 import "./Dashboard.css";
-import { useDashboard } from "../../hooks/useDashboard";
+import { useDashboard } from "./DashboardContext";
 import { scheduleApi } from "../../services/api";
 import DashboardHeader from "./DashboardHeader";
 import CompletionDonut from "./CompletionDonut";
@@ -57,6 +57,9 @@ export default function DashboardPanel() {
     () => "dashboard-overlay" + (isOpen ? " open" : ""),
     [isOpen]
   );
+
+  // 닫혀 있을 땐 렌더 자체를 안 해서 입력/포커스 간섭 0%
+  if (!isOpen) return null;
 
   return (
     <div className={overlayClass} aria-hidden={!isOpen}>

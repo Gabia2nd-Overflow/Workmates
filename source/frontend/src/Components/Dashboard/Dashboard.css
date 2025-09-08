@@ -1,6 +1,6 @@
 :root {
   /* 프로젝트 헤더 실제 높이에 맞춰 조정하세요 */
-  --header-height: 64px;
+  --header-height: 80px;
   --overlay-z: 1000;
   --sheet-width: 50vw; /* 데스크톱 전용: 고정 50vw */
   --sheet-bg: #0f172a; /* 슬레이트 톤 예시 */
@@ -29,11 +29,13 @@
   background: rgba(0,0,0,0.45);
   opacity: 0;
   transition: opacity 200ms ease;
-  pointer-events: auto; /* 클릭 받을 수 있게 */
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .dashboard-overlay.open .backdrop {
-  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .dashboard-overlay .sheet {
@@ -50,11 +52,14 @@
   color: var(--text);
   display: flex;
   flex-direction: column;
-  pointer-events: auto;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .dashboard-overlay.open .sheet {
   transform: translateX(0);
+  pointer-events: auto;
+  visibility: visible;
 }
 
 /* 공통 카드/그리드 */
