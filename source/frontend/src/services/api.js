@@ -122,17 +122,24 @@ export const fileAPI = {
 
 /* ===== Posts ===== */
 export const postAPI = {
-  list: (workshopId, threadId, { sort, keyword } = {}) =>
-    api.get(`/workshops/${workshopId}/threads/${threadId}/posts`, { params: { sort, keyword } }),
+  // 게시글 목록
+  list: (workshopId, threadId, { page, size, sort, keyword } = {}) =>
+    api.get(`/workshops/${workshopId}/threads/${threadId}/posts`, {
+      params: { page, size, sort, keyword },
+    }),
 
-  create: (workshopId, threadId, post) =>
-    api.post(`/workshops/${workshopId}/threads/${threadId}/posts`, post),
+  // 게시글 단건
+  get: (workshopId, threadId, postId) =>
+    api.get(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`),
 
+  // (옵션) 생성 — 지금은 본문표시만 필요하므로 사용 안 함
+  create: (workshopId, threadId, payload) =>
+    api.post(`/workshops/${workshopId}/threads/${threadId}/posts`, payload),
+
+  // 조회수 증가 (백엔드가 PATCH /views 라우트일 때)
   increaseViews: (workshopId, threadId, postId) =>
-    api.post(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
+    api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
 };
-
-
 
 
 
