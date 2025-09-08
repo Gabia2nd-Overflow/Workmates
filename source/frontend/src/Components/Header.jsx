@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // ← 추가
 import { cn } from "../utils/cn";
-import AuthButtons from "../Components/AuthButtons";
+import AuthButtons from "./AuthButtons";
 import "./Header.css";
 // import DashboardButton from "./Dashboard/DashboardButton";
 

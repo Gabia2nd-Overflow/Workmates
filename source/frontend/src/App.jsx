@@ -3,10 +3,11 @@ import Home from "./pages/Home";
 import WorkshopsPage from "./pages/WorkshopsPage";
 import WorkshopDetail from "./pages/WorkShopDetail";
 import LoungeDetail from "./Components/LoungeDetail";
-import ThreadDetail from "./components/ThreadDetail";
+import ThreadDetail from "./Components/ThreadDetail";
 import PostDetail from "./Components/PostDetail"; // 추가
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+
 
 export default function App() {
   return (
