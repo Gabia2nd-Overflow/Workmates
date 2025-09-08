@@ -162,14 +162,11 @@ export const mateApi = {
 
 // ===== Schedules =====
 export const scheduleApi = {
-  async getStats(workshopId) {
-    const { data } = await api.get(`/workshops/${workshopId}/schedules/stats`);
-    return data;
-  },
-  async listIncomplete(workshopId) {
-    const { data } = await api.get(`/workshops/${workshopId}/schedules/incomplete`);
-    return data; // [{ id, title, dueDate, importancy, isCompleted, ... }, ...]
-  },
+  getStats: (workshopId) =>
+    api.get(`/workshops/${workshopId}/schedules/stats`),
+
+  listIncomplete: (workshopId) =>
+    api.get(`/workshops/${workshopId}/schedules/incomplete`),
 };
 
 export default api;
