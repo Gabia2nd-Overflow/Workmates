@@ -8,11 +8,11 @@
     display: flex;
     align-items: center;
     padding: 0 3rem;             /* px-12 */
-    background-color: #b62547;   /* 기존 배경색 */
+    background-color: #b62547;
     box-shadow: 0 1px 2px rgba(0,0,0,0.08); /* Tailwind shadow 유사값 */
   }
 
-  /* 3등분 영역 */
+  /* 3등분 */
   .header__left,
   .header__center,
   .header__right {
@@ -27,7 +27,7 @@
   .header__logo-box {
     width: var(--logo-w, 60px);
     height: 60px;
-    border-radius: 8px;
+    border-radius: 17px;
     overflow: hidden;
     background: #fff;
 
@@ -43,7 +43,7 @@
   }
 
   .header__title {
-    font-size: 42px;
+    font-size: 50px;
     font-weight: 700;
     letter-spacing: 0.02em; /* tracking-wide 근사치 */
     color: #ffb6c1;

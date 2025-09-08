@@ -2,18 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
-import { useLogout } from '../hooks/useLogout';
+import toast from 'react-hot-toast';
 
-const AuthButtons = ({
-  /* 아이콘 전용 모드 지원 */
-  mode = 'auto',                 // 'auto' | 'logout-icon'
-  className = '',                // 아이콘 모드 시 외부 스타일 연결
-  imgSrc = '/img/btn_power.png', // 아이콘 모드 시 사용할 이미지
-  imgAlt = '',                   // 접근성 alt (장식이면 빈 문자열)
-}) => {
+const AuthButtons = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const logout = useLogout('/login');
 
   // 로그인 여부 확인
   useEffect(() => {
@@ -22,24 +15,13 @@ const AuthButtons = ({
   }, []);
 
   // 로그아웃 처리
-  const handleLogout = () => {                   // 훅 호출만
-    logout();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setIsLoggedIn(false);
+    toast.success('로그아웃되었습니다.');
+    navigate('/');
   };
-
-  /* 아이콘 전용 모드 - 항상 로그아웃 아이콘만 렌더 */
-  if (mode === 'logout-icon') {
-    return (
-      <button
-        className={className}
-        aria-label="로그아웃"
-        title="로그아웃"
-        onClick={handleLogout}
-      >
-        <img className="uf-power-icon" src={imgSrc} alt={imgAlt} />
-      </button>
-    );
-  }
 
   return (
     <div className="flex items-center space-x-4">
