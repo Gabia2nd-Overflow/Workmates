@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // ← 추가
 import { cn } from "../utils/cn";
-import AuthButtons from "./AuthButtons";
 import "./Header.css";
 import DashboardButton from "./Dashboard/DashboardButton";
 
@@ -11,6 +10,10 @@ const Header = () => {
   const handleLogoClick = () => {
     navigate('/'); // 첫 화면(루트 경로)으로 이동
   };
+
+  // 로그인 토큰 존재 여부로 표시 제어
+  const isLoggedIn = !!localStorage.getItem("token");
+
   return (
     <header className={cn("header")}>
       {/* 좌측: 로고 */}
@@ -27,7 +30,7 @@ const Header = () => {
 
       {/* 우측: DashboardButton + AuthButtons */}
       <div className="header__right">
-        <DashboardButton />
+        {isLoggedIn && <DashboardButton />}
       </div>
     </header>
   );
