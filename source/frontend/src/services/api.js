@@ -167,6 +167,26 @@ export const scheduleApi = {
 
   listIncomplete: (workshopId) =>
     api.get(`/workshops/${workshopId}/schedules/incomplete`),
+
+  // 🔹 전체 목록(워크샵)
+  listAll: (workshopId) =>
+    api.get(`/workshops/${workshopId}/schedules`),
+
+  // 🔹 생성
+  create: (workshopId, payload) =>
+    api.post(`/workshops/${workshopId}/schedules`, payload),
+
+  // 🔹 (옵션) 단일 조회가 서버에 없을 수 있으니, 폼에서 listAll로 대체 사용
+  getOne: (scheduleId) =>
+    api.get(`/schedules/${scheduleId}`),
+
+  // 🔹 수정
+  update: (scheduleId, payload) =>
+    api.put(`/schedules/${scheduleId}`, payload),
+
+  // 🔹 삭제
+  remove: (scheduleId) =>
+    api.delete(`/schedules/${scheduleId}`),
 };
 
 export default api;

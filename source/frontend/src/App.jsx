@@ -8,8 +8,12 @@ import PostDetail from "./Components/PostDetail"; // 추가
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 
+// 대시보드 페이지 관련
 import DashboardProvider from "./Components/Dashboard/DashboardContext";
 import DashboardPanel from "./Components/Dashboard/DashboardPanel";
+// 스케줄 페이지 관련
+import ScheduleList from "./pages/ScheduleList";
+import ScheduleForm from "./pages/ScheduleForm";
 
 export default function App() {
   return (
@@ -28,6 +32,20 @@ export default function App() {
             <Route path="threads/:threadId" element={<ThreadDetail />} />
             <Route path="threads/:threadId/posts/:postId" element={<PostDetail />} />
           </Route>
+
+          {/* ✅ 스케줄 라우트 추가 */}
+          <Route
+            path="/schedules/:workshopId/schedules"
+            element={<ScheduleList />}
+          />
+          <Route
+            path="/schedules/:workshopId/schedules/new"
+            element={<ScheduleForm mode="create" />}
+          />
+          <Route
+            path="/schedules/:scheduleId/edit"
+            element={<ScheduleForm mode="edit" />}
+          />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
