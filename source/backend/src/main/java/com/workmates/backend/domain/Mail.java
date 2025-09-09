@@ -10,6 +10,7 @@ import lombok.*;
     indexes = {
         @Index(name = "idx_from", columnList = "from"),
         @Index(name = "idx_to", columnList = "to"),
+        @Index(name = "idx_message_id", columnList = "messageId"),
         @Index(name = "idx_user_id", columnList = "user_id")
     }
 )
@@ -23,6 +24,9 @@ public class Mail {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "message-id", nullable = false, unique = true)
+    private String messageId;
     
     @Column(name = "from", nullable = false)
     private String from;
