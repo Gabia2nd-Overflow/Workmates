@@ -3,9 +3,21 @@
 import Header from '../Components/Header';
 import WorkshopButton from '../Components/WorkshopButton';
 import UserFooter from '../Components/UserFooter';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import './Home.css';
 
 const Home = () => {
+
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if(!user) {
+      navigate("/login");
+    }
+  })
+
   return (
     <div className="page page--home"> {/* pt-[100px]: Header height 만큼 padding top */}
 
