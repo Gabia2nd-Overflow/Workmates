@@ -33,11 +33,11 @@ public class Mail {
     @Column(name = "subject", nullable = false)
     private String subject;
     
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "LONGTEXT")
     private String content;
     
-    @Column(name = "send_date", nullable = false)
-    private LocalDateTime sendDate;
+    @Column(name = "written_at", nullable = false)
+    private LocalDateTime writtenAt;
         
     @Column(name = "user_id", nullable =  false)
     private String userId;  // 메일을 송수신한 사용자 아이디
