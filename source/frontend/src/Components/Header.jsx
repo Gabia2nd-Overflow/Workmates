@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // ← 추가
 import { cn } from "../utils/cn";
 import "./Header.css";
 import DashboardButton from "./Dashboard/DashboardButton";
+import ScheduleButton from "./ScheduleButton";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -28,9 +29,14 @@ const Header = () => {
         <span className="header__title">Workmates</span>
       </div>
 
-      {/* 우측: DashboardButton + AuthButtons */}
+      {/* 우측: ScheduleButtons + DashboardButton */}
       <div className="header__right">
-        {isLoggedIn && <DashboardButton />}
+        {isLoggedIn && (
+        <>
+            <ScheduleButton style={{ marginRight: 8 }} />
+            <DashboardButton />
+          </>
+        )}
       </div>
     </header>
   );
