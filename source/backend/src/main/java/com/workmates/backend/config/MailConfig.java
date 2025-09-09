@@ -22,7 +22,13 @@ public class MailConfig {
     private String receivingHost;
     private String receivingPort;
 
-    public static MailConfig getMailConfig(String email, String password) {
+    public static MailConfig getSendingMailConfig(String email, String password) {
+        MailConfig mailConfig = new MailConfig();
+
+        return mailConfig;
+    }
+
+    public static MailConfig getReceivingMailConfig(String email, String password) {
         MailConfig mailConfig = new MailConfig();
 
         return mailConfig;
