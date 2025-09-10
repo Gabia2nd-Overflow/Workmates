@@ -16,41 +16,61 @@ export default function DashboardPanel() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
+  // 현재 URL에서 워크샵 ID 추출: /workshops/* + /schedules/* 둘 다 지원
+  // ✅ 수정: currentWorkshopId가 이미 있어도 URL이 바뀌면 갱신합니다.
   useEffect(() => {
-    if (currentWorkshopId) return;
-    // /workshops/:workshopId 또는 /workshops/:workshopId/… 를 모두 매칭
-    const m =
+    const m = 
       matchPath("/workshops/:workshopId/*", loc.pathname) ||
-      matchPath("/workshops/:workshopId", loc.pathname);
-    const wid = m?.params?.workshopId;
-    if (wid) setCurrentWorkshopId(wid);
+      matchPath("/workshops/:workshopId", loc.pathname) ||
+      matchPath("/schedules/:workshopId/*", loc.pathname);
+    const wid = m?.params?.workshopId ?? null;
+
+    if (wid && String(wid) !== String(currentWorkshopId || "")) {
+      setCurrentWorkshopId(wid);
+    }
   }, [loc.pathname, currentWorkshopId, setCurrentWorkshopId]);
 
-  // 열릴 때마다 데이터 로딩
-  useEffect(() => {
-    let mounted = true;
-    async function load() {
-      // workshopId가 아직 안 잡혔으면 대기
-      if (!isOpen || !currentWorkshopId) return;
-      setLoading(true);
-      setErr("");
-      try {
-        const [s, list] = await Promise.all([
-          scheduleApi.getStats(currentWorkshopId),
-          scheduleApi.listIncomplete(currentWorkshopId),
-        ]);
-        if (!mounted) return;
-        setStats(s);
-        setItems(list || []);
-      } catch (e) {
-        if (!mounted) return;
-        setErr(e?.message || "대시보드 데이터를 불러오지 못했습니다.");
-      } finally {
-        if (mounted) setLoading(false);
-      }
+  // 데이터 로더 (getStats + listIncomplete)
+  async function load() {
+    if (!isOpen || !currentWorkshopId) return;
+    setLoading(true);
+    setErr("");
+    try {
+      const [sRes, listRes] = await Promise.all([
+        scheduleApi.getStats(currentWorkshopId),
+        scheduleApi.listIncomplete(currentWorkshopId),
+      ]);
+      // Axios 응답/직접 데이터 모두 호환 처리
+      const s = sRes?.data ?? sRes ?? null;
+      const list = listRes?.data ?? listRes ?? [];
+      setStats(s);
+      setItems(Array.isArray(list) ? list : []);
+    } catch (e) {
+      setErr(e?.message || "대시보드 데이터를 불러오지 못했습니다.");
+    } finally {
+      setLoading(false);
     }
+  }
+
+  // 패널 열림/워크샵 변경 시 로딩
+  useEffect(() => {
+    if (!isOpen || !currentWorkshopId) return;
     load();
-    return () => { mounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, currentWorkshopId]);
+
+  // ✅ 스케줄 변경 전역 이벤트 수신 → 즉시 재조회
+  useEffect(() => {
+    const onMutated = (e) => {
+      const widFromEvent = e?.detail?.workshopId;
+      if (!isOpen) return;
+      if (!currentWorkshopId) return;
+      if (widFromEvent && String(widFromEvent) !== String(currentWorkshopId)) return;
+      load();
+    };
+    window.addEventListener("schedules:mutated", onMutated);
+    return () => window.removeEventListener("schedules:mutated", onMutated);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, currentWorkshopId]);
 
   const overlayClass = useMemo(
@@ -71,8 +91,8 @@ export default function DashboardPanel() {
           {/* workshopId가 안 잡혔을 때 안내 */}
           {!currentWorkshopId ? (
             <div style={{ padding: 16, color: "#9ca3af" }}>
-              현재 URL에서 워크샵 ID를 찾지 못했습니다. <br/>
-              <b>/workshops/:workshopId</b> 경로에서 열어주세요.
+              현재 URL에서 워크샵 ID를 찾지 못했습니다. <br />
+              <b>/workshops/:workshopId</b> 또는 <b>/schedules/:workshopId</b> 경로에서 열어주십시오.
             </div>
           ) : (
             <>
@@ -80,7 +100,7 @@ export default function DashboardPanel() {
                 <div className="card">
                   <h3>완료 현황</h3>
                   {loading ? (
-                    <div>불러오는 중…</div>
+                    <div>불러오는 중입니다…</div>
                   ) : stats ? (
                     <CompletionDonut
                       total={stats.total}
@@ -90,14 +110,14 @@ export default function DashboardPanel() {
                   ) : err ? (
                     <div style={{ color: "#ef4444" }}>{err}</div>
                   ) : (
-                    <div>데이터 없음</div>
+                    <div>데이터가 없습니다.</div>
                   )}
                 </div>
 
                 <div className="card">
                   <h3>마감 임박 · 중요도</h3>
                   {loading ? (
-                    <div>불러오는 중…</div>
+                    <div>불러오는 중입니다…</div>
                   ) : stats ? (
                     <TopStats
                       dueSoonCount={stats.dueSoonCount}
@@ -107,7 +127,7 @@ export default function DashboardPanel() {
                   ) : err ? (
                     <div style={{ color: "#ef4444" }}>{err}</div>
                   ) : (
-                    <div>데이터 없음</div>
+                    <div>데이터가 없습니다.</div>
                   )}
                 </div>
               </div>
@@ -116,7 +136,7 @@ export default function DashboardPanel() {
                 <div className="card">
                   <h3>미완료 스케줄 (마감일 오름차순)</h3>
                   {loading ? (
-                    <div>불러오는 중…</div>
+                    <div>불러오는 중입니다…</div>
                   ) : err ? (
                     <div style={{ color: "#ef4444" }}>{err}</div>
                   ) : (
