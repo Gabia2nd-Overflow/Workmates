@@ -22,8 +22,8 @@ public class Mail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "mail_id")
+    private Long mailId;
 
     @Column(name = "message-id", nullable = false, unique = true)
     private String messageId;
@@ -41,7 +41,8 @@ public class Mail {
     private String content;
     
     @Column(name = "written_at", nullable = false)
-    private LocalDateTime writtenAt;
+    @Builder.Default
+    private LocalDateTime writtenAt = LocalDateTime.now();
         
     @Column(name = "user_id", nullable =  false)
     private String userId;  // 메일을 송수신한 사용자 아이디
