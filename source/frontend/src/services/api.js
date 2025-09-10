@@ -137,6 +137,15 @@ export const postAPI = {
   // 조회수 증가 (백엔드가 PATCH /views 라우트일 때)
   increaseViews: (workshopId, threadId, postId) =>
     api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
+
+  // 수정 (PUT 또는 PATCH - 보통 PUT 사용)
+  update: (workshopId, threadId, postId, payload) =>
+    api.put(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`, payload),
+
+  // 삭제
+  delete: (workshopId, threadId, postId) =>
+    api.delete(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`),
+
 };
 
 export const commentAPI = {

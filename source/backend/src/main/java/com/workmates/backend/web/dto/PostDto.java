@@ -31,6 +31,7 @@ public class PostDto {
         private String writerId;
         private String writerNickname;
         private Integer views;
+        private long replyCount;
         private LocalDateTime createdAt;
         private LocalDateTime writtenAt;
 
@@ -43,6 +44,7 @@ public class PostDto {
                 .writerId(p.getWriterId())
                 .writerNickname(p.getWriterNickname())
                 .views(p.getViewCount())
+                .replyCount(p.getReplyCount())
                 .createdAt(p.getCreatedAt())
                 .writtenAt(p.getWrittenAt())
                 .build();

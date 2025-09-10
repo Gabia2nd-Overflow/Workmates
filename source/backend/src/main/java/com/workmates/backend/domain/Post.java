@@ -36,6 +36,9 @@ public class Post {
     @Column(length = 100)
     private String category;
 
+    @Column(name="replyCount",nullable=false)
+    private long replyCount=0;
+
     /** 작성자 (하위호환/조회 최적화용 비정규화 컬럼) */
     @Column(name = "writer_id", nullable = false, length = 50)
     @Builder.Default
@@ -78,10 +81,5 @@ public class Post {
     @PreUpdate
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    /** 편의 메서드 */
-    public void increaseViews() {
-        this.viewCount = (this.viewCount == null ? 0 : this.viewCount) + 1;
     }
 }

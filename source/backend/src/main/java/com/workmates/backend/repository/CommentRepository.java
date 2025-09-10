@@ -23,5 +23,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
     Page<Comment> pageByPostIdOrderByThreaded(Long postId, Pageable pageable);
 
     Optional<Comment> findByIdAndIsDeletedFalse(Long id);
+
+    @Query(value = "select count(*) from comment where post_id = :postId and is_deleted = false", nativeQuery = true)
+    Long countByPostId(Long postId);
+
     
 }

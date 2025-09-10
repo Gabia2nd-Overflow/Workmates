@@ -84,4 +84,7 @@ public class PostService {
             .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
         post.setViewCount(post.getViewCount() + 1);
     }
+
+    
+
 }
