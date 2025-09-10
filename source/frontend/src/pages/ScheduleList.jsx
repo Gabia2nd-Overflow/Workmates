@@ -136,7 +136,7 @@ export default function ScheduleList() {
   };
 
   const goNew = () => navigate(`/schedules/${workshopId}/schedules/new`);
-  const goEdit = (id) => navigate(`/schedules/${id}/edit`);
+  const goEdit = (id) => navigate(`/schedules/${workshopId}/schedules/${id}/edit`);
 
   return (
     <div className="page page--workshop-detail">

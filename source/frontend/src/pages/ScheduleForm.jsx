@@ -23,7 +23,8 @@ function toLocalInputValue(date) {
 const IMPORTANCES = ["LOW", "MEDIUM", "HIGH"];
 
 export default function ScheduleForm({ mode }) {
-  const { workshopId, scheduleId } = useParams();
+  const { workshopId, scheduleId, id } = useParams();
+  const realScheduleId = scheduleId || id;
   const navigate = useNavigate();
   const { show, ToastPortal } = useToast();
 
@@ -41,6 +42,7 @@ export default function ScheduleForm({ mode }) {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const originalStartRef = useRef(null); // 최초 저장된 startDate 보관
 
   // 보조 사이드바(워크샵 요약) 데이터
   const [workshop, setWorkshop] = useState(null);
@@ -68,11 +70,19 @@ export default function ScheduleForm({ mode }) {
     })();
 
     // 수정 모드면 기존 데이터 로딩
-    if (!isCreate && scheduleId) {
+    if (!isCreate && realScheduleId) {
       (async () => {
         try {
-          const res = await scheduleApi.listAll(workshopId);
-          const found = (res.data ?? []).find((x) => String(x.id) === String(scheduleId));
+          // 1) 우선 단일 건 조회 시도
+          let found;
+          try {
+            const resOne = await scheduleApi.getOne(realScheduleId);
+            found = resOne?.data ?? resOne;
+          } catch {
+            // 2) 실패 시 목록에서 Fallback
+            const res = await scheduleApi.listAll(workshopId);
+            found = (res.data ?? []).find((x) => String(x.id) === String(realScheduleId));
+          }
           if (!found) {
             show("스케줄을 찾을 수 없습니다.", "error");
             navigate(-1);
@@ -86,6 +96,7 @@ export default function ScheduleForm({ mode }) {
             importancy: String(found.importancy ?? "MEDIUM").toUpperCase(),
             isCompleted: !!found.isCompleted,
           });
+          originalStartRef.current = new Date(found.startDate);
           wasCompletedRef.current = !!found.isCompleted;
         } catch {
           show("스케줄을 불러오지 못했습니다.", "error");
@@ -102,14 +113,18 @@ export default function ScheduleForm({ mode }) {
     const content = (form.content ?? "").trim();
 
     if (!title) e.title = "제목은 필수입니다.";
-    if (title.length > 50) e.title = "제목은 50자 이하여야 합니다.";
-    if (content.length > 200) e.content = "내용은 200자 이하여야 합니다.";
+    if (title.length > 32) e.title = "제목은 32자 이하여야 합니다.";
+    if (content.length > 128) e.content = "내용은 128자 이하여야 합니다.";
 
     const s = new Date(form.startDate);
     const d = new Date(form.dueDate);
     const now = new Date();
 
-    if (s < now && isCreate) e.startDate = "시작일시는 현재 시각 이후여야 합니다.";
+    if (isCreate) {
+      if (s < now) e.startDate = "시작일시는 현재 시각 이후여야 합니다.";
+    } else if (originalStartRef.current && s < originalStartRef.current) {
+      e.startDate = "시작일시는 최초 저장 시각보다 과거로 수정할 수 없습니다.";
+    }
     if (d < s) e.dueDate = "마감일시는 시작일시 이후여야 합니다.";
 
     if (!IMPORTANCES.includes(String(form.importancy).toUpperCase())) {
@@ -121,7 +136,7 @@ export default function ScheduleForm({ mode }) {
   const onChange = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
   const nowInput = useMemo(() => toLocalInputValue(new Date()), []);
-  const startMin = isCreate ? nowInput : undefined;
+  const startMin = isCreate ? nowInput : (originalStartRef.current ? toLocalInputValue(originalStartRef.current) : undefined);
   const dueMin = form.startDate || nowInput;
 
   const dispatchMutated = () =>
