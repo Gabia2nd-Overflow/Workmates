@@ -28,11 +28,6 @@ api.interceptors.response.use(
 
 /* ===== Auth ===== */
 export const authAPI = {
-<<<<<<< HEAD
-=======
-  checkId: (data) => api.post("/auth/check-id", data), // 아이디 중복확인
-  verifyEmail: (data) => api.post("/auth/verify-email", data), // 인증코드 전송/재전송
->>>>>>> fea3346 (차단 기능 일부 추가)
   // 아이디 중복확인: POST /auth/check-id  { id }
   checkId: (data) => api.post("/auth/check-id", data),
   // 이메일 인증 시작/재전송: POST /auth/verify-email  { email, requestTime }
@@ -42,10 +37,11 @@ export const authAPI = {
   confirmEmail: (data) => api.post("/auth/confirm-email", data),
   signUp: (data) => api.post("/auth/signup", data),
 
-  // 응답 token을 localStorage.setItem('token', token) 로 저장
-  // 로그인: POST /auth/login  { id, password } → token은 응답으로 돌아옴
+  // 로그인: POST /auth/login  { id, password }
+  // (응답 token은 localStorage.setItem('token', token) 으로 저장)
   login: (data) => api.post("/auth/login", data),
-  // ✅ 내정보: GET/PUT /user-info  (AuthController 기준으로 변경)
+
+  // ✅ 내정보: GET/PUT /user-info
   getMyInfo: () => api.get("/user-info"),
   updateMyInfo: (data) => api.put("/user-info", data),
 };
@@ -150,20 +146,25 @@ export const postAPI = {
     ),
 };
 
-<<<<<<< HEAD
+/* ===== Comments ===== */
 export const commentAPI = {
-    list: (wid, tid, pid, page=0, size=50) =>
-    api.get(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { params: { page, size } }),
-  create: (wid, tid, pid, content, parentId=null) =>
-    api.post(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, { content, parentId }),
+  list: (wid, tid, pid, page = 0, size = 50) =>
+    api.get(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, {
+      params: { page, size },
+    }),
+  create: (wid, tid, pid, content, parentId = null) =>
+    api.post(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, {
+      content,
+      parentId,
+    }),
   update: (wid, tid, pid, cid, content) =>
-    api.patch(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`, { content }),
+    api.patch(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`, {
+      content,
+    }),
   remove: (wid, tid, pid, cid) =>
     api.delete(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`),
 };
 
-=======
->>>>>>> fea3346 (차단 기능 일부 추가)
 /* ===== Mates ===== */
 export const mateApi = {
   // 친구 목록: GET /api/mates/{myId}  또는 /api/mate/{myId}
@@ -180,61 +181,42 @@ export const mateApi = {
   // 친구 삭제: POST /api/mate/remove { id, targetId }
   remove: (id, targetId) => api.post("/mate/remove", { id, targetId }),
 
-  // 요청 처리(수락/거절):
-  // POST /api/mate/append/handle { senderId, receiverId, isAccepted }
+  // 요청 처리(수락/거절): POST /api/mate/append/handle { senderId, receiverId, isAccepted }
   handle: (senderId, receiverId, isAccepted) =>
     api.post("/mate/append/handle", { senderId, receiverId, isAccepted }),
 };
 
 /* ===== Block ===== */
 export const blockApi = {
-  // 차단자 목록
-  // GET /api/block/{id}
+  // 차단자 목록: GET /api/block/{id}
   // 응답 : {blocklist: Array<{id, nickname, imageUrl}>}
   list: (id) => api.get(`/block/${id}`),
+  // 차단 실행
   blockUser: (id, targetId) => api.post("/block/block-user", { id, targetId }),
 };
 
-// ===== Schedules =====
+/* ===== Schedules ===== */
 export const scheduleApi = {
-<<<<<<< HEAD
-  getStats: (workshopId) =>
-    api.get(`/workshops/${workshopId}/schedules/stats`),
+  getStats: (workshopId) => api.get(`/workshops/${workshopId}/schedules/stats`),
 
   listIncomplete: (workshopId) =>
     api.get(`/workshops/${workshopId}/schedules/incomplete`),
 
   // 🔹 전체 목록(워크샵)
-  listAll: (workshopId) =>
-    api.get(`/workshops/${workshopId}/schedules`),
+  listAll: (workshopId) => api.get(`/workshops/${workshopId}/schedules`),
 
   // 🔹 생성
   create: (workshopId, payload) =>
     api.post(`/workshops/${workshopId}/schedules`, payload),
 
-  // 🔹 (옵션) 단일 조회가 서버에 없을 수 있으니, 폼에서 listAll로 대체 사용
-  getOne: (scheduleId) =>
-    api.get(`/schedules/${scheduleId}`),
+  // 🔹 단일 조회(서버 라우트가 있을 때)
+  getOne: (scheduleId) => api.get(`/schedules/${scheduleId}`),
 
   // 🔹 수정
-  update: (scheduleId, payload) =>
-    api.put(`/schedules/${scheduleId}`, payload),
+  update: (scheduleId, payload) => api.put(`/schedules/${scheduleId}`, payload),
 
   // 🔹 삭제
-  remove: (scheduleId) =>
-    api.delete(`/schedules/${scheduleId}`),
-=======
-  async getStats(workshopId) {
-    const { data } = await api.get(`/workshops/${workshopId}/schedules/stats`);
-    return data;
-  },
-  async listIncomplete(workshopId) {
-    const { data } = await api.get(
-      `/workshops/${workshopId}/schedules/incomplete`
-    );
-    return data; // [{ id, title, dueDate, importancy, isCompleted, ... }, ...]
-  },
->>>>>>> fea3346 (차단 기능 일부 추가)
+  remove: (scheduleId) => api.delete(`/schedules/${scheduleId}`),
 };
 
 export default api;

@@ -7,17 +7,16 @@ import com.workmates.backend.service.MailService;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequestMapping("/api/mail")
-@RequiredArgsConstructor
-public class MailController {
-    
-    private final MailService mailService;
+// @RestController
+// @RequestMapping("/api/mail")
+// @RequiredArgsConstructor
+// public class MailController {
 
-    
-    @PostMapping("/receive")
-    public ResponseEntity<MailDto.ReceiveResponse> 
+// private final MailService mailService;
 
-    @PostMapping("/send")
-    
-}
+// @PostMapping("/receive")
+// public ResponseEntity<MailDto.ReceiveResponse>
+
+// @PostMapping("/send")
+
+// }
