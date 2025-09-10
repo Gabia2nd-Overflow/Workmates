@@ -9,7 +9,7 @@ import com.workmates.backend.web.dto.MailDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+/* 
 @RestController
 @RequestMapping("/api/mail")
 @RequiredArgsConstructor
@@ -40,3 +40,4 @@ public class MailController {
         return ResponseEntity.ok(mailService.sendMail(principal.getUsername(), request));
     }
 }
+    */

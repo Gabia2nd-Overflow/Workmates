@@ -8,19 +8,30 @@ export default function TopStats({ dueSoonCount = 0, overdueCount = 0, incomplet
   return (
     <div className="metrics">
       <div className="metric">
-        <div className="label">마감 7일 이하(미완료)</div>
+        <div className="label">마감 임박</div>
         <div className="value">{dueSoonCount}</div>
       </div>
       <div className="metric">
-        <div className="label">연체(미완료)</div>
+        <div className="label">연체</div>
         <div className="value">{overdueCount}</div>
       </div>
       <div className="metric">
         <div className="label">중요도별 미완료</div>
         <div className="value">
-          <span className="badge high">HIGH {high}</span>&nbsp;&nbsp;
-          <span className="badge medium">MED {med}</span>&nbsp;&nbsp;
-          <span className="badge low">LOW {low}</span>
+          <span className="badge high">
+            <span className="k">HIGH</span>
+            <span className="n">{high}</span>
+          </span>
+          &nbsp;&nbsp;
+          <span className="badge medium">
+            <span className="k">MED</span>
+            <span className="n">{med}</span>
+          </span>
+          &nbsp;&nbsp;
+          <span className="badge low">
+            <span className="k">LOW</span>
+            <span className="n">{low}</span>
+          </span>
         </div>
       </div>
     </div>
