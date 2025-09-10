@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { scheduleApi, loungeAPI, threadAPI, workshopAPI } from "../services/api";
 import useToast from "./useToast";
@@ -28,6 +28,7 @@ export default function ScheduleForm({ mode }) {
   const { show, ToastPortal } = useToast();
 
   const isCreate = mode === "create";
+  const wasCompletedRef = useRef(false); // 최초 완료 여부 보존
 
   // 폼
   const [form, setForm] = useState({
@@ -85,6 +86,7 @@ export default function ScheduleForm({ mode }) {
             importancy: String(found.importancy ?? "MEDIUM").toUpperCase(),
             isCompleted: !!found.isCompleted,
           });
+          wasCompletedRef.current = !!found.isCompleted;
         } catch {
           show("스케줄을 불러오지 못했습니다.", "error");
           navigate(-1);
@@ -276,7 +278,16 @@ export default function ScheduleForm({ mode }) {
                   <input
                     type="checkbox"
                     checked={!!form.isCompleted}
-                    onChange={(e) => setForm((p) => ({ ...p, isCompleted: e.target.checked }))}
+                    onChange={(e) => {
+                      // 이미 완료된 건 해제 불가
+                      if (wasCompletedRef.current && !e.target.checked) {
+                        show("완료된 스케줄은 되돌릴 수 없습니다.", "info");
+                        return;
+                      }
+                      setForm((p) => ({ ...p, isCompleted: e.target.checked }));
+                    }}
+                    disabled={wasCompletedRef.current} // 이미 완료면 조작 불가
+                    title={wasCompletedRef.current ? "완료된 스케줄은 되돌릴 수 없습니다." : "완료 처리합니다."}
                   />
                   완료 처리
                 </label>

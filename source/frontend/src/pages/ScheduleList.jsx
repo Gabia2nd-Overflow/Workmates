@@ -97,6 +97,11 @@ export default function ScheduleList() {
     window.dispatchEvent(new CustomEvent("schedules:mutated", { detail: { workshopId } }));
 
   const onToggleCompleted = async (item) => {
+    if (item.isCompleted) {
+      // 이미 완료된 건 되돌릴 수 없도록 차단
+      show("완료된 스케줄은 되돌릴 수 없습니다.", "info");
+      return;
+    }
     const ok = window.confirm("정말로 해당 스케줄이 완료되었습니까?");
     if (!ok) return;
     try {
@@ -106,11 +111,11 @@ export default function ScheduleList() {
         startDate: item.startDate,
         dueDate: item.dueDate,
         importancy: item.importancy,
-        isCompleted: !item.isCompleted,
+        isCompleted: true,
       };
       await scheduleApi.update(item.id, payload);
       show("완료 상태를 변경했습니다.", "success");
-      setItems((prev) => prev.map((x) => (x.id === item.id ? { ...x, isCompleted: !x.isCompleted } : x)));
+      setItems((prev) => prev.map((x) => (x.id === item.id ? { ...x, isCompleted: true } : x)));
       dispatchMutated();
     } catch {
       show("상태 변경에 실패했습니다.", "error");
@@ -209,6 +214,8 @@ export default function ScheduleList() {
                               type="checkbox"
                               checked={!!item.isCompleted}
                               onChange={() => onToggleCompleted(item)}
+                              disabled={!!item.isCompleted}
+                              title={item.isCompleted ? "완료된 스케줄은 되돌릴 수 없습니다." : "완료 처리합니다."}
                             />
                             완료
                           </label>
