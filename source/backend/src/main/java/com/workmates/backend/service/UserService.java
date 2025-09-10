@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -276,7 +275,7 @@ public class UserService {
         return codeBuilder.toString();
     }
 
-    @Bean("emailVerificationExecutor")
+    @Async("emailVerificationExecutor")
     private void sendVerificationEmail(String to, String verificationCode) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
