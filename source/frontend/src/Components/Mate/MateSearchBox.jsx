@@ -7,7 +7,7 @@ import FriendAddButton from "./FriendAddButton";
 // 가이드 정규식 : 소문자/숫자 4~20자
 const ID_REGEX = /^[a-z0-9]{4,20}$/;
 
-export default function MateSearchBox({ myId }) {
+export default function MateSearchBox({ myId, friends = [] }) {
   // 입력창에 적은 값
   const [value, setValue] = useState("");
 
@@ -89,9 +89,9 @@ export default function MateSearchBox({ myId }) {
       </div>
 
       {/* 정규식 통과 못하면 문구 보여주기 */}
-      {value && isValid && (
+      {/* {value && isValid && (
         <div>아이디 형식이 올바르지 않습니다. (소문자/숫자 4~20자)</div>
-      )}
+      )} */}
 
       {/* 백엔드가 400으로 없다고 알려준 경우 */}
       {notFound && <div>검색 결과가 없습니다.</div>}

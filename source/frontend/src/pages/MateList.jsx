@@ -23,10 +23,28 @@ export default function MateList() {
     setLoading(true);
     try {
       // GET /api/mates/{myId}
-      const res = await mateApi.list(myId);
-      setMates(res.data || []);
+      const { data } = await mateApi.list(myId);
+      // console.log("mateApi.list data:", res);
+
+      const items = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.mates)
+          ? data.mates
+          : Array.isArray(data?.mateList)
+            ? data.mateList
+            : Array.isArray(data?.matelist)
+              ? data.matelist
+              : Array.isArray(data?.list)
+                ? data.list
+                : Array.isArray(data?.data)
+                  ? data.data
+                  : [];
+
+      setMates(items);
     } catch (e) {
-      // 필요하면 에러 처리
+      console.error(e);
+      setMates([]);
+      alert(e?.response?.data?.message || "목록 불러오기 실패");
     } finally {
       setLoading(false);
     }
@@ -50,6 +68,9 @@ export default function MateList() {
     // 서버에서 최신 목록 다시 로드
     load();
   };
+
+  // ✅ 렌더에서도 "반드시 배열"만 map 하도록 보정
+  const list = Array.isArray(mates) ? mates : [];
 
   return (
     <div>

@@ -169,7 +169,7 @@ export const commentAPI = {
 export const mateApi = {
   // 친구 목록: GET /api/mates/{myId}  또는 /api/mate/{myId}
   // (백엔드 라우트에 맞춰 한 줄만 쓰세요. 예시는 /mates 사용)
-  list: (myId) => api.get(`/mates/${myId}`),
+  list: (myId) => api.get(`/mate/${myId}`),
 
   // 가이드 고정: POST /api/mate/search { id }
   search: (id) => api.post("/mate/search", { id }),
