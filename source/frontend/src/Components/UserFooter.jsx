@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import React, { useEffect, useMemo, useState } from "react";
 import "./UserFooter.css";
 import { authAPI } from "../services/api";
 import AuthButtons from "./AuthButtons";
+=======
+import React from "react";
+import { cn } from "../utils/cn";
+import { useNavigate } from "react-router-dom";
+import "./UserFooter.css";
+>>>>>>> fea3346 (차단 기능 일부 추가)
 
 const FALLBACK_AVATAR = "/img/simple_user.png";
 
@@ -85,6 +92,7 @@ export default function UserFooter() {
     [user.nickname]
   );
 
+<<<<<<< HEAD
   return (
     <div className="user-footer">
       <div className="uf-grid">{/* grid 간격/열 정의는 CSS */}
@@ -102,6 +110,36 @@ export default function UserFooter() {
           <div className="uf-nickname">{user.nickname || " "}</div>
           <div className="uf-email">{user.email || " "}</div>
         </div>
+=======
+const UserFooter = () => {
+  const navigate = useNavigate();
+
+  return (
+    <footer className={cn("user-footer")}>
+      {/* 유저 프로필 */}
+      <div className="user-footer__profile-row">
+        <img src={user.avatar} alt="프로필" className="user-footer__avatar" />
+
+        {/* 텍스트 컬럼 */}
+        <div className="user-footer__textcol">
+          {/* 닉네임 라인 + 전원 버튼 */}
+          <div className="user-footer__nickname-row">
+            <span className="user-footer__nickname">{user.nickname}</span>
+            <button
+              title="로그아웃"
+              className="user-footer__power-btn"
+              onClick={() => {
+                /* TODO: 로그아웃 핸들러 */
+              }}
+            >
+              <img
+                src="/img/btn_power.png" /* public 폴더의 투명 PNG */
+                alt="전원버튼"
+                className="user-footer__power-icon"
+              />
+            </button>
+          </div>
+>>>>>>> fea3346 (차단 기능 일부 추가)
 
         {/* 전원 아이콘 닉네임 라인 중앙 맞추기 */}
         <AuthButtons
@@ -125,6 +163,49 @@ export default function UserFooter() {
           </button>
         </div>
       </div>
+<<<<<<< HEAD
     </div>
   );
 }
+=======
+
+      {/* 하단 아이콘 버튼 */}
+      <div className="user-footer__buttons">
+        <button
+          title="설정"
+          className="user-footer__btn user-footer__btn--left"
+        >
+          <img
+            src="/img/btn_settings.png"
+            className="user-footer__btn-img"
+            alt="설정버튼"
+          />
+        </button>
+        <button
+          title="메일"
+          className="user-footer__btn user-footer__btn--center"
+        >
+          <img
+            src="/img/btn_mail.png"
+            className="user-footer__btn-img"
+            alt="메일버튼"
+          />
+        </button>
+        <button
+          title="친구"
+          className="user-footer__btn user-footer__btn--right"
+          onClick={() => navigate("/mates/list")}
+        >
+          <img
+            src="/img/btn_friends.png"
+            className="user-footer__btn-img"
+            alt="친구버튼"
+          />
+        </button>
+      </div>
+    </footer>
+  );
+};
+
+export default UserFooter;
+>>>>>>> fea3346 (차단 기능 일부 추가)

@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import WorkshopsPage from "./pages/WorkshopsPage";
 import WorkshopDetail from "./pages/WorkShopDetail";
@@ -7,6 +12,9 @@ import ThreadDetail from "./Components/ThreadDetail";
 import PostDetail from "./Components/PostDetail"; // 추가
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+//친구기능
+
+import MateList from "./pages/MateList";
 
 // 대시보드 페이지 관련
 import DashboardProvider from "./Components/Dashboard/DashboardContext";
@@ -26,6 +34,7 @@ export default function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/workshops" element={<WorkshopsPage />} />
 
+<<<<<<< HEAD
           {/* 워크샵 상세 + 라운지/스레드 중첩 라우팅 */}
           <Route path="/workshops/:workshopId" element={<WorkshopDetail />}>
             <Route path="lounges/:loungeId" element={<LoungeDetail />} />
@@ -54,5 +63,23 @@ export default function App() {
         <DashboardPanel />
       </Router>
     </DashboardProvider>
+=======
+        {/* 워크샵 상세 + 라운지/스레드 중첩 라우팅 */}
+        <Route path="/workshops/:workshopId" element={<WorkshopDetail />}>
+          <Route path="lounges/:loungeId" element={<LoungeDetail />} />
+          <Route path="threads/:threadId" element={<ThreadDetail />} />
+          <Route
+            path="threads/:threadId/posts/:postId"
+            element={<PostDetail />}
+          />
+        </Route>
+
+        {/* 친구 기능 */}
+        <Route path="/mates/list" element={<MateList />} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
+>>>>>>> fea3346 (차단 기능 일부 추가)
   );
 }
