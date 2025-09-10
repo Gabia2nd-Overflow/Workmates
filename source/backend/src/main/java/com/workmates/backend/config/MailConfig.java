@@ -1,12 +1,16 @@
 package com.workmates.backend.config;
 
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
 import lombok.*;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class MailConfig {
+
+    // 해당 MailConfig의 대상인 사용자
+    private final String userId;
+    private final JavaMailSender mailSender;
 
     // 공통
     private String username;
@@ -22,16 +26,8 @@ public class MailConfig {
     private String receivingHost;
     private String receivingPort;
 
-    public static MailConfig getSendingMailConfig(String email, String password) {
-        MailConfig mailConfig = new MailConfig();
-
-        return mailConfig;
+    public MailConfig(String userId) {
+        this.userId = userId;
+        mailSender = new JavaMailSenderImpl();
     }
-
-    public static MailConfig getReceivingMailConfig(String email, String password) {
-        MailConfig mailConfig = new MailConfig();
-
-        return mailConfig;
-    }
-
 }
