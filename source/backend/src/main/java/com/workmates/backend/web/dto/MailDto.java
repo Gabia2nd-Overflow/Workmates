@@ -8,24 +8,8 @@ public class MailDto {
     @NoArgsConstructor
     // @AllArgsConstructor
     @Builder
-    public static class ReadMailRequest {
-
-    } 
-
-    @Data
-    @NoArgsConstructor
-    // @AllArgsConstructor
-    @Builder
     public static class ReadMailResponse {
         
-    }
-
-    @Data
-    @NoArgsConstructor
-    // @AllArgsConstructor
-    @Builder
-    public static class ReceiveMailRequest {
-
     }
 
     @Data
