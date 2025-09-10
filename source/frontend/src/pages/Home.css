@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-/* 헤더·푸터 영역만큼 패딩 + 2열 그리드 */
+/* 헤더·푸터 영역만큼 패딩 */
 .home-scroll {
   height: 100vh;
   padding-top: var(--header-height);
@@ -18,27 +18,26 @@
   box-sizing: border-box;
 
   display: grid;
-  grid-template-columns: var(--rail-width) 1fr; /* 335px + 메인 */
+  grid-template-columns: var(--rail-width) 1fr;
   gap: var(--gap);
   overflow: hidden; /* 각 칼럼에서 스크롤 */
-  min-height: 0; /* ← 그리드 안 자식들의 overflow가 동작하도록 */
+  min-height: 0;
 }
 
-/* ⬅ 왼쪽 박스: 상단 80px에 들러붙고, 높이는 (100vh - 80 - 130) */
+/* 왼쪽 박스 */
 .home-rail {
   position: sticky;
-  top: var(--header-height); /* 80px */
+  top: var(--header-height);
   align-self: start;
 
   height: calc(100vh - var(--header-height) - var(--footer-height));
-  min-height: 0;  /* ← 내부 패널이 100%로 늘어날 수 있게 */
+  min-height: 0;
   overflow-y: auto;   /* 항목 많으면 내부만 스크롤 */
   overflow-x: hidden;
   box-sizing: border-box;
-  /* 필요하면 레일 배경/패딩 여기서 조절 */
 }
 
-/* ➡ 오른쪽 메인 영역도 개별 스크롤 */
+/* 오른쪽 메인 영역도 개별 스크롤 */
 .home__main {
   min-height: 0; /* 그리드 자식 overflow 동작 보장 */
   height: calc(100vh - var(--header-height) - var(--footer-height));

@@ -4,7 +4,6 @@ import { workshopAPI } from "../services/api";
 import "./MyWorkshopsPanel.css";
 import MyWorkshopItem from "./MyWorkshopItem";
 
-/** 사이드바와 동일한 아이콘(미사용 가능). 폴백 이미지는 쓰지 않고 글자 배지로 대체 */
 const WORKSHOP_ICON_SRC = "/img/workshop_icon.png";
 
 export default function MyWorkshopsPanel() {
