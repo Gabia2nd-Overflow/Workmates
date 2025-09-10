@@ -15,9 +15,9 @@ public class MailController {
     private final MailService mailService;
 
     
-    @PostMapping("/receive")
-    public ResponseEntity<MailDto.ReceiveResponse> 
+    // @PostMapping("/receive")
+    // public ResponseEntity<MailDto.ReceiveResponse> 
 
-    @PostMapping("/send")
+    // @PostMapping("/send")
     
 }

@@ -33,9 +33,6 @@ public class Post {
     @Column(nullable = false, columnDefinition = "LONGTEXT") // ← 명시
     private String content;
 
-    @Column(length = 100)
-    private String category;
-
     @Column(name="replyCount",nullable=false)
     private long replyCount=0;
 
