@@ -3,15 +3,25 @@
   --header-height: 80px;
   --overlay-z: 1000;
   --sheet-width: 50vw; /* 데스크톱 전용: 고정 50vw */
-  --sheet-bg: #0f172a; /* 슬레이트 톤 예시 */
-  --card-bg: #111827;
-  --border: rgba(255,255,255,0.08);
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --accent: #60a5fa;
+  
+  --sheet-bg: #f1d7cf;  /* 파스텔 핑크에 약간의 크림 */
+  --card-bg:  #efe3d6;  /* 웜 베이지 카드 */
+
+  /* 가독성 보정(권장) */
+  --text:  #2b2f33;     /* 진한 회색 텍스트 */
+  --muted: #5f6670;     /* 보조 텍스트 */
+  --border:#e6cfc5;     /* 부드러운 핑크 베이스 보더 */
+
+  /* 포인트 컬러: 핑크와 상보되는 소프트 틸(도넛 점 등) */
+  --accent: #2ed3c6;
   --danger: #ef4444;
   --warning: #f59e0b;
   --success: #22c55e;
+  /* ★추가: 도넛 트랙(테두리) 색 – 카드와 잘 어울리는 소프트 틸 */
+  --donut-trail: #BFE9E3;  /* 필요 시 #C8B3A7(토프) 등으로 교체 가능 */
+
+  /* ★추가: 배지 고정 폭(라벨+숫자 2자리 기준). 필요시 숫자만 조정 */
+  --badge-width: 84px;
 }
 
 .dashboard-overlay {
@@ -112,17 +122,31 @@
 .metric .label { font-size: 12px; color: var(--muted); }
 .metric .value { font-size: 20px; font-weight: 700; margin-top: 4px; }
 
+/* === 배지 스타일 (★교체) ===================================== */
 .badge {
-  display: inline-block;
-  padding: 2px 8px;
+  display: inline-flex;                  /* ★변경: inline-flex로 두 칸 배치 */
+  align-items: center;                   /* ★추가 */
+  justify-content: center;        /* ★추가: 라벨 좌측, 숫자 우측 */
+  padding: 2px 10px;
+  font-weight: 700;                      /* ★변경: 배지 자체에 굵기 부여 */
   border-radius: 999px;
   font-size: 12px;
   border: 1px solid var(--border);
+  width: var(--badge-width);             /* ★추가: 가로 고정 */
+  text-align: center;             /* ★추가: 텍스트도 가운데 */
 }
 
-.badge.high { background: rgba(239,68,68,.15); color: #fecaca; }
-.badge.medium { background: rgba(245,158,11,.15); color: #fde68a; }
-.badge.low { background: rgba(34,197,94,.15); color: #bbf7d0; }
+/* ★추가: 라벨/숫자 세부 제어 */
+.badge .k { letter-spacing: .2px; }      /* 라벨 */
+.badge .n {
+  font-variant-numeric: tabular-nums;    /* 숫자 고정폭 */
+  min-width: 2ch;                        /* 두 자리 공간 확보(0~99) */
+  text-align: right;                     /* 오른쪽 정렬 */
+}
+
+.badge.high   { background: rgba(214, 46, 72, 0.42);  color: #fecaca; }
+.badge.medium { background: rgba(217, 131, 7, 0.40);  color: #fde68a; }
+.badge.low    { background: rgba(27, 164, 112, 0.38); color: #bbf7d0; }
 
 .list {
   display: flex;
@@ -141,13 +165,14 @@
 }
 .list-item .title {
   font-weight: 600;
-  color: #f3f4f6;
+  color: #2b2f33
 }
 .list-item .date {
   font-size: 12px; color: var(--muted);
 }
 .list-item .dday {
   font-weight: 700;
+  color: #a3988f;
 }
 .list-item .dday.imminent { color: var(--warning); }
 .list-item .dday.overdue { color: var(--danger); }
@@ -169,9 +194,10 @@
   gap: 8px;
 }
 .panel-close {
-  background: transparent;
+  background: #efe3d6;
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 2px solid;
+  border-color: #DFA4B2;
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -184,6 +210,7 @@
   gap: 16px;
   align-items: center;
 }
+
 .donut-center {
   position: absolute;
   inset: 0;
@@ -191,5 +218,25 @@
   place-items: center;
   font-weight: 700;
   font-size: 14px;
-  color: #e5e7eb;
+  color: #2b2f33;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+
+/* === 도넛 진행률 스타일 (★교체) ==================================== */
+.CircularProgressbar, .CircularProgressbar svg { overflow: visible; }
+
+/* ★변경: 진행 구간(채워지는 부분) */
+.CircularProgressbar .CircularProgressbar-path {
+  stroke: var(--accent) !important;      /* #2ed3c6(진한 틸) */
+  stroke-linecap: round !important;
+  stroke-width: 12px !important;
+  fill: none !important;
+}
+
+/* ★변경: 트랙(테두리 역할) */
+.CircularProgressbar .CircularProgressbar-trail {
+  stroke: #BFE9E3 !important;            /* 연한 틸 */
+  stroke-width: 7px !important;          /* path보다 얇게 → 덮지 않음 */
+  opacity: 1 !important;
+  fill: none !important;
 }

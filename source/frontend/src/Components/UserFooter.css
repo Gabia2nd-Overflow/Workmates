@@ -9,7 +9,7 @@
   --xpad: 12px;
   padding: 8px var(--xpad);
   background: #ffdfe4;
-  border-top: 1px solid #c5c5c5;
+  border: 1px solid rgba(0,0,0,0.08);
   box-sizing: border-box;
 
   /* 하단 버튼 크기 */
