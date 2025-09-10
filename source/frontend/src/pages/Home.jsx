@@ -26,7 +26,6 @@ const Home = () => {
 
       {/* 본문 영역 (비워둠) */}
       <main className="home__main">
-        <p>메인 콘텐츠가 여기에 표시됩니다.</p>
         <WorkshopButton/>
       </main>
 
