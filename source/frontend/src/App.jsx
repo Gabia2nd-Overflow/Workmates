@@ -13,6 +13,7 @@ import ThreadDetail from "./Components/ThreadDetail";
 import PostDetail from "./Components/PostDetail";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import BlockList from "./pages/BlockList";
 
 // 친구기능
 import MateList from "./pages/MateList";
@@ -64,6 +65,7 @@ export default function App() {
 
           {/* 친구 기능 */}
           <Route path="/mates/list" element={<MateList />} />
+          <Route path="/mates/blocked" element={<BlockList />} />
 
           {/* 기타 */}
           <Route path="*" element={<Navigate to="/" replace />} />

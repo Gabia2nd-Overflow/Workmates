@@ -193,6 +193,7 @@ export const blockApi = {
   list: (id) => api.get(`/block/${id}`),
   // 차단 실행
   blockUser: (id, targetId) => api.post("/block/block-user", { id, targetId }),
+  unblock: (id, targetId) => api.post("/block/unblock-user", { id, targetId }),
 };
 
 /* ===== Schedules ===== */

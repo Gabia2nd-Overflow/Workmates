@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { mateApi } from "../services/api";
+import { Link } from "react-router-dom";
 import MateSearchBox from "../Components/Mate/MateSearchBox";
 import FriendRemoveButton from "../Components/Mate/FriendRemoveButton";
 import BlockUserButton from "../Components/Mate/BlockUserButton";
@@ -89,6 +90,11 @@ export default function MateList() {
         <button onClick={() => setShowSearch((v) => !v)}>
           {showSearch ? "사용자 검색 닫기" : "사용자 검색"}
         </button>
+      </div>
+
+      {/* 차단 목록 */}
+      <div>
+        <Link to="/mates/blocked">차단 목록</Link>
       </div>
 
       {/* 버튼을 눌렀을 때만 검색 박스가 나타남 */}
