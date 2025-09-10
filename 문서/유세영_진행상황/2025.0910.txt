@@ -1,0 +1,7 @@
+- 대시보드 디자인 변경
+- CompletionDonut.jsx 조정
+
+> 위 변경사항들에 따른 Dashboard 폴더 내의 파일들 다소 변경 후 Dashboard.css 조정
+
+- Components에 MyWorkshopItem.jsx, MyWorkshopsPanel.jsx, MyWorkshopsPanel.css 추가
+> Home 화면 왼쪽에 My Workshop 리스트 출력 > 누르면 해당 워크샵으로 진입

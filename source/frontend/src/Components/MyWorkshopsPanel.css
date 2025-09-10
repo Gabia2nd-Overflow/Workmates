@@ -1,0 +1,126 @@
+/* 패널(카드 2칸) 기본 */
+.mw-panel {
+  /* 기본(현행) 팔레트 — 테마에서 덮어씀 */
+  --panel-bg: #fff0f4;                  /* 패널 배경 */
+  --panel-text: #b62547;              /* 기본 텍스트 */
+  --panel-border: rgba(0,0,0,0.08);     /* 테두리 */
+  --muted: rgba(0,0,0,0.45);            /* 보조 텍스트 */
+  --card-bg: #FDD7E5;
+  --icon-bg:#f9a8d4;
+  --accent: #e11d48;                    /* 포커스/호버 악센트 */  /* CHANGED */
+
+  --lift: 2px;              /* hover로 위로 살짝 뜨는 높이 */
+  --row-top-pad: 8px;       /* 리스트 시작 여유(헤더와 간격) */
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 0px;
+  padding: 16px;
+  height: 100%;   /* ← 부모(home-rail) 높이 꽉 채움 */
+  min-height: 0;  /* ← overflow가 막히지 않게 */
+  
+}
+
+/* 홈 그리드에서 2칸 차지 (그리드가 있다면 span-2 클래스를 사용) */
+.span-2 {
+  grid-column: span 2;
+}
+
+/* 헤더 */
+.mw-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+.mw-title {
+  margin: 0;
+  font-size: px;
+  font-weight: 700;
+  color: var(--panel-text);
+}
+
+/* 목록 영역: 가로 스크롤 카드 */
+.mw-row {
+  padding-top: calc(var(--row-top-pad) + var(--lift));
+  display: flex;
+  flex-direction: column;  /* 세로 배치 */
+  gap: 12px;
+  flex: 1 1 auto;     /* ← 남은 높이를 모두 차지 */
+  overflow-y: auto;   /* ← 항목 많아지면 이 영역만 스크롤 */
+  overflow-x: hidden;
+}
+
+/* 카드(아이콘 + 이름) — 사이드바 아이콘과 동일 느낌 */
+.mw-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg); 
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  width: 100%;            /* 한 줄 전체 폭 */
+  cursor: pointer;
+  text-align: left;
+  transition: transform .06s ease, box-shadow .12s ease;
+}
+.mw-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--panel-border));      /* CHANGED */
+}
+.mw-card img {
+  display: block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+.mw-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--icon-bg);
+}
+.mw-name {
+  color: #111827;
+  font-weight: 600;
+  font-size: 17px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 스켈레톤 */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+}
+.skeleton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.6), rgba(255,255,255,0));
+  transform: translateX(-100%);
+  animation: mw-shimmer 1.2s infinite;
+}
+@keyframes mw-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* 빈 상태 */
+.mw-empty {
+  display: grid;
+  gap: 6px;
+  place-items: start;
+  color: var(--panel-text);
+}
+.mw-muted {
+  color: var(--muted);
+  font-size: 12px;
+}
