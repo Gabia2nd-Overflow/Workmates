@@ -176,7 +176,6 @@ export default function ThreadDetail() {
             <th className="border px-3 py-2">작성일</th>
             <th className="border px-3 py-2">조회수</th>
             <th className="border px-3 py-2">댓글 수</th>
-            <th className="border px-3 py-2">분류</th>
           </tr>
         </thead>
         <tbody>
@@ -194,7 +193,6 @@ export default function ThreadDetail() {
               </td>
               <td className="border px-3 py-2 text-center">{post.views || 0}</td>
               <td className="border px-3 py-2 text-center">{post.replyCount || 0}</td>
-              <td className="border px-3 py-2 text-center">{post.category || "-"}</td>
             </tr>
           ))}
         </tbody>

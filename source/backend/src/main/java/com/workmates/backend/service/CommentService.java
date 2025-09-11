@@ -5,13 +5,15 @@ import com.workmates.backend.web.dto.CommentDto;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
+import com.workmates.backend.domain.Post;
 import com.workmates.backend.repository.CommentRepository;
 import com.workmates.backend.repository.PostRepository;
 import com.workmates.backend.repository.ThreadRepository;
@@ -44,6 +46,8 @@ public class CommentService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent belongs to another post");
             rootId = parent.getRootId() != null ? parent.getRootId() : parent.getId();
             depth = parent.getDepth() + 1;
+
+            
         }
 
         String nick = (nickname == null || nickname.isBlank()) ? userId : nickname;
@@ -57,6 +61,12 @@ public class CommentService {
             .writerId(userId)
             .writerNickname(nick)
             .build());
+
+        Optional<Post> post = postRepository.findById(pid);
+        if(post.isPresent()) {
+            Post postEntity = post.get();
+            postEntity.setReplyCount(postEntity.getReplyCount() + 1);
+        }
 
         return CommentDto.Response.from(saved);
     }
@@ -95,6 +105,13 @@ public class CommentService {
         c.setIsDeleted(true);
         c.setContent("");
         c.setAttachmentUrl(null);
+
+        Optional<Post> post = postRepository.findById(pid);
+        if(post.isPresent()) {
+            Post postEntity = post.get();
+            postEntity.setReplyCount(postEntity.getReplyCount() - 1);
+        }
+
     }
 
     private void ensurePathOrThrow(Long wid, Long tid, Long pid) {

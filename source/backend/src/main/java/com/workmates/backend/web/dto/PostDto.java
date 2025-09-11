@@ -12,14 +12,12 @@ public class PostDto {
     public static class CreateRequest {
         private String title;
         private String content;
-        private String category; // optional
     }
 
     @Getter @Setter
     public static class UpdateRequest {
         private String title;    // optional
         private String content;  // optional
-        private String category; // optional
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -31,6 +29,7 @@ public class PostDto {
         private String writerId;
         private String writerNickname;
         private Integer views;
+        private long replyCount;
         private LocalDateTime createdAt;
         private LocalDateTime writtenAt;
 
@@ -43,6 +42,7 @@ public class PostDto {
                 .writerId(p.getWriterId())
                 .writerNickname(p.getWriterNickname())
                 .views(p.getViewCount())
+                .replyCount(p.getReplyCount())
                 .createdAt(p.getCreatedAt())
                 .writtenAt(p.getWrittenAt())
                 .build();
