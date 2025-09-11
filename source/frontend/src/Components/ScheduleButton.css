@@ -1,0 +1,37 @@
+/* 평소 상태 */
+.schedule-btn {
+  background: #efe3d6 !important;
+  border: 2px solid var(--border) !important;
+  color: #b62547 !important;
+
+  /* 공통 btn의 ring/outline 제거 */
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-offset-width: 0 !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+
+/* hover */
+.schedule-btn:hover {
+  background: #F7CCCB !important;
+  border: 2px solid var(--border) !important;
+  color: #b62547 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 선택(현재 스케줄 경로일 때) */
+.schedule-btn[data-active="true"] {
+  background: #ffb6c1 !important;
+  border: 2px solid var(--border) !important;
+  color: #b62547 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 비활성(워크샵 미선택)일 때 살짝 투명도 */
+.schedule-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}

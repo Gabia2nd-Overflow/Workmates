@@ -1,10 +1,14 @@
 /* 페이지 기본 */
 .page.page--workshop-detail {
-  /* min-h-screen bg-gray-50 */
   min-height: 100vh;
-  background-color: #f9fafb;
-  /* 전역 스크롤 기준으로 동작 */
   overflow: visible;
+
+  background: linear-gradient(
+    180deg,
+    #ffeaf0 0%,
+    var(--brand-light, #ffd1dc) 48%,
+    #ffffff 100% 
+  );
 }
 
 /* 레이아웃
@@ -13,14 +17,14 @@
    - 고정값(상수)만 사용, 반응형 없음
 */
 .wsd__layout {
-  padding-top: 80px;                 /* Header가 fixed 80px */
-  padding-left: calc(5rem + 16rem);  /* 메인(5rem) + 서브(16rem) */
+  padding-top: 80px;                 /* Header fixed 80px */
+  padding-left: calc(5rem + 16rem); 
   display: flex;
   align-items: flex-start;
   overflow: visible;
 }
 
-/* ✅ 서브 사이드바: 메인과 동일한 높이 규칙으로 '고정(fixed)'
+/* 서브 사이드바: 메인과 동일한 높이 규칙으로 '고정(fixed)'
    - 메인: left:0, top:80px, bottom:130px, width:5rem
    - 서브: left:5rem, top:80px, bottom:130px, width:16rem
    → 두 바 모두 뷰포트 기준으로 정확히 같은 유효 높이를 가짐
@@ -29,13 +33,12 @@
   position: fixed;
   left: 5rem;             /* 메인 사이드바 바로 오른쪽 */
   top: 80px;              /* 헤더 높이와 동일 */
-  bottom: 130px;          /* UserFooter 높이와 동일 */
-  width: 16rem;           /* 기존 디자인 유지 */
+  bottom: 130px;
+  width: 16rem;
   overflow-y: auto;       /* 내부 스크롤 */
-  z-index: 35;            /* 메인(40)보다 살짝 낮게 */
+  z-index: 35;
   box-sizing: border-box;
 
-  /* 기존 스타일 유지 */
   border-right: 1px solid #e5e7eb;
   padding: 1rem;
   background: #ffdfe4;
@@ -50,10 +53,16 @@
   margin-bottom: 0.75rem;
 }
 
-/* 본문 칼럼: 서브 사이드바가 fixed로 빠졌으므로
-   좌/우 폭은 wsd__layout의 padding-left로 이미 확보됨 */
+/* 본문 칼럼 */
 .wsd__content {
   flex: 1 1 auto;
   min-width: 0;
   overflow: visible;
+
+  /* 프레임 제거 + 여백 유지 */
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 20px 24px;
 }

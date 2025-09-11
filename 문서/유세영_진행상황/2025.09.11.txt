@@ -1,0 +1,45 @@
+- Header 를 복사해 Header 와 Header_Workshop으로 분리
+  > Header: Home 페이지에서만 사용 (Workmates로고, 이름)
+  > Header_Workshop: Workshop 입장 후부터 사용 (워크샵 로고, 워크샵 이름, 스케쥴, 대시보드, 나가기)
+
+- 전역 CSS 변수는 이제 foundation.css, theme.css에서만 정의
+  > 개별 css에서 :root style 사용X
+
+- Header_Workshop 선택한 워크샵 명이랑 로고 구역 처리 연결
+
+- DashbordButton, ScheduleButton, Home, WorkShopDetail, WorkShopPages 디자인 변경
+- foundation.css btn-focus 삭제
+
+- 스케줄 리스트 디자인 작업 중 준영 오빠랑 충돌 우려로 리롤
+
+- Components/main_home 폴더 만들어서 home에 워크샵 생성 / 워크샵 참가 버튼 생성
+- Sidebar의 + 로 뜨는 워크샵 생성 창 같이 사용하기 위해 생성 모달 추출해서 Components에 CreateWorkshopModal.jsx로 컴포넌트화
+- main_home의 CreateWorkshopModalHost.jsx는 Home에 Sidebar가 없어 워크샵 생성 창이 불러와지지 않는 것 때문에
+  Home에서 이벤트 발동을 위해서 필요
+- Components/의 CreateWorkshopModal.jsx과 Components/main_home의 CreateWorkshopModalHost.jsx 혼동 금지
+- 연동 후 Home의 워크샵 생성 버튼과 Sidebar의 + 버튼으로 나타나는 모달 공통화
+  > style은 Sidebar.css의 하단의 style로 공통 사용
+
+- 현재 backend 오류로 안켜져서
+BackendApplication.java 에서
+
+@SpringBootApplication
+
+이 줄 밑에 아래 코드 넣으면 임시로 작동
+
+@ComponentScan(excludeFilters = {
+    @ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        classes = {
+            com.workmates.backend.service.MailService.class  // 있는 클래스만!
+        }
+    )
+})
+@EnableJpaRepositories(
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        classes = {
+            com.workmates.backend.repository.MailRepository.class
+        }
+    )
+)
