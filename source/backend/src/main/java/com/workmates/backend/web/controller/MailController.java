@@ -17,6 +17,7 @@ public class MailController {
     
     private final MailService mailService;
 
+
     @GetMapping("/{mailId}") // 개별 메일 반환
     public ResponseEntity<MailDto.ReadMailResponse> readMail(
         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
@@ -40,5 +41,10 @@ public class MailController {
     ) {
         return ResponseEntity.ok(mailService.sendMail(principal.getUsername(), request));
     }
+    
+    // @PostMapping("/receive")
+    // public ResponseEntity<MailDto.ReceiveResponse> 
+
+    // @PostMapping("/send")
 }
     */

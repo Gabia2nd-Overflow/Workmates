@@ -12,14 +12,12 @@ public class PostDto {
     public static class CreateRequest {
         private String title;
         private String content;
-        private String category; // optional
     }
 
     @Getter @Setter
     public static class UpdateRequest {
         private String title;    // optional
         private String content;  // optional
-        private String category; // optional
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
