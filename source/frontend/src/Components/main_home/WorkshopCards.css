@@ -1,0 +1,164 @@
+/* 레이아웃: 두 카드 나란히 */
+.wc-wrap {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);  /* 1fr 컬럼 유지 */
+  justify-items: center;                  /* 아이템이 컬럼을 꽉 채우지 않게 */
+  column-gap: 72px;                       /* ← 간격만 키우기 */
+  row-gap: 24px;
+  align-items: stretch;
+
+  width: 100%;
+  max-width: 1000px;
+  height: 100%;
+  max-height: 170px;
+  margin: 32px auto 0;
+  padding: 0 px;
+}
+
+/* 카드 공통 */
+.wc-card {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 16px;
+  align-items: center;
+
+  background: #fff6f1;
+  border: 3px solid #b62547;
+  border-radius: 20px;
+  padding: 25px;
+  cursor: pointer;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.wc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  background: #fff8f4;
+}
+
+/* (요청) rounded 정사각형 아이콘 영역 — 자리만 확보 */
+.wc-icon {
+  width: 92px;
+  height: 92px;
+  border-radius: 17px;
+  background: #fde2ea;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* 텍스트 영역 */
+.wc-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.wc-title {
+  font-size: 25px;
+  font-weight: 800;
+  color: #b62547;
+  letter-spacing: 0.2px;
+}
+
+.wc-desc {
+  font-size: 17px;
+  color: #7b2337;
+  opacity: 0.9;
+}
+
+/* 모달 */
+.wc-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.wc-modal__card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+}
+
+.wc-modal__title {
+  margin: 4px 0 16px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #7b2337;
+}
+
+/* 폼 */
+.wc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wc-field {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #fffaf8;
+}
+.wc-field:focus {
+  outline: none;
+  border-color: #b62547;
+  box-shadow: 0 0 0 3px rgba(182, 37, 71, 0.12);
+}
+
+/* 버튼 */
+.wc-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.wc-btn {
+  appearance: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.wc-btn--ghost {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+.wc-btn--ghost:hover {
+  background: #fafafa;
+}
+
+.wc-btn--primary {
+  background: #b62547;
+  color: #ffffff;
+}
+.wc-btn--primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* 안내문 */
+.wc-helper {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #7a7a7a;
+}
+
+/* 반응형 */
+@media (max-width: 860px) {
+  .wc-wrap {
+    grid-template-columns: 1fr;
+  }
+}

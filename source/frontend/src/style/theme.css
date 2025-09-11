@@ -1,0 +1,22 @@
+:root {
+  --header-height: 80px;
+  --footer-height: 130px;
+
+  --overlay-z: 1000;
+  --sheet-width: 50vw;
+
+  --sheet-bg: #f1d7cf;
+  --card-bg:  #efe3d6;
+
+  --text:  #2b2f33;
+  --muted: #5f6670;
+  --border:#e6cfc5;
+
+  --accent:  #2ed3c6;
+  --danger:  #ef4444;
+  --warning: #f59e0b;
+  --success: #22c55e;
+  --donut-trail: #BFE9E3;
+
+  --badge-width: 84px;
+}

@@ -1,29 +1,7 @@
-:root {
-  /* 프로젝트 헤더 실제 높이에 맞춰 조정하세요 */
-  --header-height: 80px;
-  --overlay-z: 1000;
-  --sheet-width: 50vw; /* 데스크톱 전용: 고정 50vw */
-  
-  --sheet-bg: #f1d7cf;  /* 파스텔 핑크에 약간의 크림 */
-  --card-bg:  #efe3d6;  /* 웜 베이지 카드 */
+/* (주의) 전역 CSS 변수는 이제 theme.css에서만 정의
+   이 파일에서는 var(--*)만 참조 */
 
-  /* 가독성 보정(권장) */
-  --text:  #2b2f33;     /* 진한 회색 텍스트 */
-  --muted: #5f6670;     /* 보조 텍스트 */
-  --border:#e6cfc5;     /* 부드러운 핑크 베이스 보더 */
-
-  /* 포인트 컬러: 핑크와 상보되는 소프트 틸(도넛 점 등) */
-  --accent: #2ed3c6;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --success: #22c55e;
-  /* ★추가: 도넛 트랙(테두리) 색 – 카드와 잘 어울리는 소프트 틸 */
-  --donut-trail: #BFE9E3;  /* 필요 시 #C8B3A7(토프) 등으로 교체 가능 */
-
-  /* ★추가: 배지 고정 폭(라벨+숫자 2자리 기준). 필요시 숫자만 조정 */
-  --badge-width: 84px;
-}
-
+/* 오버레이 컨테이너 */
 .dashboard-overlay {
   position: fixed;
   inset: 0;
@@ -122,26 +100,25 @@
 .metric .label { font-size: 12px; color: var(--muted); }
 .metric .value { font-size: 20px; font-weight: 700; margin-top: 4px; }
 
-/* === 배지 스타일 (★교체) ===================================== */
+/* === 배지 스타일 ===================================== */
 .badge {
-  display: inline-flex;                  /* ★변경: inline-flex로 두 칸 배치 */
-  align-items: center;                   /* ★추가 */
-  justify-content: center;        /* ★추가: 라벨 좌측, 숫자 우측 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 2px 10px;
-  font-weight: 700;                      /* ★변경: 배지 자체에 굵기 부여 */
+  font-weight: 700;
   border-radius: 999px;
   font-size: 12px;
   border: 1px solid var(--border);
-  width: var(--badge-width);             /* ★추가: 가로 고정 */
-  text-align: center;             /* ★추가: 텍스트도 가운데 */
+  width: var(--badge-width);
+  text-align: center;
 }
 
-/* ★추가: 라벨/숫자 세부 제어 */
-.badge .k { letter-spacing: .2px; }      /* 라벨 */
+.badge .k { letter-spacing: .2px; }
 .badge .n {
-  font-variant-numeric: tabular-nums;    /* 숫자 고정폭 */
-  min-width: 2ch;                        /* 두 자리 공간 확보(0~99) */
-  text-align: right;                     /* 오른쪽 정렬 */
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  text-align: right;
 }
 
 .badge.high   { background: rgba(214, 46, 72, 0.42);  color: #fecaca; }
@@ -167,13 +144,8 @@
   font-weight: 600;
   color: #2b2f33
 }
-.list-item .date {
-  font-size: 12px; color: var(--muted);
-}
-.list-item .dday {
-  font-weight: 700;
-  color: #a3988f;
-}
+.list-item .date { font-size: 12px; color: var(--muted); }
+.list-item .dday { font-weight: 700; color: #a3988f; }
 .list-item .dday.imminent { color: var(--warning); }
 .list-item .dday.overdue { color: var(--danger); }
 
@@ -184,10 +156,7 @@
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
 }
-.panel-title {
-  font-size: 16px;
-  font-weight: 700;
-}
+.panel-title { font-size: 16px; font-weight: 700; }
 .panel-actions {
   display: flex;
   align-items: center;
@@ -196,8 +165,7 @@
 .panel-close {
   background: #efe3d6;
   color: var(--text);
-  border: 2px solid;
-  border-color: #DFA4B2;
+  border: 2.5px solid var(--border);
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -222,21 +190,54 @@
   text-shadow: 0 1px 0 rgba(0,0,0,0.06);
 }
 
-/* === 도넛 진행률 스타일 (★교체) ==================================== */
+/* === 도넛 진행률 스타일 ==================================== */
 .CircularProgressbar, .CircularProgressbar svg { overflow: visible; }
 
-/* ★변경: 진행 구간(채워지는 부분) */
+/* 진행 구간(채워지는 부분) */
 .CircularProgressbar .CircularProgressbar-path {
-  stroke: var(--accent) !important;      /* #2ed3c6(진한 틸) */
+  stroke: var(--accent) !important;
   stroke-linecap: round !important;
   stroke-width: 12px !important;
   fill: none !important;
 }
 
-/* ★변경: 트랙(테두리 역할) */
+/* 트랙(테두리 역할) */
 .CircularProgressbar .CircularProgressbar-trail {
-  stroke: #BFE9E3 !important;            /* 연한 틸 */
-  stroke-width: 7px !important;          /* path보다 얇게 → 덮지 않음 */
+  stroke: #BFE9E3 !important;
+  stroke-width: 7px !important;
   opacity: 1 !important;
   fill: none !important;
+}
+
+/* ===== Dashboard Button 전용 스타일 =====
+   - 대상: 헤더 오른쪽의 마지막 버튼(= 대시보드 버튼)
+   - Button 내부 클래스가 무엇이든 덮어쓰도록 약간 높은 특이도 + !important 사용
+*/
+
+/* 평소 상태 */
+.header .header__right > *:last-child,
+.header .header__right > button:last-child,
+.header .header__right > .btn:last-child {
+  background: #efe3d6 !important;
+  border: 2px solid var(--border) !important;
+  color: #b62547 !important;
+}
+
+/* hover 상태 */
+.header .header__right > *:last-child:hover,
+.header .header__right > button:last-child:hover,
+.header .header__right > .btn:last-child:hover {
+  background: #F7CCCB !important; /* #efe3d6와 #ffb6c1의 중간색 */
+  border: 2px solid var(--border) !important;
+  color: #b62547 !important;
+}
+
+/* 선택(열림) 상태 — :has() 로 대시보드 시트가 열린 상태를 감지 */
+/* (:root 대신 html 사용 — 의미 동일, 디자인 영향 없음) */
+html:has(.dashboard-overlay.open) .header .header__right > *:last-child,
+html:has(.dashboard-overlay.open) .header .header__right > button:last-child,
+html:has(.dashboard-overlay.open) .header .header__right > .btn:last-child {
+  background: #ffb6c1 !important;
+  border: 2px solid var(--border) !important;
+  color: #b62547 !important;
 }

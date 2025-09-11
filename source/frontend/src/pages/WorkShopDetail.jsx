@@ -1,6 +1,6 @@
 import { Outlet, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Header from "../Components/Header";
+import Header_Workshop from "../Components/Header_Workshop";
 import UserFooter from '../Components/UserFooter';
 import Sidebar from "../Components/Sidebar";
 import LoungeSection from "../Components/LoungeSection";
@@ -23,7 +23,7 @@ export default function WorkshopDetail() {
 
   return (
     <div className="page page--workshop-detail">
-      <Header />
+      <Header_Workshop />
       <Sidebar />
       <div className="wsd__layout">
         <aside className="wsd__sidebar">

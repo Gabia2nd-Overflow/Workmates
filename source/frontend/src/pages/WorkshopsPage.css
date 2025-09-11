@@ -1,11 +1,53 @@
+/* :root 제거, 디자인 동일 유지 */
+
+/* 대각선 그라데이션 강제 적용 */
 .page.page--workshops {
-  @apply min-h-screen bg-gray-50;
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+
+  /* 다른 규칙이 덮어써도 이걸 우선 적용 */
+  background-image: linear-gradient(
+    to bottom right,
+    #f28aa5 0%,
+    #ffb6c1 25%,
+    #ffe0e6 50%,
+    #ffffff 70%,
+    #ffe0e6 87%,
+    #ffc4cc 97%
+  ) !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed; /* (옵션) 스크롤 시 살짝 고정 효과 */
 }
 
+/* 헤더·푸터 영역 보정 */
 .workshops__layout {
-  @apply pt-[80px] pl-20 h-[calc(100vh-80px)];
+  height: 100vh;
+  padding-top: var(--header-height);
+  padding-bottom: var(--footer-height);
+  box-sizing: border-box;
+
+  /* 혹시 다른 곳에서 배경을 준 경우 대비 */
+  background: transparent !important;
 }
 
+/* 빈 상태 영역 */
 .workshops__empty {
-  @apply h-full flex items-center justify-center text-gray-500;
+  height: calc(100vh - var(--header-height) - var(--footer-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280; /* text-gray-500 */
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* 사이드바가 자체 배경을 갖고 있다면 그대로 두고,
+   혹시 상위에서 배경이 덮이면 투명 유지 */
+.workshops__layout > .sidebar,
+.workshops__layout > aside {
+  height: calc(100vh - var(--header-height) - var(--footer-height));
+  overflow-y: auto;
+  background: transparent;
 }
