@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { scheduleApi, loungeAPI, threadAPI, workshopAPI } from "../services/api";
 import useToast from "./useToast";
-import Header from "../Components/Header";
+import Header_Workshop from "../Components/Header_Workshop";
 import Sidebar from "../Components/Sidebar";
 import UserFooter from "../Components/UserFooter";
 import LoungeSection from "../Components/LoungeSection";
@@ -207,7 +207,7 @@ export default function ScheduleForm({ mode }) {
 
   return (
     <div className="page page--workshop-detail">
-      <Header />
+      <Header_Workshop />
       <Sidebar />
 
       <div className="wsd__layout">
