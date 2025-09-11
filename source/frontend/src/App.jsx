@@ -43,7 +43,7 @@ export default function App() {
             element={<ScheduleForm mode="create" />}
           />
           <Route
-            path="/schedules/:scheduleId/edit"
+            path="/schedules/:workshopId/schedules/:scheduleId/edit"
             element={<ScheduleForm mode="edit" />}
           />
 
