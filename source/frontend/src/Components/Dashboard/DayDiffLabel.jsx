@@ -14,8 +14,8 @@ export default function DayDiffLabel({ iso }) {
     if (!iso) return { dday: null, klass: "" };
     const dueMs = Date.parse(iso);
     const nowMs = Date.now();
-    const diffDays = dayNumberKST(dueMs) - dayNumberKST(nowMs);
-    // 오늘 마감이면 0, 지났으면 음수, 남으면 양수
+    const diffDays = dayNumberKST(nowMs) - dayNumberKST(dueMs);
+    // 오늘 마감이면 0, 지났으면 양수, 남으면 음수
     const cls =
       diffDays < 0 ? "overdue" :
       diffDays <= 7 ? "imminent" : "";
@@ -23,6 +23,6 @@ export default function DayDiffLabel({ iso }) {
   }, [iso]);
 
   if (dday === null) return null;
-  const text = dday < 0 ? `D${dday}` : dday === 0 ? "D-DAY" : `D-${dday}`;
+  const text = dday < 0 ? `D${dday}` : dday === 0 ? "D-DAY" : `D+${dday}`;
   return <span className={`dday ${klass}`}>{text}</span>;
 }

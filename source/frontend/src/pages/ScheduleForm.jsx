@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { scheduleApi, loungeAPI, threadAPI, workshopAPI } from "../services/api";
 import useToast from "./useToast";
@@ -8,16 +8,19 @@ import UserFooter from "../Components/UserFooter";
 import LoungeSection from "../Components/LoungeSection";
 import ThreadSection from "../Components/ThreadSection";
 import "./WorkShopDetail.css";
+/* ✅ 커스텀 시간 픽커 */
+import DateTimePartsPicker from "../Components/DateTimePartsPicker";
 
-function toLocalInputValue(date) {
-  const d = typeof date === "string" ? new Date(date) : date ?? new Date();
+// 로컬 타임존 기반, 오프셋/‘Z’ 없는 ISO 문자열
+function toLocalNaiveISO(dt) {
+  const d = typeof dt === "string" ? new Date(dt) : dt;
   const pad = (n) => String(n).padStart(2, "0");
   const yyyy = d.getFullYear();
   const mm = pad(d.getMonth() + 1);
   const dd = pad(d.getDate());
   const HH = pad(d.getHours());
   const MM = pad(d.getMinutes());
-  return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
+  return `${yyyy}-${mm}-${dd}T${HH}:${MM}:00`;
 }
 
 const IMPORTANCES = ["LOW", "MEDIUM", "HIGH"];
@@ -25,34 +28,38 @@ const IMPORTANCES = ["LOW", "MEDIUM", "HIGH"];
 export default function ScheduleForm({ mode }) {
   const { workshopId, scheduleId, id } = useParams();
   const realScheduleId = scheduleId || id;
+
   const navigate = useNavigate();
   const { show, ToastPortal } = useToast();
-
   const isCreate = mode === "create";
-  const wasCompletedRef = useRef(false); // 최초 완료 여부 보존
+
+  // 최초 완료 여부(회귀 방지)
+  const wasCompletedRef = useRef(false);
+  // 편집 시 최초 startDate(과거 수정 금지)
+  const originalStartRef = useRef(null);
 
   // 폼
   const [form, setForm] = useState({
     title: "",
     content: "",
-    startDate: toLocalInputValue(new Date()),
-    dueDate: toLocalInputValue(new Date()),
     importancy: "MEDIUM",
     isCompleted: false,
   });
+
+  // ✅ 커스텀 픽커 값(객체 Date로 보관)
+  const [startValue, setStartValue] = useState(new Date());
+  const [dueValue, setDueValue] = useState(new Date());
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const originalStartRef = useRef(null); // 최초 저장된 startDate 보관
 
-  // 보조 사이드바(워크샵 요약) 데이터
+  // 보조 사이드바 데이터
   const [workshop, setWorkshop] = useState(null);
   const [lounges, setLounges] = useState([]);
   const [threads, setThreads] = useState([]);
 
   useEffect(() => {
     if (!workshopId) return;
-
-    // 보조 사이드바 데이터
     (async () => {
       try {
         const [{ data: ws }, { data: lData }, tRes] = await Promise.all([
@@ -64,22 +71,18 @@ export default function ScheduleForm({ mode }) {
         setLounges(Array.isArray(lData) ? lData : []);
         const tData = Array.isArray(tRes?.data) ? tRes.data : (Array.isArray(tRes) ? tRes : []);
         setThreads(tData);
-      } catch {
-        /* ignore */
-      }
+      } catch {/* ignore */}
     })();
 
     // 수정 모드면 기존 데이터 로딩
     if (!isCreate && realScheduleId) {
       (async () => {
         try {
-          // 1) 우선 단일 건 조회 시도
           let found;
           try {
             const resOne = await scheduleApi.getOne(realScheduleId);
             found = resOne?.data ?? resOne;
           } catch {
-            // 2) 실패 시 목록에서 Fallback
             const res = await scheduleApi.listAll(workshopId);
             found = (res.data ?? []).find((x) => String(x.id) === String(realScheduleId));
           }
@@ -91,12 +94,14 @@ export default function ScheduleForm({ mode }) {
           setForm({
             title: found.title ?? "",
             content: found.content ?? "",
-            startDate: toLocalInputValue(found.startDate),
-            dueDate: toLocalInputValue(found.dueDate),
             importancy: String(found.importancy ?? "MEDIUM").toUpperCase(),
             isCompleted: !!found.isCompleted,
           });
-          originalStartRef.current = new Date(found.startDate);
+          const s = new Date(found.startDate);
+          const d = new Date(found.dueDate);
+          setStartValue(s);
+          setDueValue(d);
+          originalStartRef.current = s;
           wasCompletedRef.current = !!found.isCompleted;
         } catch {
           show("스케줄을 불러오지 못했습니다.", "error");
@@ -104,24 +109,26 @@ export default function ScheduleForm({ mode }) {
         }
       })();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCreate, scheduleId, workshopId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workshopId, isCreate, realScheduleId]);
 
+  // 검증
   const validate = () => {
     const e = {};
     const title = (form.title ?? "").trim();
     const content = (form.content ?? "").trim();
-
     if (!title) e.title = "제목은 필수입니다.";
-    if (title.length > 32) e.title = "제목은 32자 이하여야 합니다.";
-    if (content.length > 128) e.content = "내용은 128자 이하여야 합니다.";
+    if (title.length > 50) e.title = "제목은 50자 이하여야 합니다.";
+    if (content.length > 200) e.content = "내용은 200자 이하여야 합니다.";
 
-    const s = new Date(form.startDate);
-    const d = new Date(form.dueDate);
-    const now = new Date();
+    const s = new Date(startValue);
+    const d = new Date(dueValue);
+    const nowLocal = new Date();
+    // 비교 정확도를 맞추기 위해 초/밀리초 제거(선택 사항이지만 권장)
+    s.setSeconds(0,0); d.setSeconds(0,0); nowLocal.setSeconds(0,0);
 
     if (isCreate) {
-      if (s < now) e.startDate = "시작일시는 현재 시각 이후여야 합니다.";
+      if (s < nowLocal) e.startDate = "시작일시는 현재 시각 이후여야 합니다.";
     } else if (originalStartRef.current && s < originalStartRef.current) {
       e.startDate = "시작일시는 최초 저장 시각보다 과거로 수정할 수 없습니다.";
     }
@@ -133,11 +140,20 @@ export default function ScheduleForm({ mode }) {
     return e;
   };
 
+  // 값이 바뀔 때마다 실시간 재검증 → 저장 버튼 비활성화에 사용
+  useEffect(() => {
+    setErrors(validate());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.title, form.content, form.importancy, startValue, dueValue, isCreate]);
+
   const onChange = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
-  const nowInput = useMemo(() => toLocalInputValue(new Date()), []);
-  const startMin = isCreate ? nowInput : (originalStartRef.current ? toLocalInputValue(originalStartRef.current) : undefined);
-  const dueMin = form.startDate || nowInput;
+  // ✅ 동적 now (렌더 시점의 현재시간)
+  const now = new Date();
+  // 생성: 현재시간 이상 / 수정: 최초 start 이상 (팀 정책상 ‘지금 이전 수정 금지’도 원하면 Math.max 적용)
+  const startMin = isCreate ? now : (originalStartRef.current || now);
+  // 마감은 항상 시작 이상
+  const dueMin = startValue;
 
   const dispatchMutated = () =>
     window.dispatchEvent(new CustomEvent("schedules:mutated", { detail: { workshopId } }));
@@ -147,7 +163,16 @@ export default function ScheduleForm({ mode }) {
     const eobj = validate();
     setErrors(eobj);
     if (Object.keys(eobj).length > 0) {
-      show("입력값을 확인해 주십시오.", "error");
+      // ✅ 보정 없이 “차단 + 경고창”
+      const msg =
+        eobj.startDate ||
+        eobj.dueDate ||
+        eobj.title ||
+        eobj.content ||
+        eobj.importancy ||
+        "입력값을 확인해 주십시오.";
+      window.alert(msg); // 경고창
+      show(msg, "error"); // 토스트(일관된 UX)
       return;
     }
 
@@ -155,11 +180,11 @@ export default function ScheduleForm({ mode }) {
     try {
       const payload = {
         title: form.title.trim(),
-        content: form.content.trim(), // 백엔드가 'context'면 교체
-        startDate: form.startDate,
-        dueDate: form.dueDate,
+        content: form.content.trim(),
+        startDate: toLocalNaiveISO(startValue),
+        dueDate: toLocalNaiveISO(dueValue),
         importancy: form.importancy,
-        isCompleted: !!form.isCompleted,
+        isCompleted: wasCompletedRef.current ? true : !!form.isCompleted,
       };
 
       if (isCreate) {
@@ -168,7 +193,7 @@ export default function ScheduleForm({ mode }) {
         dispatchMutated();
         navigate(`/schedules/${workshopId}/schedules`);
       } else {
-        await scheduleApi.update(scheduleId, payload);
+        await scheduleApi.update(realScheduleId, payload);
         show("스케줄을 수정했습니다.", "success");
         dispatchMutated();
         navigate(-1);
@@ -183,22 +208,19 @@ export default function ScheduleForm({ mode }) {
   return (
     <div className="page page--workshop-detail">
       <Header />
-      {/* 전역 사이드바(좌측 고정) */}
       <Sidebar />
 
-      {/* 상세 레이아웃: wsd__sidebar + wsd__content */}
       <div className="wsd__layout">
-        {/* ✅ 보조 사이드바 유지 */}
+        {/* 보조 사이드바 */}
         <aside className="wsd__sidebar">
           <h3 className="wsd__title" title={workshop?.workshopName}>
             {workshop?.workshopName || "Workshop"}
           </h3>
-
           <LoungeSection workshopId={workshopId} lounges={lounges} setLounges={setLounges} />
           <ThreadSection workshopId={workshopId} threads={threads} setThreads={setThreads} />
         </aside>
 
-        {/* 스케줄 폼 본문 */}
+        {/* 본문 */}
         <section className="wsd__content" style={{ padding: "20px 24px" }}>
           <div style={{ width: "100%", maxWidth: 720, margin: "0 auto" }}>
             <ToastPortal />
@@ -232,47 +254,35 @@ export default function ScheduleForm({ mode }) {
                 {errors.content && <div style={{ color: "#b91c1c", marginTop: 6 }}>{errors.content}</div>}
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <div>
-                  <label>시작일시</label>
-                  <input
-                    type="datetime-local"
-                    value={form.startDate}
-                    onChange={onChange("startDate")}
-                    min={startMin}
-                    required
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #e5e7eb" }}
-                  />
-                  {errors.startDate && <div style={{ color: "#b91c1c", marginTop: 6 }}>{errors.startDate}</div>}
-                </div>
-                <div>
-                  <label>마감일시</label>
-                  <input
-                    type="datetime-local"
-                    value={form.dueDate}
-                    onChange={onChange("dueDate")}
-                    min={dueMin}
-                    required
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #e5e7eb" }}
-                  />
-                  {errors.dueDate && <div style={{ color: "#b91c1c", marginTop: 6 }}>{errors.dueDate}</div>}
-                </div>
-              </div>
+              {/* ✅ 커스텀 시간 UI: AM/PM 왼쪽, 비순환, min 제약 준수 */}
+              <DateTimePartsPicker
+                label="시작일시"
+                value={startValue}
+                onChange={setStartValue}
+                min={startMin}
+                ampmLeft
+                minuteStep={1}
+              />
+              {errors.startDate && <div style={{ color: "#b91c1c" }}>{errors.startDate}</div>}
+
+              <DateTimePartsPicker
+                label="마감일시"
+                value={dueValue}
+                onChange={setDueValue}
+                min={dueMin}
+                ampmLeft
+                minuteStep={1}
+              />
+              {errors.dueDate && <div style={{ color: "#b91c1c" }}>{errors.dueDate}</div>}
 
               <div>
                 <label>중요도</label>
                 <div style={{ display: "flex", gap: 8 }}>
                   {["LOW", "MEDIUM", "HIGH"].map((opt) => (
-                    <label
-                      key={opt}
-                      style={{
-                        border: "1px solid #e5e7eb",
-                        borderRadius: 8,
-                        padding: "6px 10px",
-                        cursor: "pointer",
-                        background: form.importancy === opt ? "#f1f5f9" : "#fff",
-                      }}
-                    >
+                    <label key={opt} style={{
+                      border: "1px solid #e5e7eb", borderRadius: 8, padding: "6px 10px", cursor: "pointer",
+                      background: form.importancy === opt ? "#f1f5f9" : "#fff"
+                    }}>
                       <input
                         type="radio"
                         name="importance"
@@ -294,14 +304,13 @@ export default function ScheduleForm({ mode }) {
                     type="checkbox"
                     checked={!!form.isCompleted}
                     onChange={(e) => {
-                      // 이미 완료된 건 해제 불가
                       if (wasCompletedRef.current && !e.target.checked) {
                         show("완료된 스케줄은 되돌릴 수 없습니다.", "info");
                         return;
                       }
                       setForm((p) => ({ ...p, isCompleted: e.target.checked }));
                     }}
-                    disabled={wasCompletedRef.current} // 이미 완료면 조작 불가
+                    disabled={wasCompletedRef.current}
                     title={wasCompletedRef.current ? "완료된 스케줄은 되돌릴 수 없습니다." : "완료 처리합니다."}
                   />
                   완료 처리
@@ -309,7 +318,7 @@ export default function ScheduleForm({ mode }) {
               )}
 
               <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                <button type="submit" className="btn btn--primary" disabled={loading}>
+                <button type="submit" className="btn btn--primary" disabled={loading || Object.keys(errors).length > 0}>
                   {isCreate ? "저장" : "수정 저장"}
                 </button>
                 <button type="button" className="btn btn--light" onClick={() => navigate(-1)}>
