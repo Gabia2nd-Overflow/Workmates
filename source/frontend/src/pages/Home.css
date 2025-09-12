@@ -29,17 +29,25 @@
 
   display: grid;
   grid-template-columns: var(--rail-width) 1fr;
-  gap: var(--gap);
+  gap: 0;
   overflow: hidden; /* 각 칼럼에서 스크롤 */
   min-height: 0;
+
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 /* 왼쪽 박스 */
 .home-rail {
+  background: linear-gradient(180deg, #fff7fa 0%, #ffe9f1 100%) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+
   position: sticky;
   top: var(--header-height);
   align-self: start;
-
   height: calc(100vh - var(--header-height) - var(--footer-height));
   min-height: 0;
   overflow-y: auto;   /* 항목 많으면 내부만 스크롤 */
@@ -54,3 +62,4 @@
   overflow-y: auto;
   padding: 16px;
 }
+

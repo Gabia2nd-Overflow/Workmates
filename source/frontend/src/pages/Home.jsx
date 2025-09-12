@@ -1,18 +1,20 @@
 // src/pages/Home.jsx
 
 import Header from '../Components/Header';
-import WorkshopButton from '../Components/WorkshopButton';
 import UserFooter from '../Components/UserFooter';
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import MyWorkshopsPanel from "../Components/MyWorkshopsPanel";
 import WorkshopCards from "../Components/main_home/WorkshopCards";
 import CreateWorkshopModalHost from "../Components/main_home/CreateWorkshopModalHost";
+import Hello from "../Components/main_home/hello";
 import './Home.css';
 
 const Home = () => {
 
   const navigate = useNavigate();
+  const { pathname } = useLocation();               // ★ 추가: 현재 경로 확인
+  const isSettings = pathname.startsWith("/my/settings"); // ★ 추가: 설정 열림 여부
   
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -35,8 +37,16 @@ const Home = () => {
 
        {/* 메인 콘텐츠 */}
        <main className="home__main">
-          <WorkshopCards />
-          <CreateWorkshopModalHost />
+        <Outlet /> {/* ★ 추가 */}
+
+          {/* 기본 홈 콘텐츠 (설정이 열려있을 때는 감춤) */}
+          {!isSettings && (
+            <div className="home-default">
+              <Hello />
+              <WorkshopCards />
+              <CreateWorkshopModalHost />
+            </div>
+          )}
         </main>
       </div>
 

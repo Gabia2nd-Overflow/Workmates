@@ -1,0 +1,15 @@
+- public 에 main화면에서 쓸 이미지 두개 추가 create_workshop.png, entry_workshop.png
+  > WorkshopCards에 해당 이미지 추가
+
+- MyWorkshopsPanel 에서 워크샵 이름이 길어지면 로고 구역이 찌그러지는 것 수정 > MyWorkshopItem.jsx 수정
+- MyWorkshopsPanel.css 수정
+
+- public/img에 logo.png=하얀바탕, logo_op.png=투명바탕
+
+- Components/main_home/ 에 home에 들어갈 hello.jsx/hello.css 추가
+  > main 상단 인삿말
+
+- Header_Workshop에서 워크샵 이름이 길 때 두줄로 변하면서 Header 안 text가 잘리는 것 수정
+
+- pages/에 설정 창 MySetting.jsx/MySetting.css 추가
+  > App.jsx 에서 Home, SorkShopDetail 라우트에 하윌 라우트로 추가하여 Home, WorkShopDetail 에서도 설정 버튼 누르면 설정 페이지가 기존 레이아웃 가리지 않게 함

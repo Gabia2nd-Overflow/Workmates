@@ -45,6 +45,23 @@
   border-radius: 17px;
   background: #fde2ea;
   border: 1px solid rgba(0,0,0,0.06);
+  position: relative;            /* ✅ 이미지 오버레이용 */
+  overflow: hidden;              /* ✅ 가장자리 넘침 방지 */
+}
+
+/* ✅ 추가: 투명 PNG를 배경 위에 중앙 정렬로 얹기 */
+.wc-icon__img {
+  position: absolute;
+  inset: 0;
+  margin: auto;                  /* 중앙 정렬 */
+  max-width: 72%;                /* 박스 대비 비율(필요시 60~80%로 조절) */
+  max-height: 72%;
+  width: auto;
+  height: auto;
+  object-fit: contain;           /* 비율 유지 */
+  pointer-events: none;          /* 클릭은 부모 버튼으로 */
+  user-select: none;
+  image-rendering: auto;
 }
 
 /* 텍스트 영역 */

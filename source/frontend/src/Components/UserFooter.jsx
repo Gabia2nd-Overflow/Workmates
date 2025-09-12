@@ -1,6 +1,6 @@
 // UserFooter.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./UserFooter.css";
 
 import { authAPI } from "../services/api";
@@ -55,6 +55,7 @@ export default function UserFooter() {
     cached ?? { nickname: "", email: "", profileImageUrl: FALLBACK_AVATAR }
   );
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     let alive = true;
@@ -120,7 +121,22 @@ export default function UserFooter() {
 
         {/* 하단 버튼 */}
         <div className="uf-bottomrow">
-          <button className="uf-btn" aria-label="설정" title="설정">
+          <button
+            className="uf-btn"
+            aria-label="설정"
+            title="설정"
+            onClick={() => {
+              const m = window.location.pathname.match(
+                /\/(?:workshops|schedules)\/(\d+)/
+              );
+              const wid = m?.[1];
+              const target = wid
+                ? `/workshops/${wid}/settings`
+                : `/my/settings`;
+              // 현재 위치를 state.from으로 함께 전달
+              navigate(target, { state: { from: location.pathname } });
+            }}
+          >
             <img src="/img/btn_settings.png" alt="" />
           </button>
           <button className="uf-btn" aria-label="메일" title="메일">

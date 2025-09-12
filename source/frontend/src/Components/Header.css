@@ -21,7 +21,7 @@
     align-items: center;
     gap: 8px;
   }
-  .header__center { justify-content: center; }
+  .header__center { justify-content: center; min-width: 0; }
   .header__right { justify-content: flex-end; }
 
   .header__logo-box {
@@ -47,6 +47,12 @@
     font-weight: 700;
     letter-spacing: 0.02em; /* tracking-wide 근사치 */
     color: #ffb6c1;
+
+    /* 말줄임 처리 */
+    white-space: nowrap;        /* 줄바꿈 안 함 */
+    overflow: hidden;           /* 넘친 글자 숨김 */
+    text-overflow: ellipsis;    /* … 표시 */
+    max-width: 90%;             /* 헤더 가운데 영역을 벗어나지 않도록 */
   }
 
 /* ============== Header_Workshop.jsx 전용 =================      */

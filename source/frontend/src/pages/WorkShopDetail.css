@@ -1,7 +1,8 @@
 /* 페이지 기본 */
 .page.page--workshop-detail {
-  min-height: 100vh;
-  overflow: visible;
+  height: 100vh;
+  overflow: hidden;
+  overscroll-behavior: none;
 
   background: linear-gradient(
     180deg,
@@ -17,11 +18,14 @@
    - 고정값(상수)만 사용, 반응형 없음
 */
 .wsd__layout {
-  padding-top: 80px;                 /* Header fixed 80px */
-  padding-left: calc(5rem + 16rem); 
+  height: 100vh;         /* ⬅️ 화면 높이 고정 */
+  min-height: 0; 
+  box-sizing: border-box;                       /* ⬅️ Flex overflow 안정화 */
+  padding-top: 80px;                    /* header 높이만큼 내리기 */
+  padding-left: calc(5rem + 16rem);     /* 메인+서브 사이드바 폭 */
   display: flex;
-  align-items: flex-start;
-  overflow: visible;
+  align-items: stretch;                 /* ⬅️ 자식이 레이아웃 높이를 채우도록 */
+  overflow: hidden;                     /* ⬅️ 내부 영역에서만 스크롤 */
 }
 
 /* 서브 사이드바: 메인과 동일한 높이 규칙으로 '고정(fixed)'
@@ -57,12 +61,18 @@
 .wsd__content {
   flex: 1 1 auto;
   min-width: 0;
-  overflow: visible;
+  height: 100%;                         /* ⬅️ 레이아웃 높이 채우기 */
+  overflow: auto;                       /* ⬅️ 내부 스크롤 */
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 20px 24px;
 
   /* 프레임 제거 + 여백 유지 */
   background: transparent;
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  padding: 20px 24px;
+  padding: 0;
 }

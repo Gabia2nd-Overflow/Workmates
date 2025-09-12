@@ -26,13 +26,20 @@ import DashboardPanel from "./Components/Dashboard/DashboardPanel";
 import ScheduleList from "./pages/ScheduleList";
 import ScheduleForm from "./pages/ScheduleForm";
 
+// 설정
+import MySetting from "./pages/MySetting";
+
 export default function App() {
   return (
     <DashboardProvider>
       <Router>
         <Routes>
           {/* 홈/인증 */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />}> {/* ★ 변경 */}
+            {/* index는 기존 Home의 기본 화면이 그대로 보이도록 비워둠 */}
+            <Route index element={<></>} />     {/* ★ 추가: 자식 라우트 존재 시에도 기본화면 유지 */}
+            <Route path="my/settings" element={<MySetting />} /> {/* ★ 추가: Home 내부 중첩 */}
+          </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
 
@@ -43,6 +50,7 @@ export default function App() {
           <Route path="/workshops/:workshopId" element={<WorkshopDetail />}>
             <Route path="lounges/:loungeId" element={<LoungeDetail />} />
             <Route path="threads/:threadId" element={<ThreadDetail />} />
+            <Route path="settings" element={<MySetting/>}/> 
             <Route
               path="threads/:threadId/posts/:postId"
               element={<PostDetail />}
