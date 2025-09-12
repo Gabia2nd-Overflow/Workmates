@@ -55,27 +55,40 @@ export default function MateList() {
     load();
   };
 
-  // 수락된 친구만 화면에 표시 (백엔드가 내려준 status 사용)
-  const accepted = Array.isArray(mates)
-    ? mates.filter((m) => m.status === "FRIEND" || m.isAccepted === true)
+  // 수락된 친구만
+  const friends = Array.isArray(mates)
+    ? mates.filter((m) => m?.status === "FRIEND" || m?.isAccepted === true)
     : [];
 
-  // 대기중 목록
-  const pendingSent = mates.filter((m) => m.status === "PENDING_SENT");
-  const pendingReceived = mates.filter((m) => m.status === "PENDING_RECEIVED");
+  // (상대 수락 대기)
+  const pendingSent = Array.isArray(mates)
+    ? mates.filter(
+        (m) =>
+          m?.status === "PENDING_SENT" ||
+          (m?.isAccepted !== true && m?.requesterIsSender === true)
+      )
+    : [];
+
+  // 내가 받은 대기
+  const pendingReceived = Array.isArray(mates)
+    ? mates.filter(
+        (m) =>
+          m?.status === "PENDING_RECEIVED" ||
+          (m?.isAccepted !== true && m?.requesterIsSender === false)
+      )
+    : [];
 
   return (
     <div>
       <h2>친구 목록</h2>
-
       {/* 목록 영역 */}
       {loading ? (
         <div>불러오는 중...</div>
-      ) : accepted.length === 0 ? (
+      ) : friends.length === 0 ? (
         <div>친구가 없습니다.</div>
       ) : (
         <ul>
-          {accepted.map((m) => (
+          {friends.map((m) => (
             <li key={m.id}>
               {m.nickname} (@{m.id}){/* 친구 옆 삭제 버튼 */}
               <FriendRemoveButton
@@ -92,26 +105,73 @@ export default function MateList() {
           ))}
         </ul>
       )}
-
       {/* 새로고침 버튼 */}
       <div>
         <button onClick={load}>새로고침</button>
       </div>
-
       {/* 사용자 검색 버튼 */}
       <div>
         <button onClick={() => setShowSearch((v) => !v)}>
           {showSearch ? "사용자 검색 닫기" : "사용자 검색"}
         </button>
       </div>
-
       {/* 차단 목록 */}
       <div>
         <Link to="/mates/blocked">차단 목록</Link>
       </div>
-
       {/* 친구 추가 판별 -> 수락된 친구만 넘김 */}
-      {showSearch && <MateSearchBox myId={myId} friends={accepted} />}
+      {showSearch && <MateSearchBox myId={myId} friends={friends} />}
+      {/* 보낸 요청 */}
+      <h3>보낸 친구 요청</h3>
+      {pendingSent.length === 0 ? (
+        <div>보낸 요청이 없습니다.</div>
+      ) : (
+        <ul>
+          {pendingSent.map((m) => (
+            <li key={m.id}>
+              {m.nickname} (@{m.id})
+              <button
+                onClick={async () => {
+                  await mateApi.remove(myId, m.id);
+                  load();
+                }}
+              >
+                요청 취소
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}{" "}
+      {/* 보낸 요청 */}
+      {/* 받은 요청 */}
+      <h3>받은 친구 요청</h3>
+      {pendingReceived.length === 0 ? (
+        <div>받은 요청이 없습니다.</div>
+      ) : (
+        <ul>
+          {pendingReceived.map((m) => (
+            <li key={m.id}>
+              {m.nickname} (@{m.id})
+              <button
+                onClick={async () => {
+                  await mateApi.handle(m.id, myId, true);
+                  load();
+                }}
+              >
+                수락
+              </button>
+              <button
+                onClick={async () => {
+                  await mateApi.handle(m.id, myId, false);
+                  load();
+                }}
+              >
+                거절
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
