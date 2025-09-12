@@ -50,6 +50,15 @@
   flex: 1 1 auto;     /* 남은 높이를 모두 차지 */
   overflow-y: auto;   /* 항목 많아지면 이 영역만 스크롤 */
   overflow-x: hidden;
+  /* 스크롤바 UI 숨김 */
+  -ms-overflow-style: none;    /* IE/Edge(레거시) */
+  scrollbar-width: none;       /* Firefox */
+}
+
+/* WebKit(Chrome/Safari) */
+.mw-row::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* 카드(아이콘 + 이름) */
