@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { postAPI, threadAPI } from "../services/api";
+import FileUploadButton from "./FileUploadButton";
 
 export default function ThreadDetail() {
   const { threadId, workshopId } = useParams();
@@ -121,27 +122,41 @@ export default function ThreadDetail() {
           + 새 글 작성
         </button>
       </div>
+      
 
       {creatingPost && (
-        <form onSubmit={createPost} className="mb-4 flex flex-col gap-2">
-          <input
-            className="border p-2 rounded"
-            placeholder="제목"
-            value={postTitle}
-            onChange={(e) => setPostTitle(e.target.value)}
-            required
-          />
-          <textarea
-            className="border p-2 rounded"
-            placeholder="내용"
-            value={postContent}
-            onChange={(e) => setPostContent(e.target.value)}
-            rows={4}
-            required
-          />
-          <button className="px-3 py-1 bg-pink-400 text-white rounded">작성</button>
-        </form>
-      )}
+  <form onSubmit={createPost} className="mb-4 flex flex-col gap-2">
+    <input
+      className="border p-2 rounded"
+      placeholder="제목"
+      value={postTitle}
+      onChange={(e) => setPostTitle(e.target.value)}
+      required
+    />
+    <textarea
+      className="border p-2 rounded"
+      placeholder="내용"
+      value={postContent}
+      onChange={(e) => setPostContent(e.target.value)}
+      rows={4}
+      required
+    />
+
+    {/* 파일 업로드 버튼 */}
+    <FileUploadButton
+      workshopId={workshopId}
+      threadId={threadId}
+      onUpload={(fileUrl) => {
+        setPostContent((prev) => prev + `\n${fileUrl}`);
+      }}
+    />
+
+    <button className="px-3 py-1 bg-pink-400 text-white rounded">작성</button>
+  </form>
+)}
+
+
+      
 
       <div className="flex items-center justify-between mb-2 gap-2">
         <input
@@ -212,6 +227,7 @@ export default function ThreadDetail() {
           </button>
         ))}
       </div>
+      
     </section>
   );
 }
