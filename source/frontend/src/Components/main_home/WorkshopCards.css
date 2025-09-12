@@ -3,14 +3,14 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);  /* 1fr 컬럼 유지 */
   justify-items: center;                  /* 아이템이 컬럼을 꽉 채우지 않게 */
-  column-gap: 72px;                       /* ← 간격만 키우기 */
+  column-gap: 100px;                       /* 간격만 키우기 */
   row-gap: 24px;
   align-items: stretch;
 
   width: 100%;
-  max-width: 1000px;
+  max-width: 1050px;
   height: 100%;
-  max-height: 170px;
+  max-height: 180px;
   margin: 32px auto 0;
   padding: 0 px;
 }
@@ -23,7 +23,7 @@
   align-items: center;
 
   background: #fff6f1;
-  border: 3px solid #b62547;
+  border: 4px solid #b62547;
   border-radius: 20px;
   padding: 25px;
   cursor: pointer;
@@ -40,8 +40,8 @@
 
 /* (요청) rounded 정사각형 아이콘 영역 — 자리만 확보 */
 .wc-icon {
-  width: 92px;
-  height: 92px;
+  width: 95px;
+  height: 95px;
   border-radius: 17px;
   background: #fde2ea;
   border: 1px solid rgba(0,0,0,0.06);
@@ -56,10 +56,11 @@
 }
 
 .wc-title {
-  font-size: 25px;
+  font-size: 28px;
   font-weight: 800;
   color: #b62547;
   letter-spacing: 0.2px;
+  margin-bottom: 12px;
 }
 
 .wc-desc {
