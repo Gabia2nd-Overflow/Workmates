@@ -35,7 +35,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final FileUploadService fileUploadService;
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
     
     @Value("${spring.mail.username}")
     private String from;
