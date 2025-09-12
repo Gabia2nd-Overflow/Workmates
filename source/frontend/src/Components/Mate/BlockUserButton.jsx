@@ -4,7 +4,7 @@ import { blockApi } from "../../services/api";
 
 const ID_REGEX = /^[a-z0-9]{4,20}$/;
 
-export default async function BlockUserButton({
+export default function BlockUserButton({
   myId,
   targetId,
   onBlocked, // 차단 성공 시 부모에게 알려줄 콜백 (targetId, data) => void
