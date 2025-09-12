@@ -154,9 +154,9 @@ public class UserService {
                 .email(request.getEmail())
                 .password(encodedPassword)
                 .build();
-        userRepository.save(user);
+        User userEntity = userRepository.save(user);
 
-        return UserDto.UserResponse.from(user);
+        return UserDto.UserResponse.from(userEntity);
     }
 
     public UserDto.LoginResponse login(UserDto.LoginRequest request) {
