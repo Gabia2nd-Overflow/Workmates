@@ -1,7 +1,11 @@
+// UserFooter.jsx
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./UserFooter.css";
+
 import { authAPI } from "../services/api";
 import AuthButtons from "./AuthButtons";
+import { cn } from "../utils/cn";
 
 const FALLBACK_AVATAR = "/img/simple_user.png";
 
@@ -50,6 +54,7 @@ export default function UserFooter() {
   const [user, setUser] = useState(
     cached ?? { nickname: "", email: "", profileImageUrl: FALLBACK_AVATAR }
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     let alive = true;
@@ -86,15 +91,17 @@ export default function UserFooter() {
   );
 
   return (
-    <div className="user-footer">
-      <div className="uf-grid">{/* grid 간격/열 정의는 CSS */}
+    <footer className={cn("user-footer")}>
+      <div className="uf-grid">
         {/* 아바타 */}
         <img
           className="uf-avatar"
           src={user.profileImageUrl || FALLBACK_AVATAR}
           alt={altText}
           referrerPolicy="no-referrer"
-          onError={(e) => { e.currentTarget.src = FALLBACK_AVATAR; }}
+          onError={(e) => {
+            e.currentTarget.src = FALLBACK_AVATAR;
+          }}
         />
 
         {/* 닉네임/이메일 */}
@@ -103,28 +110,32 @@ export default function UserFooter() {
           <div className="uf-email">{user.email || " "}</div>
         </div>
 
-        {/* 전원 아이콘 닉네임 라인 중앙 맞추기 */}
+        {/* 전원 아이콘(로그아웃) */}
         <AuthButtons
           mode="logout-icon"
-          className="uf-power uf-power--align"           /* 기존 위치/정렬 재사용 */
+          className="uf-power uf-power--align"
           imgSrc="/img/btn_power.png"
-          imgAlt=""                                      /* 장식 이미지이므로 빈 alt */
+          imgAlt=""
         />
 
         {/* 하단 버튼 */}
         <div className="uf-bottomrow">
           <button className="uf-btn" aria-label="설정" title="설정">
-            {/* 이미지가 버튼 박스에 맞춰 리사이즈됨 */}
             <img src="/img/btn_settings.png" alt="" />
           </button>
           <button className="uf-btn" aria-label="메일" title="메일">
             <img src="/img/btn_mail.png" alt="" />
           </button>
-          <button className="uf-btn" aria-label="친구" title="친구">
+          <button
+            className="uf-btn"
+            aria-label="친구"
+            title="친구"
+            onClick={() => navigate("/mates/list")}
+          >
             <img src="/img/btn_friends.png" alt="" />
           </button>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

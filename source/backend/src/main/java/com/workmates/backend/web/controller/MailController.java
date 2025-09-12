@@ -13,6 +13,7 @@ import com.workmates.backend.web.dto.MailDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 /* 
 @RestController
 @RequestMapping("/api/mail")
@@ -51,3 +52,19 @@ public class MailController {
     // @PostMapping("/send")
 }
 */
+=======
+
+// @RestController
+// @RequestMapping("/api/mail")
+// @RequiredArgsConstructor
+// public class MailController {
+
+// private final MailService mailService;
+
+// @PostMapping("/receive")
+// public ResponseEntity<MailDto.ReceiveResponse>
+
+// @PostMapping("/send")
+
+// }
+>>>>>>> 47f29bc81c3d87f96a1f2761fc169a232ba4bdb9
