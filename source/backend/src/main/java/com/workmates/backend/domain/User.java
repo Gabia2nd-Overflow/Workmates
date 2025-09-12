@@ -5,6 +5,7 @@ import com.workmates.backend.util.DomainUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +14,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "USER")
+@Table(
+    name = "USER",
+    indexes = {
+        @Index(name = "idx_email", columnList = "email"),
+    }
+)
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class User { // 사용자
     
     @Id
