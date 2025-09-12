@@ -70,7 +70,6 @@ export default function PostDetail() {
   };
 
   if (loading || !post) return <div className="p-4">로딩 중…</div>;
-
   return (
     <section className="flex-1 p-4">
       <h2 className="text-xl font-bold mb-2">{post.title}</h2>
