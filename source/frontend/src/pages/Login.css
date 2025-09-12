@@ -1,98 +1,90 @@
-:root{
-  --brand: #b62547;     /* 진한 자주 */
-  --brand-light: #ffb6c1; /* 연한 핑크 */
-  --card-border: #f3e5ea;
-  --field-bg: #fff5f8;     /* 아주 옅은 핑크 */
-  --field-border: #ffcfdb; /* 연한 핑크 보더 */
+/* :root 제거, 페이지 로컬 변수로 스코프화 */
 
-  --logo-size: 100px;         /* CHANGED: 로고 크기 (기존 48px) */
-  --head-gap-top: 20px;      /* NEW: 카드 상단 ~ (로고+타이틀) 위쪽 여백 */
-  --head-gap-bottom: 28px;   /* CHANGED: subtitle 아래 여백 (폼을 더 아래로) */
-}
-
-
+/* 로그인 페이지 루트에서만 쓰는 색/간격 토큰 */
 .page.page--login {
+  --brand: #b62547;
+  --brand-light: #ffb6c1;
+  --card-border: #f3e5ea;
+  --field-bg: #fff5f8;
+  --field-border: #ffcfdb;
+
+  --logo-size: 100px;      /* (현재 90px 고정 사용 중) */
+  --head-gap-top: 20px;
+  --head-gap-bottom: 28px;
+
+  /* 기존 배경/레이아웃 그대로 */
   @apply min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8;
   background: linear-gradient(180deg, #ffeaf0 0%, var(--brand-light) 48%, #ffffff 100%);
 }
 
+/* 중앙 정렬 컨테이너 */
 .page.page--login .login__container{
-  max-width: none;           /* sm:max-w-md 무시 */
+  max-width: none;
   width: 100%;
   display: flex;
-  justify-content: center;   /* 자식(.login__card) 가로 중앙 */
+  justify-content: center;
 }
 
-.login__container {
-  @apply sm:mx-auto sm:w-full sm:max-w-md;
-}
-
-.login__container--spaced {
-  @apply mt-8;
-}
+.login__container { @apply sm:mx-auto sm:w-full sm:max-w-md; }
+.login__container--spaced { @apply mt-8; }
 
 .login__card {
   width: 950px;
   height: 560px;
   @apply bg-white shadow sm:rounded-lg py-8 px-4 sm:px-10;
-  border-radius: 24px;                 /* 둥글게 */
+  border-radius: 24px;
   border: 1px solid var(--card-border);
   box-shadow: 0 24px 48px rgba(182, 37, 71, 0.06);
   max-width: 92vw;
 }
 
-/* 카드 헤더: 로고, 제목, 부제 */
+/* 카드 헤더 */
 .login__card-head{
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding-top: var(--head-gap-top);  /* NEW: 상단 여백 */
-  margin-bottom: var(--head-gap-bottom); /* CHANGED: 아래 여백 (폼 더 아래) */
+  padding-top: var(--head-gap-top);
+  margin-bottom: var(--head-gap-bottom);
 }
 
-/* 로고+제목 한 줄 정렬 용 */
+/* 로고+제목 한 줄 */
 .login__brand-row{
   display: flex;
   align-items: center;
-  justify-content: center;   /* 카드의 가로 중앙 */
+  justify-content: center;
   gap: 12px;
 }
 
-/* 로고 슬롯 */
+/* 로고 슬롯 (기존 90px 유지) */
 .login__logo-slot {
   width: 90px;
-  height: 90px; 
+  height: 90px;
   border: none;
   display: grid;
   place-items: center;
   overflow: hidden;
 }
-
 .login__logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* 제목,부제 : 색만 토큰으로 */
+/* 제목/부제 */
 .login__brand {
   @apply text-6xl font-bold text-gray-900 text-center;
-  /* 로고 슬롯, 텍스트를 같은 라인에서 중앙 정렬 */
   color: var(--brand);
 }
-
 .login__subtitle {
   @apply mt-2 text-sm text-center;
   color: #6b7280;
 }
 
-/* 폼 간격 유지 */
-.login__form {
-  @apply space-y-6;
-}
+/* 폼 */
+.login__form { @apply space-y-6; }
 
-/* 입력 필드 (Input 렌더링 결과의 실제 <input>에 적용) */
+/* 입력 필드 */
 .login__card input[type="text"],
 .login__card input[type="email"],
 .login__card input[type="password"]{
@@ -100,40 +92,22 @@
   border-color: var(--field-border);
 }
 
-/* 비밀번호 보이기 토글 버튼 */
-.login__toggle {
-  @apply absolute right-3 top-8 text-gray-400 hover:text-gray-600;
-}
+/* 비밀번호 보이기 토글 */
+.login__toggle { @apply absolute right-3 top-8 text-gray-400 hover:text-gray-600; }
 
-/* 구분선(“계정이 없으신가요?”) */
-.login__hr {
-  @apply mt-6;
-}
-.login__hr-box {
-  @apply relative;
-}
-/* HR 레일: 라인을 수직 중앙에 위치시키는 컨테이너 */
-.login__hr-rail {
-  @apply absolute inset-0 flex items-center;
-}
-.login__hr-line {
-  @apply w-full border-t;
-  border-color: var(--card-border);
-}
-.login__hr-label {
-  @apply relative flex justify-center text-sm;
-}
-.login__hr-chip {
-  @apply px-2 bg-white text-gray-500;
-}
+/* 구분선 */
+.login__hr { @apply mt-6; }
+.login__hr-box { @apply relative; }
+.login__hr-rail { @apply absolute inset-0 flex items-center; }
+.login__hr-line { @apply w-full border-t; border-color: var(--card-border); }
+.login__hr-label { @apply relative flex justify-center text-sm; }
+.login__hr-chip { @apply px-2 bg-white text-gray-500; }
 
-/* 하단 링크 그룹 */
-.login__actions {
-  @apply mt-6;
-}
-
+/* 하단 링크 */
+.login__actions { @apply mt-6; }
 .login__alt-link {
-  @apply w-full flex justify-center py-2 px-4 rounded-md outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
+  @apply w-full flex justify-center py-2 px-4 rounded-md outline-none
+         focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
          text-sm font-medium bg-white hover:bg-gray-50 border border-none shadow-none;
   color: var(--brand);
 }

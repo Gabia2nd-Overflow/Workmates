@@ -1,7 +1,7 @@
 // src/pages/Chatroom.jsx
 import { useState } from "react";
 import Sidebar from "../Components/Sidebar";
-import Header from "../Components/Header";
+import Header_Workshop from "../Components/Header_Workshop";
 import "./Workshop.css";
 
 function Workshop() {
@@ -10,7 +10,7 @@ function Workshop() {
   return (
     <div className="page page--workshop">
       {/* 상단바 영역 */}
-      <Header />
+      <Header_Workshop />
 
       {/* 콘텐츠 래퍼 */}
       <div className="workshop__content">

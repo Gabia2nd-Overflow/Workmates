@@ -2,7 +2,11 @@ package com.workmates.backend.web.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.workmates.backend.service.MailService;
 import com.workmates.backend.web.dto.MailDto;
@@ -16,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class MailController {
     
     private final MailService mailService;
+
 
     @GetMapping("/{mailId}") // 개별 메일 반환
     public ResponseEntity<MailDto.ReadMailResponse> readMail(
@@ -39,5 +44,10 @@ public class MailController {
     ) {
         return ResponseEntity.ok(mailService.sendMail(principal.getUsername(), request));
     }
+    
+    // @PostMapping("/receive")
+    // public ResponseEntity<MailDto.ReceiveResponse> 
+
+    // @PostMapping("/send")
 }
-    */
+*/

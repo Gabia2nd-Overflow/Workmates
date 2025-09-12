@@ -1,5 +1,5 @@
 // src/pages/WorkshopsPage.jsx
-import Header from "../Components/Header";
+import Header_Workshop from "../Components/Header_Workshop";
 import UserFooter from "../Components/UserFooter";
 import Sidebar from "../Components/Sidebar";
 import "./WorkshopsPage.css";
@@ -7,7 +7,7 @@ import "./WorkshopsPage.css";
 export default function WorkshopsPage() {
   return (
     <div className="page page--workshops">
-      <Header />
+      <Header_Workshop />
       {/* 헤더 패딩 + 사이드바 여백 */}
       <div className="workshops__layout">
         <Sidebar />

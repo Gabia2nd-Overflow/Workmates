@@ -55,15 +55,82 @@
 }
 .ws-create-btn:hover { background: #ffe4ef; }
 
-/* 모달 오버레이/카드 */
-.modal-overlay { @apply fixed inset-0 z-[60] bg-black/30 flex items-center justify-center; }
-.modal-card    { @apply bg-white rounded-xl w-96 p-6; }
+/* ========= 모달 전용 =========== */
 
-/* 폼 레이아웃 & 필드 */
-.form-col      { @apply flex flex-col gap-3; }
-.form-actions  { @apply flex justify-end gap-2 pt-2; }
-.field         { @apply border p-2 rounded; }
+.ws-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0,0,0,0.35);
+  display: grid;
+  place-items: center;
+}
 
-/* 버튼들 */
-.btn-outline-sm { @apply px-3 py-1 border rounded; }
-.btn-primary-sm { @apply px-3 py-1 bg-pink-600 text-white rounded; }
+.ws-modal__card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+}
+
+.ws-modal__title {
+  margin: 4px 0 16px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #7b2337;
+}
+
+.ws-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ws-modal__field {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #fffaf8;
+}
+.ws-modal__field:focus {
+  outline: none;
+  border-color: #b62547;
+  box-shadow: 0 0 0 3px rgba(182, 37, 71, 0.12);
+}
+
+.ws-modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.ws-btn {
+  appearance: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ws-btn--ghost {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+.ws-btn--ghost:hover {
+  background: #fafafa;
+}
+
+.ws-btn--primary {
+  background: #b62547;
+  color: #ffffff;
+}
+.ws-btn--primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

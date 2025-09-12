@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { scheduleApi, loungeAPI, threadAPI, workshopAPI } from "../services/api";
 import useToast from "./useToast";
-import Header from "../Components/Header";
+import Header_Workshop from "../Components/Header_Workshop";
 import Sidebar from "../Components/Sidebar";
 import UserFooter from "../Components/UserFooter";
 import LoungeSection from "../Components/LoungeSection";
@@ -136,11 +136,11 @@ export default function ScheduleList() {
   };
 
   const goNew = () => navigate(`/schedules/${workshopId}/schedules/new`);
-  const goEdit = (id) => navigate(`/schedules/${id}/edit`);
+  const goEdit = (id) => navigate(`/schedules/${workshopId}/schedules/${id}/edit`);
 
   return (
     <div className="page page--workshop-detail">
-      <Header />
+      <Header_Workshop />
       {/* 전역 사이드바(좌측 고정) */}
       <Sidebar />
 

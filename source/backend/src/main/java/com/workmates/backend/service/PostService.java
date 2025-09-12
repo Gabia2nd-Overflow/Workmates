@@ -43,7 +43,6 @@ public class PostService {
             .threadId(threadId)
             .title(req.getTitle())
             .content(req.getContent())
-            .category(req.getCategory())
             .writerId(username)
             .writerNickname(nickname != null ? nickname : username)
             .viewCount(0)
@@ -66,7 +65,6 @@ public class PostService {
 
         if (req.getTitle() != null) post.setTitle(req.getTitle());
         if (req.getContent() != null) post.setContent(req.getContent());
-        if (req.getCategory() != null) post.setCategory(req.getCategory());
         return PostDto.Response.from(post);
     }
 
@@ -84,4 +82,7 @@ public class PostService {
             .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
         post.setViewCount(post.getViewCount() + 1);
     }
+
+    
+
 }

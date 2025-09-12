@@ -1,13 +1,23 @@
-:root {
-  --header-height: 80px;     /* 헤더 높이 */
-  --footer-height: 130px;    /* 푸터 높이 */
-  --rail-width: 335px;       /* 왼쪽 박스 가로폭 고정 */
-  --gap: 16px;               /* 좌우 간격 */
-}
+/* Home.css — :root 제거 */
+/* 전역 변수(--header-height, --footer-height)는 theme.css에서 온다고 가정 */
 
 .page--home {
+  /* 홈 전용 로컬 변수 (다른 페이지에 영향 없음) */
+  --rail-width: 335px;   /* 왼쪽 박스 가로폭 고정 */
+  --gap: 16px;           /* 좌우 간격 */
+
   height: 100vh;
   overflow: hidden;
+
+  background: linear-gradient(
+    to bottom right,
+    #f28aa5 0%,
+    #ffb6c1 25%,
+    #ffe0e6 50%,
+    #ffffff 70%,
+    #ffe0e6 87%,
+    #ffc4cc 97%
+  );
 }
 
 /* 헤더·푸터 영역만큼 패딩 */

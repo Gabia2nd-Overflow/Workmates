@@ -6,6 +6,8 @@ import UserFooter from '../Components/UserFooter';
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MyWorkshopsPanel from "../Components/MyWorkshopsPanel";
+import WorkshopCards from "../Components/main_home/WorkshopCards";
+import CreateWorkshopModalHost from "../Components/main_home/CreateWorkshopModalHost";
 import './Home.css';
 
 const Home = () => {
@@ -31,10 +33,10 @@ const Home = () => {
          <MyWorkshopsPanel />
        </aside>
 
-       {/* ⬇️ 우측 메인 콘텐츠 */}
+       {/* 메인 콘텐츠 */}
        <main className="home__main">
-          <p>메인 콘텐츠가 여기에 표시됩니다.</p>
-          <WorkshopButton/>
+          <WorkshopCards />
+          <CreateWorkshopModalHost />
         </main>
       </div>
 
