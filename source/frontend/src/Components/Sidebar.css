@@ -7,7 +7,7 @@
   width: 5rem;
   height: auto;
   z-index: 40;
-  overflow-y: auto;          /* 내용 길어지면 스크롤 */
+  overflow: hidden;          /* 내용 길어지면 스크롤 */
   @apply bg-pink-50 border-r flex flex-col items-center py-4 gap-3;
 
   /* 헤더 로고와 도형 맞춤 */
@@ -15,15 +15,39 @@
   --icon-radius: 17px;       /* Header 로고와 동일한 border-radius */
 }
 
+/* 리스트 영역: 남은 세로 공간을 차지하고 스크롤 */
+.ws-sidebar .ws-list {
+  flex: 1 1 auto;
+  width: 100%;
+  overflow-y: auto;
+  padding: 0.25rem 0;
+  cursor: grab;             /* 드래그 UX */
+  /* 스크롤바 UI 숨김 (브라우저별) */
+  -ms-overflow-style: none;     /* IE/Edge(레거시) */
+  scrollbar-width: none;        /* Firefox */
+}
+
+/* WebKit(Chromium/Safari) */
+.ws-sidebar .ws-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.ws-sidebar .ws-list.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
 /* 워크샵 아이콘 리스트 컨테이너 */
 .ws-list {
-  @apply flex-1 w-full flex flex-col items-center overflow-y-auto;
+  @apply flex-1 w-full flex flex-col items-center;
 }
 
 /* 워크샵 아이콘 버튼(공통) — 동그라미 → 둥근사각형 */
 .ws-icon-btn {
   width: var(--icon-size);
   height: var(--icon-size);
+  flex: 0 0 var(--icon-size);   /* ⬅️ shrink 금지 + 52px 고정 */
   margin-bottom: 0.5rem;        /* mb-2 대체 */
   border-radius: var(--icon-radius); /* 헤더 로고와 동일 라운드 */
   display: flex;
@@ -42,6 +66,7 @@
 .ws-create-btn {
   width: var(--icon-size);
   height: var(--icon-size);
+  flex: 0 0 var(--icon-size);  /* ✨ 52×52 고정, shrink 금지 */
   border-radius: var(--icon-radius);
   border: 2px dashed #f472b6;
   color: #ec4899;
