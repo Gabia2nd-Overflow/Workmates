@@ -3,11 +3,11 @@ package com.workmates.backend.service;
 import java.util.Optional;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,13 +35,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final FileUploadService fileUploadService;
+    private JavaMailSender javaMailSender;
     
     @Value("${spring.mail.username}")
     private String from;
     
-    @Autowired 
-    private JavaMailSenderImpl javaMailSender;
-
     public UserDto.CheckIdResponse checkId(UserDto.CheckIdRequest request) {
         if(!ServiceUtil.validateId(request.getId())) { // 정규표현식에 위반되는 아이디가 요청으로 전달된 경우
             throw new IllegalArgumentException("올바르지 않은 아이디입니다.");
@@ -277,6 +275,7 @@ public class UserService {
         return codeBuilder.toString();
     }
 
+    @Async("emailVerificationExecutor")
     private void sendVerificationEmail(String to, String verificationCode) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();

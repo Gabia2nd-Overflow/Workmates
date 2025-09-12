@@ -64,17 +64,16 @@ const Login = () => {
           
           
           </div>
-            <p className="login__subtitle">계정에 로그인하세요</p>
         </div>
         {/* 폼 */}
           <form className="login__form" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <Input
-                label="사용자명"
+                label="아이디"
                 type="text"
-                placeholder="사용자명을 입력하세요"
+                placeholder="아이디를 입력하세요"
                 {...register('id', {
-                  required: '사용자명을 입력해주세요.',
+                  required: '아이디를 입력해주세요.',
                 })}
                 error={errors.id?.message}
                 icon={<User className="w-4 h-4" />}
@@ -90,8 +89,8 @@ const Login = () => {
                   {...register('password', {
                     required: '비밀번호를 입력해주세요.',
                     minLength: {
-                      value: 6,
-                      message: '비밀번호는 최소 6자 이상이어야 합니다.',
+                      value: 8,
+                      message: '비밀번호는 최소 8자 이상이어야 합니다.',
                     },
                   })}
                   error={errors.password?.message}
