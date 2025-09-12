@@ -44,9 +44,4 @@ public class MailController {
     ) {
         return ResponseEntity.ok(mailService.sendMail(principal.getUsername(), request));
     }
-    
-    // @PostMapping("/receive")
-    // public ResponseEntity<MailDto.ReceiveResponse> 
-
-    // @PostMapping("/send")
 }
