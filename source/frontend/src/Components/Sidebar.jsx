@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { workshopAPI } from "../services/api";
 import { EVENT_OPEN_CREATE_WORKSHOP, EVENT_WORKSHOP_CREATED } from "./main_home/uiBus";
@@ -8,8 +8,29 @@ import "./Sidebar.css";
 export default function Sidebar() {
   const [workshops, setWorkshops] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const listRef = useRef(null);
+  const drag = useRef({ active: false, startY: 0, startTop: 0 });
   const navigate = useNavigate();
   const location = useLocation();
+
+  const onMouseDown = (e) => {
+    const el = listRef.current;
+    if (!el) return;
+    drag.current = { active: true, startY: e.clientY, startTop: el.scrollTop };
+    el.classList.add("dragging");
+  };
+
+  const onMouseMove = (e) => {
+    const el = listRef.current;
+    if (!el || !drag.current.active) return;
+    el.scrollTop = drag.current.startTop - (e.clientY - drag.current.startY);
+  };
+
+  const endDrag = () => {
+    const el = listRef.current;
+    drag.current.active = false;
+    if (el) el.classList.remove("dragging");
+  };
 
   // 최초 1회 목록 로드
   useEffect(() => {
@@ -57,7 +78,14 @@ const activeWorkshopId = (() => {
 
   return (
     <aside className="ws-sidebar">
-      <div className="ws-list">
+      <div
+        className="ws-list"
+        ref={listRef}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={endDrag}
+        onMouseLeave={endDrag}
+      >
         {workshops.map((w) => {
           const isActive = String(w.workshopId) === String(activeWorkshopId); // ★ 정확 비교
           return (
