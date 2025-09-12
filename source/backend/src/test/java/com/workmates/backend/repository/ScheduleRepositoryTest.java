@@ -1,7 +1,7 @@
 package com.workmates.backend.repository;
 
-import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
+import com.workmates.backend.domain.Schedule.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

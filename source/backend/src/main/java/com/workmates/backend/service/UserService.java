@@ -60,15 +60,22 @@ public class UserService {
             throw new IllegalArgumentException("올바르지 않은 이메일입니다.");
         }
 
-        EmailVerification emailVerification = new EmailVerification(request.getEmail(), generateCode(), request.getRequestTime(), false);
-
-        if(emailVerificationRepository.findByEmail(request.getEmail()).isPresent()) { // DB에 이미 이메일이 존재한다면 재전송 요청이므로 DB를 갱신
-            emailVerificationRepository.updateCode(emailVerification.getEmail(), emailVerification.getCode(), emailVerification.getExpiresAt(), emailVerification.getIsConfirmed());
-        } else { // 그렇지 않다면 새로 인증하는 이메일이므로 DB에 요청을 삽입
-            emailVerificationRepository.save(emailVerification);
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
         }
 
-        sendVerificationEmail(emailVerification.getEmail(), emailVerification.getCode());
+        Optional<EmailVerification> emailVerification = emailVerificationRepository.findByEmail(request.getEmail());
+        EmailVerification newEmailVerification = new EmailVerification(request.getEmail(), generateCode(), request.getRequestTime(), false);
+        if(emailVerification.isPresent()) { // DB에 이미 이메일이 존재한다면 재전송 요청이므로 DB를 갱신
+            EmailVerification emailVerificationEntity = emailVerification.get();
+            emailVerificationEntity.setCode(newEmailVerification.getCode());
+            emailVerificationEntity.setExpiresAt(newEmailVerification.getExpiresAt());
+            emailVerificationEntity.setIsConfirmed(newEmailVerification.getIsConfirmed());
+        } else { // 그렇지 않다면 새로 인증하는 이메일이므로 DB에 요청을 삽입
+            emailVerificationRepository.save(newEmailVerification);
+        }
+
+        sendVerificationEmail(newEmailVerification.getEmail(), newEmailVerification.getCode());
 
         return UserDto.VerifyEmailResponse.builder()
                 .isCodeSent(true)
@@ -82,18 +89,23 @@ public class UserService {
                 throw new IllegalArgumentException("잘못된 인증 확인 요청입니다.");
         }
 
-        EmailVerification emailVerification = emailVerificationRepository.findByEmail(request.getEmail()) // DB에서 요청과 이메일이 일치하는 코드가 있는지 확인하고 존재하지 않으면 에러 발생
-                        .orElseThrow(() -> new IllegalArgumentException("올바르지 않은 인증 요청입니다. 이메일을 확인해주세요.")); 
-        
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
+        }
 
-        if(request.getRequestTime().isAfter(emailVerification.getExpiresAt())) { // 코드가 만료된 경우
+        Optional<EmailVerification> emailVerification = emailVerificationRepository.findByEmail(request.getEmail()); // DB에서 요청과 이메일이 일치하는 코드가 있는지 확인하고 존재하지 않으면 에러 발생
+        if(!emailVerification.isPresent() || emailVerification.get().getIsConfirmed()) {
+            throw new IllegalArgumentException("올바르지 않은 인증 확인 요청입니다.");
+        }
+        
+        EmailVerification emailVerificationEntity = emailVerification.get();
+        if(request.getRequestTime().isAfter(emailVerificationEntity.getExpiresAt())) { // 코드가 만료된 경우
             throw new IllegalArgumentException("이미 만료된 코드입니다.");
         }
 
-        Boolean result = request.getVerificationCode().equals(emailVerification.getCode());
-        
+        Boolean result = request.getVerificationCode().equals(emailVerificationEntity.getCode());
         if(result) {
-            emailVerificationRepository.updateCode(emailVerification.getEmail(), emailVerification.getCode(), emailVerification.getExpiresAt(), result);
+            emailVerificationEntity.setIsConfirmed(result);
         }
 
         return UserDto.ConfirmEmailResponse.builder() // 올바른 인증 요청이라면 코드의 일치 여부를 반환
@@ -142,10 +154,9 @@ public class UserService {
                 .email(request.getEmail())
                 .password(encodedPassword)
                 .build();
+        userRepository.save(user);
 
-        User savedUser = userRepository.save(user);
-
-        return UserDto.UserResponse.from(savedUser);
+        return UserDto.UserResponse.from(user);
     }
 
     public UserDto.LoginResponse login(UserDto.LoginRequest request) {

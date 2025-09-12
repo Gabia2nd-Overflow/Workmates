@@ -1,7 +1,7 @@
 package com.workmates.backend.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workmates.backend.domain.Importance;
+import com.workmates.backend.domain.Schedule.*;
 import com.workmates.backend.service.ScheduleService;
 import com.workmates.backend.web.controller.ScheduleController;
 import com.workmates.backend.web.dto.ScheduleDto;

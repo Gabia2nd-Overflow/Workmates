@@ -63,4 +63,11 @@ public class Schedule { // 작업 일정
 
     @Column(name = "writer_id", nullable = false)
     private String writerId; // 스케쥴을 등록한 사용자 아이디
+
+    public static enum Importance {
+        LOW,
+        MEDIUM,
+        HIGH
+    }
+    // 스케줄에서 중요도 분류를 3단계로 고정
 }

@@ -1,7 +1,7 @@
 package com.workmates.backend.service;
 
-import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
+import com.workmates.backend.domain.Schedule.*;
 import com.workmates.backend.repository.ScheduleRepository;
 import com.workmates.backend.web.dto.ScheduleDto;
 import org.junit.jupiter.api.DisplayName;
@@ -158,11 +158,11 @@ void getWorkshopStats_aggregates() {
             .thenReturn(1L);
 
     var rowHigh = new com.workmates.backend.repository.projection.ImportanceCount() {
-        @Override public com.workmates.backend.domain.Importance getImportancy() { return com.workmates.backend.domain.Importance.HIGH; }
+        @Override public com.workmates.backend.domain.Schedule.Importance getImportancy() { return com.workmates.backend.domain.Schedule.Importance.HIGH; }
         @Override public Long getCnt() { return 3L; }
     };
     var rowMed = new com.workmates.backend.repository.projection.ImportanceCount() {
-        @Override public com.workmates.backend.domain.Importance getImportancy() { return com.workmates.backend.domain.Importance.MEDIUM; }
+        @Override public com.workmates.backend.domain.Schedule.Importance getImportancy() { return com.workmates.backend.domain.Schedule.Importance.MEDIUM; }
         @Override public Long getCnt() { return 2L; }
     };
     when(scheduleRepository.countIncompleteGroupByImportanceForWorkshop(workshopId))

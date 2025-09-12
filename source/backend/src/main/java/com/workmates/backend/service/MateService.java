@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workmates.backend.domain.Mate;
-import com.workmates.backend.domain.MateId;
+import com.workmates.backend.domain.Mate.*;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.MateRepository;
 import com.workmates.backend.repository.UserRepository;

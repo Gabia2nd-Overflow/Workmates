@@ -2,12 +2,7 @@ package com.workmates.backend.web.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.workmates.backend.service.MailService;
 import com.workmates.backend.web.dto.MailDto;
@@ -43,5 +38,31 @@ public class MailController {
         @Valid @RequestBody MailDto.SendMailRequest request
     ) {
         return ResponseEntity.ok(mailService.sendMail(principal.getUsername(), request));
+    }
+
+    // 주소록 조회
+    @GetMapping("/address")
+    public ResponseEntity<MailDto.GetAddressListResponse> getAddressList( 
+        @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal
+    ) {
+        return ResponseEntity.ok(mailService.getAddressList(principal.getUsername()));
+    }
+
+    // 주소록에 주소 추가
+    @PostMapping("/address")
+    public ResponseEntity<MailDto.AppendAddressResponse> appendAddress( 
+        @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+        @Valid @RequestBody MailDto.AppendAddressRequest request
+    ) {
+        return ResponseEntity.ok(mailService.appendAddress(principal.getUsername(), request));
+    }
+
+    // 주소록 수정/삭제
+    @PatchMapping("/address")
+    public ResponseEntity<MailDto.UpdateAddressResponse> updateAddress( 
+        @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+        @Valid @RequestBody MailDto.UpdateAddressRequest request
+    ) {
+        return ResponseEntity.ok(mailService.updateAddress(principal.getUsername(), request));
     }
 }
