@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.workmates.backend.domain.AddressBook;
-import com.workmates.backend.domain.AddressBookId;
+import com.workmates.backend.domain.Address;
+import com.workmates.backend.domain.Address.*;
 
 @Repository
-public interface AddressBookRepository extends JpaRepository<AddressBook, AddressBookId> {
+public interface AddressRepository extends JpaRepository<Address, AddressId> {
     
     @Query(value = "SELECT * FROM ADDRESS_BOOK WHERE id = :id", nativeQuery = true)
-    List<AddressBook> findAllById(String id);
+    List<Address> findAllById(String id);
 }

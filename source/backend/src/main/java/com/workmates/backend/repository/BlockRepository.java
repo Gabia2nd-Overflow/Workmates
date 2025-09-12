@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.workmates.backend.domain.Block;
-import com.workmates.backend.domain.BlockId;
+import com.workmates.backend.domain.Block.*;
 
 @Repository
 public interface BlockRepository extends JpaRepository<Block, BlockId> {

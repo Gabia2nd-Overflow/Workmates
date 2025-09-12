@@ -9,7 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.workmates.backend.domain.Mate;
-import com.workmates.backend.domain.MateId;
+import com.workmates.backend.domain.Mate.*;
 
 @Repository
 public interface MateRepository extends JpaRepository<Mate, MateId> {

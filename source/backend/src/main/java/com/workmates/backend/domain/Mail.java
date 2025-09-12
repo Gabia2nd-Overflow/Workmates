@@ -43,6 +43,10 @@ public class Mail {
     @Column(name = "written_at", nullable = false)
     @Builder.Default
     private LocalDateTime writtenAt = LocalDateTime.now();
+
+    @Column(name = "attachment_url")
+    @Builder.Default
+    private String attachmentUrl = null;
         
     @Column(name = "user_id", nullable =  false)
     private String userId;  // 메일을 송수신한 사용자 아이디

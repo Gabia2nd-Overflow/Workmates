@@ -1,7 +1,7 @@
 package com.workmates.backend.service;
 
-import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
+import com.workmates.backend.domain.Schedule.*;
 import com.workmates.backend.repository.ScheduleRepository;
 import com.workmates.backend.web.dto.ScheduleDto;
 import com.workmates.backend.web.dto.ScheduleStatsDto;
@@ -131,7 +131,7 @@ public class ScheduleService {
         long overdue = scheduleRepository
                 .countByWorkshopIdAndIsCompletedFalseAndIsDeletedFalseAndDueDateLessThan(workshopId, now);
 
-        Map<Importance, Long> byImportance = new EnumMap<>(Importance.class);
+        Map<Importance, Long> byImportance = new EnumMap<>(com.workmates.backend.domain.Schedule.Importance);
         for (Importance i : Importance.values()) byImportance.put(i, 0L);
         scheduleRepository.countIncompleteGroupByImportanceForWorkshop(workshopId)
                 .forEach(row -> byImportance.put(row.getImportancy(), row.getCnt()));

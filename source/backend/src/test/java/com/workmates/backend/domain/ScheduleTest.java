@@ -3,6 +3,8 @@ package com.workmates.backend.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.workmates.backend.domain.Schedule.Importance;
+
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
