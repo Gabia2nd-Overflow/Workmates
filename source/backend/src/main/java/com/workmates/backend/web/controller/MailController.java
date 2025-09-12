@@ -3,6 +3,7 @@ package com.workmates.backend.web.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,15 +14,13 @@ import com.workmates.backend.web.dto.MailDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
-/* 
+
 @RestController
 @RequestMapping("/api/mail")
 @RequiredArgsConstructor
 public class MailController {
     
     private final MailService mailService;
-
 
     @GetMapping("/{mailId}") // 개별 메일 반환
     public ResponseEntity<MailDto.ReadMailResponse> readMail(
@@ -51,20 +50,3 @@ public class MailController {
 
     // @PostMapping("/send")
 }
-*/
-=======
-
-// @RestController
-// @RequestMapping("/api/mail")
-// @RequiredArgsConstructor
-// public class MailController {
-
-// private final MailService mailService;
-
-// @PostMapping("/receive")
-// public ResponseEntity<MailDto.ReceiveResponse>
-
-// @PostMapping("/send")
-
-// }
->>>>>>> 47f29bc81c3d87f96a1f2761fc169a232ba4bdb9
