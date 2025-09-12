@@ -13,6 +13,7 @@ import com.workmates.backend.web.dto.MailDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 /* 
 @RestController
 @RequestMapping("/api/mail")
@@ -25,17 +26,16 @@ public class MailController {
     @GetMapping("/{mailId}") // 개별 메일 반환
     public ResponseEntity<MailDto.ReadMailResponse> readMail(
         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
-        @Valid @RequestBody MailDto.ReadMailRequest request
+        @PathVariable Long mailId
     ) {
-        return ResponseEntity.ok(mailService.readMail(principal.getUsername(), request));
+        return ResponseEntity.ok(mailService.readMail(principal.getUsername(), mailId));
     }
 
     @GetMapping("") // 수신한 메일 전체 반환
     public ResponseEntity<MailDto.ReceiveMailResponse> receiveMail(
-        @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
-        @Valid @RequestBody MailDto.ReceiveMailRequest request
+        @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal
     ) {
-        return ResponseEntity.ok(mailService.receiveMail(principal.getUsername(), request));
+        return ResponseEntity.ok(mailService.receiveMail(principal.getUsername()));
     }
 
     @PostMapping("") // 메일 전송
@@ -52,3 +52,19 @@ public class MailController {
     // @PostMapping("/send")
 }
 */
+=======
+
+// @RestController
+// @RequestMapping("/api/mail")
+// @RequiredArgsConstructor
+// public class MailController {
+
+// private final MailService mailService;
+
+// @PostMapping("/receive")
+// public ResponseEntity<MailDto.ReceiveResponse>
+
+// @PostMapping("/send")
+
+// }
+>>>>>>> 47f29bc81c3d87f96a1f2761fc169a232ba4bdb9
