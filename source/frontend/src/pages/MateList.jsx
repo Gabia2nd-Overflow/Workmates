@@ -24,23 +24,9 @@ export default function MateList() {
     try {
       // GET /api/mates/{myId}
       const { data } = await mateApi.list(myId);
-      // console.log("mateApi.list data:", res);
 
-      const items = Array.isArray(data)
-        ? data
-        : Array.isArray(data?.mates)
-          ? data.mates
-          : Array.isArray(data?.mateList)
-            ? data.mateList
-            : Array.isArray(data?.matelist)
-              ? data.matelist
-              : Array.isArray(data?.list)
-                ? data.list
-                : Array.isArray(data?.data)
-                  ? data.data
-                  : [];
-
-      setMates(items);
+      // DTO 확정 : 배열은 data.matelist
+      setMates(Array.isArray(data?.matelist) ? data.matelist : []);
     } catch (e) {
       console.error(e);
       setMates([]);
@@ -69,8 +55,14 @@ export default function MateList() {
     load();
   };
 
-  // ✅ 렌더에서도 "반드시 배열"만 map 하도록 보정
-  const list = Array.isArray(mates) ? mates : [];
+  // 수락된 친구만 화면에 표시 (백엔드가 내려준 status 사용)
+  const accepted = Array.isArray(mates)
+    ? mates.filter((m) => m.status === "FRIEND" || m.isAccepted === true)
+    : [];
+
+  // 대기중 목록
+  const pendingSent = mates.filter((m) => m.status === "PENDING_SENT");
+  const pendingReceived = mates.filter((m) => m.status === "PENDING_RECEIVED");
 
   return (
     <div>
@@ -79,11 +71,11 @@ export default function MateList() {
       {/* 목록 영역 */}
       {loading ? (
         <div>불러오는 중...</div>
-      ) : mates.length === 0 ? (
+      ) : accepted.length === 0 ? (
         <div>친구가 없습니다.</div>
       ) : (
         <ul>
-          {mates.map((m) => (
+          {accepted.map((m) => (
             <li key={m.id}>
               {m.nickname} (@{m.id}){/* 친구 옆 삭제 버튼 */}
               <FriendRemoveButton
@@ -118,9 +110,8 @@ export default function MateList() {
         <Link to="/mates/blocked">차단 목록</Link>
       </div>
 
-      {/* 버튼을 눌렀을 때만 검색 박스가 나타남 */}
-      {showSearch && <MateSearchBox myId={myId} friends={mates} />}
-      {/* friends={mates} <- FriendAddButton이 "이미 친구"를 판별 */}
+      {/* 친구 추가 판별 -> 수락된 친구만 넘김 */}
+      {showSearch && <MateSearchBox myId={myId} friends={accepted} />}
     </div>
   );
 }
