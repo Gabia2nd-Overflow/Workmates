@@ -1,6 +1,6 @@
 package com.workmates.backend.web.dto;
 
-import com.workmates.backend.domain.Importance;
+import com.workmates.backend.domain.Schedule.Importance;
 import java.util.EnumMap;
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package com.workmates.backend.service;
 
-import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
+import com.workmates.backend.domain.Schedule.*;
 import com.workmates.backend.repository.ScheduleRepository;
 import com.workmates.backend.web.dto.ScheduleDto;
 import com.workmates.backend.web.dto.ScheduleStatsDto;

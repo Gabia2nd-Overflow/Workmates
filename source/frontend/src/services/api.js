@@ -145,7 +145,7 @@ export const postAPI = {
 
   // 수정 (PUT 또는 PATCH - 보통 PUT 사용)
   update: (workshopId, threadId, postId, payload) =>
-    api.put(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`, payload),
+    api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`, payload),
 
   // 삭제
   delete: (workshopId, threadId, postId) =>

@@ -1,5 +1,7 @@
 package com.workmates.backend.domain;
 
+import java.io.Serializable;
+
 import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
@@ -9,6 +11,7 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +23,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(MateId.class)
+@IdClass(com.workmates.backend.domain.Mate.MateId.class)
 public class Mate { // 사용자 친구 등록 여부
     
     @Id
@@ -34,4 +37,13 @@ public class Mate { // 사용자 친구 등록 여부
     @Column(name = "is_accepted", nullable = false)
     @Builder.Default
     private Boolean isAccepted = false; // sender가 보낸 친구 요청의 수락 여부. 기본적으로 false
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class MateId implements Serializable {
+        private String senderId;
+        private String receiverId;
+    }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.workmates.backend.domain.WorkshopMember;
-import com.workmates.backend.domain.WorkshopMemberId;
+import com.workmates.backend.domain.WorkshopMember.*;
 
 public interface WorkshopMemberRepository
         extends JpaRepository<WorkshopMember, WorkshopMemberId> {

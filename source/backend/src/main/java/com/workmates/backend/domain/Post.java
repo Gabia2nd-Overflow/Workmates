@@ -33,8 +33,9 @@ public class Post {
     @Column(nullable = false, columnDefinition = "LONGTEXT") // ← 명시
     private String content;
 
-    @Column(name="replyCount",nullable=false)
-    private long replyCount=0;
+    @Column(name="reply_count",nullable=false)
+    @Builder.Default
+    private Long replyCount = 0L;
 
     /** 작성자 (하위호환/조회 최적화용 비정규화 컬럼) */
     @Column(name = "writer_id", nullable = false, length = 50)

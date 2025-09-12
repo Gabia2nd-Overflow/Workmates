@@ -1,5 +1,7 @@
 package com.workmates.backend.domain;
 
+import java.io.Serializable;
+
 import com.workmates.backend.util.DomainUtil;
 
 import jakarta.persistence.Column;
@@ -10,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +32,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(WorkshopMemberId.class)                           // ✅ 추가
+@IdClass(com.workmates.backend.domain.WorkshopMember.WorkshopMemberId.class)                           // ✅ 추가
 @EqualsAndHashCode(of = {"memberId","workshopId"})         // ✅ 동일성 안정
 public class WorkshopMember { // 채팅방 참가자
     @Id
@@ -42,4 +45,12 @@ public class WorkshopMember { // 채팅방 참가자
 
     @Column(name = "member_nickname", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String memberNickname; // (워크샵 내) 닉네임
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WorkshopMemberId implements Serializable {
+        private String memberId;
+        private Long workshopId;
+    }
 }

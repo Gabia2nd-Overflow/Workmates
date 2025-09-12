@@ -2,8 +2,8 @@ package com.workmates.backend.web.dto;
 
 import java.time.LocalDateTime;
 
-import com.workmates.backend.domain.Importance;
 import com.workmates.backend.domain.Schedule;
+import com.workmates.backend.domain.Schedule.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

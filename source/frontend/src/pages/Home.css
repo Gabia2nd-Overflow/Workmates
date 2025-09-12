@@ -53,6 +53,21 @@
   overflow-y: auto;   /* 항목 많으면 내부만 스크롤 */
   overflow-x: hidden;
   box-sizing: border-box;
+  cursor: grab;                       /* 드래그 UX */
+  -ms-overflow-style: none;           /* IE/Edge 레거시: 스크롤바 숨김 */
+  scrollbar-width: none;              /* Firefox: 스크롤바 숨김 */
+}
+
+/* WebKit(Chrome/Safari): 스크롤바 숨김 */
+.home-rail::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* 드래그 중 시각 피드백 */
+.home-rail.dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 /* 오른쪽 메인 영역도 개별 스크롤 */

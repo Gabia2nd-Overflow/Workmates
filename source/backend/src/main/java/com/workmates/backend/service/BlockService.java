@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.workmates.backend.repository.UserRepository;
 import com.workmates.backend.util.ServiceUtil;
 import com.workmates.backend.domain.Block;
-import com.workmates.backend.domain.BlockId;
+import com.workmates.backend.domain.Block.*;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.BlockRepository;
 import com.workmates.backend.web.dto.BlockDto.BlockRequest;
