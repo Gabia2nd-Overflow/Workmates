@@ -25,8 +25,9 @@ public class Mail {
     @Column(name = "mail_id")
     private Long mailId;
 
-    @Column(name = "message-id", nullable = false, unique = true)
-    private String messageId;
+    @Column(name = "message-id", unique = true)
+    @Builder.Default
+    private String messageId = null;
     
     @Column(name = "from", nullable = false)
     private String from;
@@ -44,10 +45,6 @@ public class Mail {
     @Builder.Default
     private LocalDateTime writtenAt = LocalDateTime.now();
 
-    @Column(name = "attachment_url")
-    @Builder.Default
-    private String attachmentUrl = null;
-        
     @Column(name = "user_id", nullable =  false)
     private String userId;  // 메일을 송수신한 사용자 아이디
 }

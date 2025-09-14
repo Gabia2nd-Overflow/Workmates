@@ -7,5 +7,6 @@ import com.workmates.backend.domain.Attachment.TargetType;
 
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     List<Attachment> findByTargetTypeAndTargetIdOrderByIdAsc(TargetType type, Long targetId);
+
     List<Attachment> findByUploaderIdOrderByUploadedAtDesc(String uploaderId);
 }
