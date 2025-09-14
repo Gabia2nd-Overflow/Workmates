@@ -10,18 +10,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 public class AsyncConfig {
     
-    @Bean("emailVerificationExecutor")
-    public TaskExecutor emailVerificationExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(100);
-        executor.initialize();
-
-        return executor;
-    }
-
     @Bean("emailExecutor")
     public TaskExecutor emailExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

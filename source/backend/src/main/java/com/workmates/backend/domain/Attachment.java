@@ -29,7 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor @AllArgsConstructor
 public class Attachment {
 
-    public enum TargetType { UNASSIGNED, MESSAGE /*, POST, COMMENT*/ }
+    public enum TargetType { UNASSIGNED, MESSAGE, POST, COMMENT, EMAIL }
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

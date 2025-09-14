@@ -1,5 +1,6 @@
 package com.workmates.backend.web.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -17,14 +18,19 @@ public class MailDto {
     @Builder
     public static class ReadMailResponse {
         Mail mail;
+        List<String> attachments;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ReceiveMailResponse {
-        List<Mail> mailList;
+    public static class MailResponse {
+        Long mailId;
+        String from;
+        String to;
+        String subject;
+        LocalDateTime writtenAt;
     }
 
     @Data

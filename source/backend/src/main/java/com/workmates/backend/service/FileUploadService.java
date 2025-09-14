@@ -3,6 +3,8 @@ package com.workmates.backend.service;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -82,6 +84,7 @@ public class FileUploadService {
         }
     }
 
+    // 프로필 이미지, 워크샵 아이콘 등을 업로드 할 때
     @Transactional
     public String uploadFile(MultipartFile file, String uploaderId) {
         try {
@@ -91,7 +94,6 @@ public class FileUploadService {
             Files.createDirectories(path.getParent());
             file.transferTo(path.toFile());
             String url = "/files/" + unique;
-
 
             attachmentRepository.save(
                 Attachment.builder()
@@ -108,5 +110,43 @@ public class FileUploadService {
         } catch (IOException e) {
             throw new RuntimeException("파일 업로드 실패", e);
         }
+    }
+
+    // 이메일 첨부파일
+    @Transactional
+    public List<String> uploadFile(List<MultipartFile> files, String id, Long mailId) {
+        List<String> urls = new ArrayList<>();
+        
+        try {
+            for(MultipartFile file : files) {
+                urls.add(uploadFile(file, id, mailId));
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("파일 업로드에 실패했습니다.");
+        }
+
+        return urls;
+    }
+
+    @Transactional
+    public String uploadFile(MultipartFile file, String id, Long mailId) throws Exception {
+        String original = file.getOriginalFilename();
+        String unique = UUID.randomUUID() + "_" + (original == null ? "file" : original);
+        Path path = Paths.get(uploadDir, unique);
+        Files.createDirectories(path.getParent());
+        file.transferTo(path.toFile());
+        String url = "/files/" + unique;
+
+        attachmentRepository.save(
+            Attachment.builder()
+                .fileUrl(url)
+                .uploaderId(id)
+                .targetType(TargetType.EMAIL)
+                .targetId(mailId)
+                .build()
+        );
+
+        return url;
     }
 }

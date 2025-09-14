@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.workmates.backend.domain.Address;
 import com.workmates.backend.domain.Address.*;
 
-@Repository
+// @Repository
 public interface AddressRepository extends JpaRepository<Address, AddressId> {
     
     @Query(value = "SELECT * FROM ADDRESS_BOOK WHERE id = :id", nativeQuery = true)
