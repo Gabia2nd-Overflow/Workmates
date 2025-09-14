@@ -70,11 +70,11 @@ export default function MyWorkshopsPanel() {
     return (
       <div className="mw-row">
         {workshops.map((ws) => {
-          // CHANGED: 다양한 id 대응
+          // 다양한 id 대응
           const wsId =
             ws.id ?? ws.workshopId ?? ws.workshopID ?? ws.wid ?? ws.code;
 
-          // CHANGED: 이름 후보 우선순위 (임시 문구 없이 "이름만")
+          // 이름 후보 우선순위 (임시 문구 없이 "이름만")
           const wsName =
             [
               ws.name,
@@ -88,7 +88,7 @@ export default function MyWorkshopsPanel() {
             ].map((v) => (typeof v === "string" ? v.trim() : ""))
              .find((v) => v.length > 0) || "";
 
-          // CHANGED: 로고 후보 우선순위 (있으면 사용)
+          // 로고 후보 우선순위 (있으면 사용)
           const wsLogo =
             [
               ws.logoUrl,
@@ -105,7 +105,7 @@ export default function MyWorkshopsPanel() {
           return (
             <MyWorkshopItem
               key={wsId}
-              logoSrc={wsLogo}        // CHANGED: 로고 전달 (없으면 컴포넌트 내 글자 배지)
+              logoSrc={wsLogo}        // 로고 전달 (없으면 컴포넌트 내 글자 배지)
               name={wsName}
               onClick={() => navigate(`/workshops/${wsId}`)}
             />

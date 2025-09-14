@@ -24,6 +24,9 @@ export default function WorkshopCards() {
     }
   };
 
+  const CREATE_IMG = `${import.meta.env.BASE_URL}img/create_workshop.png`;
+  const ENTRY_IMG  = `${import.meta.env.BASE_URL}img/entry_workshop.png`;
+
   return (
     <div className="wc-wrap">
       {/* 서버 생성 카드 */}
@@ -35,18 +38,23 @@ export default function WorkshopCards() {
           openCreateWorkshopModal();
         }}
       >
-        <div className="wc-icon" aria-hidden="true" />
+        <div className="wc-icon" aria-hidden="true">
+          <img className="wc-icon__img" src={CREATE_IMG} alt="" loading="lazy" decoding="async" />
+        </div>
         <div className="wc-texts">
-          <div className="wc-title">서버 생성</div>
+          <div className="wc-title">워크샵 생성</div>
           <div className="wc-desc">새로운 워크샵을 만들어 팀을 초대하세요</div>
         </div>
       </button>
 
       {/* 서버 참가 카드 */}
       <button type="button" className="wc-card" onClick={() => setShowJoin(true)}>
-        <div className="wc-icon" aria-hidden="true" />
+        <div className="wc-icon" aria-hidden="true">
+          {/* ✅ 추가: 배경 위에 투명 PNG 오버레이 */}
+          <img className="wc-icon__img" src={ENTRY_IMG} alt="" loading="lazy" decoding="async" />
+        </div>
         <div className="wc-texts">
-          <div className="wc-title">서버 참가</div>
+          <div className="wc-title">워크샵 참가</div>
           <div className="wc-desc">초대 코드로 기존 워크샵에 참가하세요</div>
         </div>
       </button>

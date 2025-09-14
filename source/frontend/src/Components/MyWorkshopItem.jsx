@@ -16,12 +16,13 @@ export default function MyWorkshopItem({ logoSrc, name, onClick }) {
       <span className="mw-icon">
         {showLogo ? (
           <img
+            className="mw-logo"
             src={logoSrc}
             alt=""
             onError={() => setShowLogo(false)} // CHANGED: 이미지 깨지면 글자 배지로 전환
           />
         ) : (
-          <span className="mw-monogram">{initial}</span> // CHANGED
+          <span className="mw-initial">{initial}</span>
         )}
       </span>
       <span className="mw-name" title={name}>{name}</span>
