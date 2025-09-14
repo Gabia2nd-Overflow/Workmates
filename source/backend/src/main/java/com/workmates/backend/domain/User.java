@@ -31,7 +31,7 @@ public class User { // 사용자
     @Column(name = "id", length = DomainUtil.ID_MAX_LEN)
     private String id; // 사용자 아이디
 
-    @Column(name = "nickname", nullable = false, unique = true, length = DomainUtil.ID_MAX_LEN)
+    @Column(name = "nickname", nullable = false, length = DomainUtil.ID_MAX_LEN)
     private String nickname; // 사용자 닉네임
     
     @Column(name = "password", nullable = false, length = DomainUtil.POST_MAX_LEN) // 암호화때문에 32로는 택도없음
