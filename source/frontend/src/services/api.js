@@ -141,16 +141,20 @@ export const postAPI = {
 
   // 조회수 증가 (백엔드가 PATCH /views 라우트일 때)
   increaseViews: (workshopId, threadId, postId) =>
-    api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`),
+    api.patch(
+      `/workshops/${workshopId}/threads/${threadId}/posts/${postId}/views`
+    ),
 
   // 수정 (PUT 또는 PATCH - 보통 PUT 사용)
   update: (workshopId, threadId, postId, payload) =>
-    api.patch(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`, payload),
+    api.patch(
+      `/workshops/${workshopId}/threads/${threadId}/posts/${postId}`,
+      payload
+    ),
 
   // 삭제
   delete: (workshopId, threadId, postId) =>
     api.delete(`/workshops/${workshopId}/threads/${threadId}/posts/${postId}`),
-
 };
 
 /* ===== Comments ===== */
@@ -200,7 +204,8 @@ export const blockApi = {
   list: (id) => api.get(`/block/${id}`),
   // 차단 실행
   blockUser: (id, targetId) => api.post("/block/block-user", { id, targetId }),
-  unblock: (id, targetId) => api.post("/block/unblock-user", { id, targetId }),
+  unblockUser: (id, targetId) =>
+    api.post("/block/unblock-user", { id, targetId }),
 };
 
 /* ===== Schedules ===== */
