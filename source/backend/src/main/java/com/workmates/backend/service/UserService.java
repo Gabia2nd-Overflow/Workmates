@@ -274,6 +274,19 @@ public class UserService {
                     .build();
     }
 
+    @Transactional(readOnly = true)
+    public UserDto.VerifyPasswordResponse verifyPassword(String id, UserDto.VerifyPasswordRequest request) {
+        if (!ServiceUtil.validateId(id) || request == null || request.getCurrentPassword() == null) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
+        }
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent() || user.get().getIsDeleted()) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
+        boolean ok = passwordEncoder.matches(request.getCurrentPassword(), user.get().getPassword());
+        return UserDto.VerifyPasswordResponse.builder().isValid(ok).build();
+    }
+
     private String generateCode() {
         StringBuilder codeBuilder = new StringBuilder();
         Random random = new Random(System.nanoTime());

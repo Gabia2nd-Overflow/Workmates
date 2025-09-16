@@ -202,4 +202,21 @@ public class UserDto {
     public static class QuitResponse {
         private Boolean isUserDeleted;
     }
+
+    // VerifyPasswordRequest / Response 추가
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyPasswordRequest {
+        private String currentPassword;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyPasswordResponse {
+        private Boolean isValid;
+    }
 }

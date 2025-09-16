@@ -43,7 +43,11 @@ export const authAPI = {
 
   // ✅ 내정보: GET/PUT /user-info
   getMyInfo: () => api.get("/user-info"),
-  updateMyInfo: (data) => api.put("/user-info", data),
+  // ✅ 닉네임 등 업데이트: 백엔드가 POST만 받으므로 POST로 수정
+  updateMyInfo: (data) => api.post("/user-info", data),
+  // ✅ 현재 비밀번호 확인 → 비번 변경 UX용
+  verifyPassword: (data) => api.post("/user-info/verify-password", data),   // { currentPassword }
+  updatePassword: (data) => api.post("/user-info/update-password", data),   // { currentPassword, newPassword }
 };
 
 /* ===== Workshops ===== */
