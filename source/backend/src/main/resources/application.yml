@@ -53,8 +53,6 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
 
-
-  
 open-ai-api:
   encrypted: c2stcHJvai1WY1FtbjFCZUZZeklHYVpQTGx6Y3BrSmpaQlV5Wk9BWFhqR0txaTRJeEhGWHM0cmoxRXkySndWUzQzVTRFTVJZMDA0blF5aVY5cFQzQmxia0ZKN1lRdk54UFFaUDd3eFRlTVdFTUp0S3J1Y1hHcWhnbmxZMDJ5WkszU0FpVS1RVUtCVGFfR1JDeVRxS183aVlhTTZfVDdyY2JZd0E=
   
@@ -65,3 +63,8 @@ open-ai-api:
   image-generate:
     url: https://api.openai.com/v1/images/generations
     model: dall-e-3 
+
+
+symmetric-encoder:
+  master : workmates
+  salt: 10aecf99beb424dd

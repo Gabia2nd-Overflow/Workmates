@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User; // ★ 추가
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // ★ 추가
@@ -31,9 +34,20 @@ import jakarta.servlet.http.HttpServletResponse; // ★ 추가
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${symmetric-encoder.master}")
+    private String masterKey;
+
+    @Value("${symmetric-encoder.salt}")
+    private String salt;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SymmetricPasswordEncoder symmetricPasswordEncoder() {
+        return new SymmetricPasswordEncoder(masterKey, salt);
     }
 
     /**
@@ -103,6 +117,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/mate/**").permitAll()
                 .requestMatchers("/api/block/**").permitAll()
                 .requestMatchers("/api/mail/**").permitAll()
+                .requestMatchers("/api/chatbot/**").permitAll()
 
                 // 🔸 여기를 authenticated로 바꿔야 컨트롤러 전에 JWT 인증이 동작함
                 .requestMatchers("/api/workshops/**").authenticated()
@@ -127,5 +142,30 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    public static class SymmetricPasswordEncoder implements PasswordEncoder {
+
+        private final TextEncryptor encryptor;
+
+        public SymmetricPasswordEncoder(String password, String salt) {
+            this.encryptor = Encryptors.text(password, salt);
+        }
+
+        @Override
+        public String encode(CharSequence rawPassword) {
+            return encryptor.encrypt(rawPassword.toString());
+        }
+
+        @Override
+        public boolean matches(CharSequence rawPassword, String encodedPassword) {
+            String decrypted = encryptor.decrypt(encodedPassword);
+            return rawPassword.toString().equals(decrypted);
+        }
+
+        // 복호화
+        public String decrypt(String encodedPassword) {
+            return encryptor.decrypt(encodedPassword);
+        }
     }
 }
