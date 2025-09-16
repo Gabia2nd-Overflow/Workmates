@@ -80,4 +80,13 @@ public class AuthController {
         return ResponseEntity.ok(userService.quit(principal.getUsername(), request));
     }
 
+    @PostMapping("/user-info/verify-password")
+    public ResponseEntity<UserDto.VerifyPasswordResponse> verifyPassword(
+        @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+        @Valid
+        @RequestBody UserDto.VerifyPasswordRequest request
+    ) {
+        return ResponseEntity.ok(userService.verifyPassword(principal.getUsername(), request));
+    }
+
 }

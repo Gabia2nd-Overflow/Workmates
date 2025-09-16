@@ -1,6 +1,4 @@
-// src/pages/MySetting.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
 import "./MySetting.css";
 
@@ -63,16 +61,10 @@ function safeParseUser(raw) {
   if (!raw || typeof raw !== "string") return null;
   const trimmed = raw.trim();
   if (!(trimmed.startsWith("{") && trimmed.endsWith("}"))) return null;
-
-  // try/catch 불가 → 파싱 실패 가능성은 무시하고 그대로 JSON.parse
-  // (백엔드에서 내려주는 user 캐시가 유효한 JSON이라고 가정)
   return JSON.parse(trimmed);
 }
 
 export default function MySetting() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const [info, setInfo] = useState({
     id: "",
     nickname: "",
@@ -82,10 +74,13 @@ export default function MySetting() {
   });
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
-  const [showPw, setShowPw] = useState(false);
 
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+
+  // 닉네임 편집 모드/값
+  const [editingNickname, setEditingNickname] = useState(false);
+  const [nicknameDraft, setNicknameDraft] = useState("");
 
   /** 설정 정보 로드 */
   function loadSettings() {
@@ -107,7 +102,9 @@ export default function MySetting() {
         if (!data) {
           setErr("설정 정보를 불러오지 못했습니다.");
         } else {
-          setInfo(normalizeUserInfo(data));
+          const normalized = normalizeUserInfo(data);
+          setInfo(normalized);
+          setNicknameDraft(normalized.nickname || "");
         }
       })
       .finally(() => setLoading(false));
@@ -119,23 +116,12 @@ export default function MySetting() {
 
   const imgSrc = useMemo(() => (info.imageUrl ? resolveImageUrl(info.imageUrl) : "/img/simple_user.png"), [info.imageUrl]);
 
-  const handleClose = () => {
-    const from = location.state && location.state.from;
-    if (from) {
-      navigate(from, { replace: true });
-      return;
-    }
-    const m = (location.pathname || "").match(/^\/workshops\/(\d+)/);
-    if (m) navigate(`/workshops/${m[1]}`, { replace: true });
-    else navigate("/", { replace: true });
-  };
-
   function copy(text) {
     if (!navigator || !navigator.clipboard || !navigator.clipboard.writeText) return;
     navigator.clipboard.writeText(text || "").then(() => {}, () => {});
   }
 
-  /** 프로필 이미지 업로드 */
+  /** 프로필 이미지 업로드 (왼쪽 UI 로직은 유지) */
   function uploadProfileImage(file) {
     if (!file) return;
     setUploading(true);
@@ -210,19 +196,90 @@ export default function MySetting() {
     e.target.value = "";
   };
 
+  /** 닉네임 저장 */
+  const onSaveNickname = () => {
+    const newNickname = (nicknameDraft || "").trim();
+    if (!newNickname) {
+      alert("닉네임을 입력하세요.");
+      return;
+    }
+    if (newNickname === info.nickname) {
+      setEditingNickname(false);
+      return;
+    }
+    authAPI
+      .updateMyInfo({ newNickname })
+      .then((r) => (r && r.data) || null)
+      .then((data) => {
+        if (!data) throw new Error();
+        setInfo((prev) => ({ ...prev, nickname: data.nickname || newNickname }));
+        setEditingNickname(false);
+        // 로컬 캐시 반영
+        const raw = typeof localStorage !== "undefined" ? localStorage.getItem("user") : null;
+        const parsed = safeParseUser(raw);
+        if (parsed) {
+          parsed.nickname = data.nickname || newNickname;
+          localStorage.setItem("user", JSON.stringify(parsed));
+        }
+        alert("닉네임이 변경되었습니다.");
+      })
+      .catch(() => alert("닉네임 변경에 실패했습니다."));
+  };
+
+  /** 비밀번호 변경 (값은 표시하지 않음) */
+  const onChangePassword = async () => {
+    const current = window.prompt("현재 비밀번호를 입력하세요.");
+    if (current == null) return;
+    if (!current.trim()) {
+      alert("현재 비밀번호를 입력하세요.");
+      return;
+    }
+
+    try {
+      const v = await authAPI.verifyPassword({ currentPassword: current });
+      const ok = v && v.data && v.data.isValid;
+      if (!ok) {
+        alert("현재 비밀번호가 일치하지 않습니다.");
+        return;
+      }
+    } catch {
+      alert("현재 비밀번호 확인 중 오류가 발생했습니다.");
+      return;
+    }
+
+    const np1 = window.prompt("새 비밀번호를 입력하세요.");
+    if (np1 == null) return;
+    const np2 = window.prompt("새 비밀번호를 한 번 더 입력하세요.");
+    if (np2 == null) return;
+
+    if (!np1.trim() || !np2.trim()) {
+      alert("새 비밀번호를 모두 입력하세요.");
+      return;
+    }
+    if (np1 !== np2) {
+      alert("두 비밀번호가 서로 일치하지 않습니다.");
+      return;
+    }
+    if (np1.length < 8) {
+      alert("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    try {
+      await authAPI.updatePassword({ currentPassword: current, newPassword: np1 });
+      alert("비밀번호가 변경되었습니다. 다시 로그인해야 할 수 있습니다.");
+    } catch {
+      alert("비밀번호 변경에 실패했습니다.");
+    }
+  };
+
   return (
     <section className="settings-page">
       <div className="settings-main">
+        {/* 헤더: 제목만 '마이페이지'로, 우측 버튼 제거 */}
         <div className="settings-header">
-          <h1 className="settings-title">설정</h1>
-          <div className="settings-actions">
-            <button className="btn btn-primary" onClick={loadSettings} disabled={loading} title="다시 불러오기">
-              <span className="btn-ico">↻</span> 새로고침
-            </button>
-            <button className="btn btn-ghost" onClick={handleClose} title="닫기">
-              <span className="btn-ico">✕</span> 닫기
-            </button>
-          </div>
+          <h1 className="settings-title">마이페이지</h1>
+          {/* (우측 새로고침/닫기 제거) */}
         </div>
 
         {loading ? (
@@ -231,6 +288,7 @@ export default function MySetting() {
           <div className="settings-error">{err}</div>
         ) : (
           <section className="settings-card">
+            {/* 1) 왼쪽 프로필 사진 영역: 원본 유지 */}
             <div className="settings-left">
               <div className="avatar-wrap">
                 <img
@@ -263,9 +321,11 @@ export default function MySetting() {
               </div>
             </div>
 
+            {/* 2) 오른쪽 정보: 원래 디자인 유지 + 요구사항 반영 */}
             <div className="settings-right">
               <div className="section-title">계정</div>
 
+              {/* 아이디: 텍스트표시 + 복사 버튼 유지 */}
               <div className="kv-row">
                 <div className="kv-label">아이디</div>
                 <div className="kv-value">{info.id || "-"}</div>
@@ -274,12 +334,41 @@ export default function MySetting() {
                 </div>
               </div>
 
+              {/* 비밀번호: 값 표시 X, 변경하기 버튼만 */}
               <div className="kv-row">
-                <div className="kv-label">닉네임</div>
-                <div className="kv-value">{info.nickname || "-"}</div>
-                <div className="kv-ctrl" />
+                <div className="kv-label">비밀번호</div>
+                <div className="kv-value">{/* 비워둠 */}</div>
+                <div className="kv-ctrl">
+                  <button className="chip" onClick={onChangePassword}>변경하기</button>
+                </div>
               </div>
 
+              {/* 닉네임: 기본은 텍스트 + '변경' 버튼, 편집 시 인풋 + '완료' */}
+              <div className="kv-row">
+                <div className="kv-label">닉네임</div>
+                <div className="kv-value">
+                  {editingNickname ? (
+                    <input
+                      className="inp"
+                      value={nicknameDraft}
+                      onChange={(e) => setNicknameDraft(e.target.value)}
+                      placeholder="닉네임을 입력하세요"
+                      autoFocus
+                    />
+                  ) : (
+                    info.nickname || "-"
+                  )}
+                </div>
+                <div className="kv-ctrl">
+                  {editingNickname ? (
+                    <button className="chip" onClick={onSaveNickname}>완료</button>
+                  ) : (
+                    <button className="chip" onClick={() => setEditingNickname(true)}>변경</button>
+                  )}
+                </div>
+              </div>
+
+              {/* 이메일: 텍스트표시 + 복사 버튼 유지 */}
               <div className="kv-row">
                 <div className="kv-label">이메일</div>
                 <div className="kv-value">{info.email || "-"}</div>
@@ -288,29 +377,7 @@ export default function MySetting() {
                 </div>
               </div>
 
-              <div className="kv-row">
-                <div className="kv-label">이메일 비밀번호</div>
-                <div className="kv-value">
-                  {showPw ? info.emailPassword || "-" : info.emailPassword ? "•".repeat(10) : "-"}
-                </div>
-                <div className="kv-ctrl">
-                  <button className="chip chip-toggle" onClick={() => setShowPw((s) => !s)} title={showPw ? "가리기" : "보기"}>
-                    {showPw ? "가리기" : "보기"}
-                  </button>
-                </div>
-              </div>
-
-              <div className="section-divider" />
-
-              <div className="section-title">프로필</div>
-
-              <div className="kv-row">
-                <div className="kv-label">프로필 이미지 URL</div>
-                <div className="kv-value">{info.imageUrl || "-"}</div>
-                <div className="kv-ctrl">
-                  <button className="chip" onClick={() => copy(info.imageUrl)} disabled={!info.imageUrl}>복사</button>
-                </div>
-              </div>
+              {/* 제거됨: 이메일 비밀번호, 프로필 이미지 URL */}
             </div>
           </section>
         )}
