@@ -146,7 +146,13 @@ export default function UserFooter() {
             className="uf-btn"
             aria-label="친구"
             title="친구"
-            onClick={() => navigate("/mates/list")}
+            onClick={() => {
+              const sp = new URLSearchParams(location.search);
+              sp.set("friends", "open");
+              navigate(`${location.pathname}?${sp.toString()}`, {
+                replace: false,
+              });
+            }}
           >
             <img src="/img/btn_friends.png" alt="" />
           </button>
