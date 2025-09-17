@@ -29,7 +29,7 @@ public class FileUploadService {
     private final MessageRepository messageRepository;
     private final LoungeRepository loungeRepository;
 
-    private final String uploadDir = System.getProperty("user.dir") + "/uploads";
+    private final String uploadDir = System.getProperty("user.dir") + "/uploads/";
 
     @Transactional
     public FileUploadResponse uploadForMessage(MultipartFile file,
@@ -44,7 +44,7 @@ public class FileUploadService {
             Path path = Paths.get(uploadDir, unique);
             Files.createDirectories(path.getParent());
             file.transferTo(path.toFile());
-            String url = "/files/" + unique;
+            String url = "/uploads/" + unique;
 
             // 2) 라운지-워크샵 정합성
             var lounge = loungeRepository.findById(loungeId)
@@ -93,7 +93,7 @@ public class FileUploadService {
             Path path = Paths.get(uploadDir, unique);
             Files.createDirectories(path.getParent());
             file.transferTo(path.toFile());
-            String url = "/files/" + unique;
+            String url = "/uploads/" + unique;
 
             attachmentRepository.save(
                 Attachment.builder()
@@ -136,7 +136,7 @@ public class FileUploadService {
         Path path = Paths.get(uploadDir, unique);
         Files.createDirectories(path.getParent());
         file.transferTo(path.toFile());
-        String url = "/files/" + unique;
+        String url = "/uploads/" + unique;
 
         attachmentRepository.save(
             Attachment.builder()

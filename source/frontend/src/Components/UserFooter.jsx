@@ -12,7 +12,8 @@ const FALLBACK_AVATAR = "/img/simple_user.png";
 function resolveImageUrl(url) {
   if (!url) return FALLBACK_AVATAR;
   if (/^https?:\/\//i.test(url)) return url;
-  return url;
+  console.log(`${window.location.origin}/api/files${url}`);
+  return `${window.location.origin}/api/files${url}`;
 }
 
 /* 값이 있을 때만 덮어쓰기 */
