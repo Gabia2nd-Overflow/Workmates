@@ -30,8 +30,17 @@ function normalizeUserInfo(payload) {
 /** 이미지 URL 안전 처리 (프로필 미리보기용) */
 function resolveImageUrl(url) {
   if (!url) return "";
+  
+  // 절대 URL인 경우 그대로 반환
   if (/^https?:\/\//i.test(url)) return url;
-  return url;
+  
+  // 상대 경로 처리
+  if (url.startsWith('/')) {
+    return `${window.location.origin}${url}`;
+  }
+  
+  // API 서버 기준 상대 경로
+  return `${window.location.origin}/api/files/${url}`;
 }
 
 /** Authorization 헤더 (가능하면) */
@@ -52,8 +61,18 @@ function buildAuthHeaderFromLocalStorage() {
 /** 업로드 응답에서 이미지 URL 추출 */
 function extractImageUrl(data) {
   if (!data) return "";
+  
+  console.log("서버 응답 데이터:", data); // 디버깅용
+  
+  // 문자열인 경우
   if (typeof data === "string") return data;
-  return data.url ?? data.imageUrl ?? data.profileImageUrl ?? data.profileImage ?? "";
+  
+  // 객체인 경우 - 백엔드 응답 구조에 맞게 수정
+  return data.imageUrl ?? 
+         data.profileImageUrl ?? 
+         data.url ?? 
+         data.filePath ?? 
+         "";
 }
 
 /** safeParseUser — catch 완전히 제거 */
@@ -129,61 +148,96 @@ export default function MySetting() {
 
   /** 프로필 이미지 업로드 (왼쪽 UI 로직은 유지) */
   function uploadProfileImage(file) {
-    if (!file) return;
-    setUploading(true);
+  if (!file) return;
+  
+  console.log("업로드 시작:", file.name, file.type, file.size);
+  setUploading(true);
 
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("image", file);
+  // FormData 생성
+  const formData = new FormData();
+  formData.append("file", file);
 
-    const tryAxios = authAPI.uploadProfileImage
-      ? authAPI.uploadProfileImage(fd).then((r) => (r ? r.data : null), () => null)
-      : Promise.resolve(null);
+  // 인증 헤더
+  const headers = { ...buildAuthHeaderFromLocalStorage() };
 
-    tryAxios
-      .then((data) => {
-        if (data) return data;
+  // 단일 방식으로 업로드
+  fetch("/api/user-info", {
+    method: "POST",
+    credentials: "include",
+    headers,
+    body: formData
+  })
+  .then(async (response) => {
+    console.log("응답 상태:", response.status, response.statusText);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("업로드 실패:", response.status, errorText);
+      throw new Error(`서버 오류 (${response.status}): ${errorText}`);
+    }
+    
+    const contentType = response.headers.get("content-type");
+    console.log("응답 Content-Type:", contentType);
+    
+    if (contentType && contentType.includes("application/json")) {
+      return response.json();
+    } else {
+      const text = await response.text();
+      console.log("응답 텍스트:", text);
+      return text;
+    }
+  })
+  .then((data) => {
+    console.log("파싱된 응답 데이터:", data);
+    
+    const newUrl = extractImageUrl(data);
+    const resolvedUrl = resolveImageUrl(newUrl);
+    
+    console.log("추출된 URL:", newUrl);
+    console.log("최종 URL:", resolvedUrl);
+    
+    if (!resolvedUrl) {
+      throw new Error("서버에서 이미지 URL을 반환하지 않았습니다.");
+    }
 
-        const endpoints = ["/api/user/profile-image", "/api/profile/image", "/api/user-info/image"];
-        const headers = { ...buildAuthHeaderFromLocalStorage() };
+    // 상태 업데이트
+    setInfo((prev) => {
+      const updated = { ...prev, imageUrl: resolvedUrl };
+      console.log("상태 업데이트:", updated);
+      return updated;
+    });
 
-        let p = Promise.resolve(null);
-        endpoints.forEach((url) => {
-          p = p.then((prev) => {
-            if (prev) return prev;
-            return fetch(url, { method: "POST", credentials: "include", headers, body: fd }).then((res) => {
-              if (!res || !res.ok) return null;
-              return res
-                .json()
-                .then((j) => j, () => res.text().then((t) => t));
-            });
-          });
-        });
-        return p;
-      })
-      .then((data) => {
-        const newUrl = resolveImageUrl(extractImageUrl(data));
-        if (!newUrl) {
-          alert("프로필 이미지 업로드에 실패했습니다.");
-          return null;
-        }
+    // localStorage 업데이트
+    updateLocalStorage(resolvedUrl);
+    
+    // UserFooter 업데이트 알림
+    window.dispatchEvent(new CustomEvent('userInfoUpdated'));
 
-        setInfo((prev) => ({ ...prev, imageUrl: newUrl }));
+    alert("프로필 이미지가 성공적으로 변경되었습니다.");
+  })
+  .catch((error) => {
+    console.error("프로필 이미지 업로드 실패:", error);
+    alert(`프로필 이미지 업로드에 실패했습니다: ${error.message}`);
+  })
+  .finally(() => {
+    setUploading(false);
+  });
+}
 
-        const raw = typeof localStorage !== "undefined" ? localStorage.getItem("user") : null;
-        const parsed = safeParseUser(raw);
-        if (parsed) {
-          parsed.profileImageUrl = newUrl;
-          parsed.imageUrl = newUrl;
-          localStorage.setItem("user", JSON.stringify(parsed));
-        }
-        return newUrl;
-      })
-      .catch(() => {
-        alert("프로필 이미지 업로드에 실패했습니다.");
-      })
-      .finally(() => setUploading(false));
+function updateLocalStorage(imageUrl) {
+  try {
+    const raw = localStorage.getItem("user");
+    const parsed = safeParseUser(raw);
+    if (parsed) {
+      parsed.profileImageUrl = imageUrl;
+      parsed.imageUrl = imageUrl;
+      localStorage.setItem("user", JSON.stringify(parsed));
+      console.log("localStorage 업데이트 완료:", parsed);
+    }
+  } catch (error) {
+    console.warn("localStorage 업데이트 실패:", error);
   }
+}
 
   const onClickChangePhoto = () => {
     if (uploading) return;
@@ -203,6 +257,7 @@ export default function MySetting() {
   };
 
   /** 닉네임 저장 */
+  /** 닉네임 저장 - FormData 사용으로 수정 */
   const onSaveNickname = () => {
     const newNickname = (nicknameDraft || "").trim();
     if (!newNickname) {
@@ -213,23 +268,45 @@ export default function MySetting() {
       setEditingNickname(false);
       return;
     }
-    authAPI
-      .updateMyInfo({ newNickname })
-      .then((r) => (r && r.data) || null)
-      .then((data) => {
-        if (!data) throw new Error();
-        setInfo((prev) => ({ ...prev, nickname: data.nickname || newNickname }));
-        setEditingNickname(false);
-        // 로컬 캐시 반영
-        const raw = typeof localStorage !== "undefined" ? localStorage.getItem("user") : null;
-        const parsed = safeParseUser(raw);
-        if (parsed) {
-          parsed.nickname = data.nickname || newNickname;
-          localStorage.setItem("user", JSON.stringify(parsed));
-        }
-        alert("닉네임이 변경되었습니다.");
-      })
-      .catch(() => alert("닉네임 변경에 실패했습니다."));
+    
+    // FormData 사용으로 변경
+    const formData = new FormData();
+    formData.append("newNickname", newNickname);
+    
+    // authAPI.updateMyInfo를 직접 사용하는 대신 fetch 사용
+    const headers = { ...buildAuthHeaderFromLocalStorage() };
+    
+    fetch("/api/user-info", {
+      method: "POST",
+      credentials: "include",
+      headers,
+      body: formData // FormData 전송
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (!data) throw new Error();
+      setInfo((prev) => ({ ...prev, nickname: data.nickname || newNickname }));
+      setEditingNickname(false);
+      
+      // 로컬 캐시 반영
+      const raw = typeof localStorage !== "undefined" ? localStorage.getItem("user") : null;
+      const parsed = safeParseUser(raw);
+      if (parsed) {
+        parsed.nickname = data.nickname || newNickname;
+        localStorage.setItem("user", JSON.stringify(parsed));
+      }
+      
+      // UserFooter 업데이트 알림
+      window.dispatchEvent(new CustomEvent('userInfoUpdated'));
+      
+      alert("닉네임이 변경되었습니다.");
+    })
+    .catch(() => alert("닉네임 변경에 실패했습니다."));
   };
 
   // ▼ 비밀번호: 인라인 단계 전환 핸들러들 (prompt/alert 사용 X)
@@ -279,7 +356,7 @@ export default function MySetting() {
     setPwBusy(true);
     try {
       await authAPI.updatePassword({ currentPassword: pw.current, newPassword: pw.new1 });
-      alert("비밀번호가 변경되었습니다. 다시 로그인해야 할 수 있습니다.");
+      alert("비밀번호가 변경되었습니다.");
       cancelPwChange();
     } catch {
       alert("비밀번호 변경에 실패했습니다.");
