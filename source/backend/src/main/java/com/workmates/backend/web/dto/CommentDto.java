@@ -14,6 +14,7 @@ public class CommentDto {
     public static class CreateRequest {
         /** 대댓글이면 부모 commentId, 아니면 null */
         private Long parentId;
+        private String nickname;
 
         @NotBlank
         @Size(min = 1, max = DomainUtil.COMMENT_MAX_LEN)

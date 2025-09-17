@@ -37,8 +37,8 @@ public class CommentController {
         Principal principal
     ) {
         String userId = principal.getName();
-        String nickname = userId; // TODO: JWT 'nickname' 클레임 사용 시 치환
-        return commentService.create(workshopId, threadId, postId, userId, nickname, req);
+        
+        return commentService.create(workshopId, threadId, postId, userId, req);
     }
 
     @PatchMapping("/{commentId}")

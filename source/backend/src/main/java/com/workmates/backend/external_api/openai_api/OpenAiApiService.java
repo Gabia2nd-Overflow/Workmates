@@ -1,4 +1,4 @@
-package com.workmates.backend.external_api.open_ai_api;
+package com.workmates.backend.external_api.openai_api;
 
 import java.net.URI;
 import java.net.http.*;

@@ -52,8 +52,8 @@ function readCachedUser() {
 export default function UserFooter() {
   const cached = readCachedUser();
   const [user, setUser] = useState(
-    cached ?? { nickname: "", email: "", profileImageUrl: FALLBACK_AVATAR }
-  );
+    cached ?? { id: "", nickname: "", email: "", profileImageUrl: FALLBACK_AVATAR }
+  );  
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -65,6 +65,7 @@ export default function UserFooter() {
         if (!alive) return;
         const d = res?.data || {};
         const next = {
+          id: d.id ?? d.userId ?? d.user_id ?? undefined,
           nickname: d.nickname ?? d.name ?? d.userNickname ?? undefined,
           email: d.email ?? d.username ?? d.userEmail ?? undefined,
           profileImageUrl: resolveImageUrl(
@@ -105,10 +106,10 @@ export default function UserFooter() {
           }}
         />
 
-        {/* 닉네임/이메일 */}
+        {/* 닉네임/아이디 */}
         <div className="uf-col2stack">
           <div className="uf-nickname">{user.nickname || " "}</div>
-          <div className="uf-email">{user.email || " "}</div>
+          <div className="uf-email">@{user.id || " "}</div>
         </div>
 
         {/* 전원 아이콘(로그아웃) */}

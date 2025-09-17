@@ -37,7 +37,7 @@ public class PostController {
             @AuthenticationPrincipal(expression = "username") String username
     ) {
         // nickname은 서비스에서 username으로 fallback 하도록 null 전달
-        return ResponseEntity.ok(postService.create(threadId, req, username, null));
+        return ResponseEntity.ok(postService.create(threadId, req, username));
     }
 
     /** 게시글 단건 조회 */

@@ -57,6 +57,8 @@ public class AuthController {
         return ResponseEntity.ok(userService.getUserInfo(principal.getUsername()));
     }
 
+    // @PostMapping("/user-info/")
+
     @PostMapping("/user-info")
     public ResponseEntity<UserDto.UserResponse> updateUserInfo(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
