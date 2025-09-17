@@ -178,10 +178,11 @@ export const commentAPI = {
     api.get(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, {
       params: { page, size },
     }),
-  create: (wid, tid, pid, content, parentId = null) =>
+  create: (wid, tid, pid, content, parentId = null, nickname) =>
     api.post(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments`, {
       content,
       parentId,
+      nickname
     }),
   update: (wid, tid, pid, cid, content) =>
     api.patch(`/workshops/${wid}/threads/${tid}/posts/${pid}/comments/${cid}`, {

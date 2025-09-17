@@ -7,6 +7,7 @@ export default function PostComments({ workshopId, threadId, postId }) {
   const [replyParentId, setReplyParentId] = useState(null); // 현재 열려있는 '답글' 대상 댓글 id
   const [replyContent, setReplyContent] = useState(""); // 인라인 답글 입력값
   const replyRef = useRef(null);
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user") || "{}")); 
 
   const load = useCallback(async () => {
     const { data } = await commentAPI.list(workshopId, threadId, postId, 0, 100);
@@ -19,7 +20,7 @@ export default function PostComments({ workshopId, threadId, postId }) {
   async function onCreateRoot() {
     const content = newContent.trim();
     if (!content) return;
-    await commentAPI.create(workshopId, threadId, postId, content, null);
+    await commentAPI.create(workshopId, threadId, postId, content, null, user?.nickname);
     await load();
     setNewContent("");
   }
@@ -34,7 +35,7 @@ export default function PostComments({ workshopId, threadId, postId }) {
   async function submitReply() {
     const content = replyContent.trim();
     if (!content || !replyParentId) return;
-    await commentAPI.create(workshopId, threadId, postId, content, replyParentId);
+    await commentAPI.create(workshopId, threadId, postId, content, replyParentId, user?.nickname);
     await load();
     setReplyContent("");
     setReplyParentId(null);
@@ -104,7 +105,7 @@ export default function PostComments({ workshopId, threadId, postId }) {
                           className="flex-1 border rounded p-2"
                           value={replyContent}
                           onChange={(e) => setReplyContent(e.target.value)}
-                          placeholder={`@${c.writerNickname ?? c.writerId} 에게 답글`}
+                          placeholder={`@${c.writerNickname ?? c.writerId } 에게 답글`}
                         />
                         <button className="border rounded px-3" onClick={submitReply}>등록</button>
                         <button className="border rounded px-3" onClick={() => { setReplyParentId(null); setReplyContent(""); }}>
