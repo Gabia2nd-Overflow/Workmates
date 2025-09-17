@@ -82,6 +82,12 @@ export default function MySetting() {
   const [editingNickname, setEditingNickname] = useState(false);
   const [nicknameDraft, setNicknameDraft] = useState("");
 
+  // ▼ 비밀번호 인라인 편집 상태 (모달/alert 없이 같은 줄에서 처리)
+  // step: 0=기본(버튼만), 1=현재 비밀번호 입력, 2=새 비밀번호 2회 입력
+  const [pwStep, setPwStep] = useState(0);
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pw, setPw] = useState({ current: "", new1: "", new2: "" });
+
   /** 설정 정보 로드 */
   function loadSettings() {
     setLoading(true);
@@ -226,50 +232,59 @@ export default function MySetting() {
       .catch(() => alert("닉네임 변경에 실패했습니다."));
   };
 
-  /** 비밀번호 변경 (값은 표시하지 않음) */
-  const onChangePassword = async () => {
-    const current = window.prompt("현재 비밀번호를 입력하세요.");
-    if (current == null) return;
-    if (!current.trim()) {
+  // ▼ 비밀번호: 인라인 단계 전환 핸들러들 (prompt/alert 사용 X)
+  const startPwChange = () => {
+    if (pwBusy) return;
+    setPwStep(1);                 // 현재 비밀번호 입력 단계
+    setPw({ current: "", new1: "", new2: "" });
+  };
+  const cancelPwChange = () => {
+    if (pwBusy) return;
+    setPwStep(0);
+    setPw({ current: "", new1: "", new2: "" });
+  };
+  const verifyCurrentPw = async () => {
+    if (!pw.current.trim()) {
       alert("현재 비밀번호를 입력하세요.");
       return;
     }
-
+    setPwBusy(true);
     try {
-      const v = await authAPI.verifyPassword({ currentPassword: current });
+      const v = await authAPI.verifyPassword({ currentPassword: pw.current });
       const ok = v && v.data && v.data.isValid;
       if (!ok) {
         alert("현재 비밀번호가 일치하지 않습니다.");
         return;
       }
+      setPwStep(2); // 새 비밀번호 단계로
     } catch {
       alert("현재 비밀번호 확인 중 오류가 발생했습니다.");
-      return;
+    } finally {
+      setPwBusy(false);
     }
-
-    const np1 = window.prompt("새 비밀번호를 입력하세요.");
-    if (np1 == null) return;
-    const np2 = window.prompt("새 비밀번호를 한 번 더 입력하세요.");
-    if (np2 == null) return;
-
-    if (!np1.trim() || !np2.trim()) {
+  };
+  const submitNewPw = async () => {
+    if (!pw.new1.trim() || !pw.new2.trim()) {
       alert("새 비밀번호를 모두 입력하세요.");
       return;
     }
-    if (np1 !== np2) {
+    if (pw.new1 !== pw.new2) {
       alert("두 비밀번호가 서로 일치하지 않습니다.");
       return;
     }
-    if (np1.length < 8) {
+    if (pw.new1.length < 8) {
       alert("비밀번호는 8자 이상이어야 합니다.");
       return;
     }
-
+    setPwBusy(true);
     try {
-      await authAPI.updatePassword({ currentPassword: current, newPassword: np1 });
+      await authAPI.updatePassword({ currentPassword: pw.current, newPassword: pw.new1 });
       alert("비밀번호가 변경되었습니다. 다시 로그인해야 할 수 있습니다.");
+      cancelPwChange();
     } catch {
       alert("비밀번호 변경에 실패했습니다.");
+    } finally {
+      setPwBusy(false);
     }
   };
 
@@ -279,7 +294,6 @@ export default function MySetting() {
         {/* 헤더: 제목만 '마이페이지'로, 우측 버튼 제거 */}
         <div className="settings-header">
           <h1 className="settings-title">마이페이지</h1>
-          {/* (우측 새로고침/닫기 제거) */}
         </div>
 
         {loading ? (
@@ -288,7 +302,7 @@ export default function MySetting() {
           <div className="settings-error">{err}</div>
         ) : (
           <section className="settings-card">
-            {/* 1) 왼쪽 프로필 사진 영역: 원본 유지 */}
+            {/* 왼쪽 프로필 사진 영역: 그대로 유지 */}
             <div className="settings-left">
               <div className="avatar-wrap">
                 <img
@@ -321,7 +335,7 @@ export default function MySetting() {
               </div>
             </div>
 
-            {/* 2) 오른쪽 정보: 원래 디자인 유지 + 요구사항 반영 */}
+            {/* 오른쪽 정보: 원래 디자인 유지 + 요구사항 반영 */}
             <div className="settings-right">
               <div className="section-title">계정</div>
 
@@ -334,12 +348,59 @@ export default function MySetting() {
                 </div>
               </div>
 
-              {/* 비밀번호: 값 표시 X, 변경하기 버튼만 */}
+              {/* 비밀번호: 값 표시 X → 같은 줄에서 인라인 단계별 입력/검증 */}
               <div className="kv-row">
                 <div className="kv-label">비밀번호</div>
-                <div className="kv-value">{/* 비워둠 */}</div>
-                <div className="kv-ctrl">
-                  <button className="chip" onClick={onChangePassword}>변경하기</button>
+                <div className="kv-value">
+                  {pwStep === 0 && <span />}
+
+                  {pwStep === 1 && (
+                    <input
+                      type="password"
+                      className="inp"
+                      placeholder="현재 비밀번호"
+                      value={pw.current}
+                      onChange={(e) => setPw((f) => ({ ...f, current: e.target.value }))}
+                      autoFocus
+                    />
+                  )}
+
+                  {pwStep === 2 && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      <input
+                        type="password"
+                        className="inp"
+                        placeholder="새 비밀번호"
+                        value={pw.new1}
+                        onChange={(e) => setPw((f) => ({ ...f, new1: e.target.value }))}
+                        autoFocus
+                      />
+                      <input
+                        type="password"
+                        className="inp"
+                        placeholder="새 비밀번호 확인"
+                        value={pw.new2}
+                        onChange={(e) => setPw((f) => ({ ...f, new2: e.target.value }))}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="kv-ctrl" style={{ display: "flex", gap: 6 }}>
+                  {pwStep === 0 && (
+                    <button className="chip" onClick={startPwChange}>변경하기</button>
+                  )}
+                  {pwStep === 1 && (
+                    <>
+                      <button className="chip" onClick={verifyCurrentPw} disabled={pwBusy || !pw.current}>다음</button>
+                      <button className="chip" onClick={cancelPwChange} disabled={pwBusy}>취소</button>
+                    </>
+                  )}
+                  {pwStep === 2 && (
+                    <>
+                      <button className="chip" onClick={submitNewPw} disabled={pwBusy}>변경</button>
+                      <button className="chip" onClick={cancelPwChange} disabled={pwBusy}>취소</button>
+                    </>
+                  )}
                 </div>
               </div>
 
