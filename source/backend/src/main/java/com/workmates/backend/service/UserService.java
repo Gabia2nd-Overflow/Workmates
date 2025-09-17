@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workmates.backend.config.JwtTokenProvider;
+import com.workmates.backend.config.SecurityConfig.SymmetricPasswordEncoder;
 import com.workmates.backend.domain.EmailVerification;
 import com.workmates.backend.domain.User;
 import com.workmates.backend.repository.EmailVerificationRepository;
@@ -31,10 +32,11 @@ public class UserService {
     
     private final UserRepository userRepository;
     private final EmailVerificationRepository emailVerificationRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final FileUploadService fileUploadService;
     private final JavaMailSender javaMailSender;
+    private final PasswordEncoder passwordEncoder;
+    private final SymmetricPasswordEncoder symmetricPasswordEncoder;
     
     @Value("${spring.mail.username}")
     private String from;
@@ -147,15 +149,18 @@ public class UserService {
          // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
-        User user = User.builder()
+        User user = userRepository.save(User.builder()
                 .id(request.getId())
                 .nickname(request.getNickname())
                 .email(request.getEmail())
                 .password(encodedPassword)
-                .build();
-        User userEntity = userRepository.save(user);
+                .build());
 
-        return UserDto.UserResponse.from(userEntity);
+        return UserDto.UserResponse.builder()
+                    .id(user.getId())
+                    .nickname(user.getNickname())
+                    .email(user.getEmail())
+                    .build();
     }
 
     public UserDto.LoginResponse login(UserDto.LoginRequest request) {
@@ -192,8 +197,17 @@ public class UserService {
         if(!user.isPresent() || user.get().getIsDeleted()) {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
+
+        User userEntity = user.get();
         
-        return UserDto.UserResponse.from(user.get());
+        return UserDto.UserResponse.builder()
+                    .id(userEntity.getId())
+                    .nickname(userEntity.getNickname())
+                    .email(userEntity.getEmail())
+                    .emailPassword(
+                        userEntity.getEmailPassword() == null ? null : symmetricPasswordEncoder.decrypt(userEntity.getEmailPassword()))
+                    .imageUrl(userEntity.getImageUrl())
+                    .build();
     }
 
     @Transactional
@@ -215,14 +229,22 @@ public class UserService {
             userEntity.setNickname(request.getNewNickname());
         }
         if(request.getNewEmailPassword() != null) {
-            userEntity.setEmailPassword(request.getNewEmailPassword());
+            String encryptedEmailPassword = symmetricPasswordEncoder.encode(request.getNewEmailPassword());
+            userEntity.setEmailPassword(encryptedEmailPassword);
         }
         if(request.getNewImageFile() != null) {
             String newUrl = fileUploadService.uploadFile(request.getNewImageFile(), id);
             userEntity.setImageUrl(newUrl);
         }
 
-        return UserDto.UserResponse.from(userEntity);
+        return UserDto.UserResponse.builder()
+                    .id(userEntity.getId())
+                    .nickname(userEntity.getNickname())
+                    .email(userEntity.getEmail())
+                    .emailPassword(
+                        userEntity.getEmailPassword() == null ? null : symmetricPasswordEncoder.decrypt(userEntity.getEmailPassword()))
+                    .imageUrl(userEntity.getImageUrl())
+                    .build();
     }
 
     @Transactional
@@ -243,7 +265,7 @@ public class UserService {
         }
 
         User userEntity = user.get();
-        userEntity.setPassword(request.getNewPassword());
+        userEntity.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         return UserDto.UpdatePasswordResponse.builder()
                     .isPasswordUpdated(true)

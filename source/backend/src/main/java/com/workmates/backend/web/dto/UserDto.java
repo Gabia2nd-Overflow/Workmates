@@ -134,16 +134,6 @@ public class UserDto {
         private String email;
         private String emailPassword;
         private String imageUrl;
-
-        public static UserResponse from(User user) {
-            return UserResponse.builder()
-                    .id(user.getId())
-                    .nickname(user.getNickname())
-                    .email(user.getEmail())
-                    .emailPassword(user.getEmailPassword())
-                    .imageUrl(user.getImageUrl())
-                    .build();
-        }
     }
 
     // 마이 페이지 정보 수정

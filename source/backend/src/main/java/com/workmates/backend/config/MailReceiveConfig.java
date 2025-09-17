@@ -27,6 +27,22 @@ public class MailReceiveConfig {
         config.password = password;
         config.folderName = "INBOX";
         config.sslEnable = true;
+        config.startTlsEnable = true;
+        config.connectionTimeout = 5000;
+        config.readTimeout = 5000;
+        return config;
+    }
+
+    public static MailReceiveConfig naverMailImapConfig(String email, String password) {
+        MailReceiveConfig config = new MailReceiveConfig();
+        config.protocol = "imap";
+        config.host = "imap.naver.com";
+        config.port = 993;
+        config.username = email;
+        config.password = password;
+        config.folderName = "INBOX";
+        config.sslEnable = true;
+        config.startTlsEnable = true;
         config.connectionTimeout = 5000;
         config.readTimeout = 5000;
         return config;

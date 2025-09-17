@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import com.workmates.backend.config.MailReceiveConfig;
+import com.workmates.backend.config.SecurityConfig.SymmetricPasswordEncoder;
 import com.workmates.backend.domain.Attachment.TargetType;
 import com.workmates.backend.domain.Mail;
 import com.workmates.backend.domain.User;
@@ -39,6 +40,7 @@ public class MailService {
     // private final AddressRepository addressRepository;
     private final AttachmentRepository attachmentRepository;
     private final FileUploadService fileUploadService;
+    private final SymmetricPasswordEncoder symmetricPasswordEncoder;
 
     @Async("emailExecutor")
     public CompletableFuture<List<Mail>> refreshMailBox(String id) {
@@ -51,7 +53,7 @@ public class MailService {
         List<Mail> receivedMails = new ArrayList<>();
 
         try {
-            MailReceiveConfig config = MailReceiveConfig.gmailImapConfig(user.getEmail(), user.getEmailPassword());
+            MailReceiveConfig config = MailReceiveConfig.naverMailImapConfig(user.getEmail(), symmetricPasswordEncoder.decrypt(user.getEmailPassword()));
             Session session = createMailSession(config);
 
             Store store = session.getStore(config.getProtocol());
@@ -137,7 +139,7 @@ public class MailService {
             throw new IllegalArgumentException("이메일 서비스 이용을 위해 비밀번호를 등록해주세요.");
         }
 
-        JavaMailSender mailSender = initializeMailSenderByGmail(user.getEmail(), user.getEmailPassword());
+        JavaMailSender mailSender = initializeMailSenderByNaverMail(user.getEmail(), symmetricPasswordEncoder.decrypt(user.getEmailPassword()));
 
         try {
             sendMailSync(mailSender, request);
@@ -249,6 +251,32 @@ public class MailService {
         Properties mailProperties = new Properties();
 
         mailProperties.setProperty("mail.transport.protocol", "smtp");
+        mailProperties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
+        mailProperties.setProperty("mail.smtp.auth", String.valueOf(true));
+        mailProperties.setProperty("mail.smtp.starttls.enable", String.valueOf(true));
+        mailProperties.setProperty("mail.smtp.starttls.required", String.valueOf(true));
+        mailProperties.setProperty("mail.smtp.connectiontimeout", String.valueOf(5000));
+        mailProperties.setProperty("mail.smtp.timeout", String.valueOf(5000));
+        mailProperties.setProperty("mail.mime.charset", "UTF-8");
+
+        mailSender.setJavaMailProperties(mailProperties);
+
+        return mailSender;
+    }
+
+    private JavaMailSender initializeMailSenderByNaverMail(String username, String password) {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+        mailSender.setHost("smtp.naver.com");
+        mailSender.setPort(587);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
+        mailSender.setDefaultEncoding("UTF-8");
+
+        Properties mailProperties = new Properties();
+
+        mailProperties.setProperty("mail.transport.protocol", "smtp");
+        mailProperties.setProperty("mail.smtp.ssl.trust", "smtp.naver.com");
         mailProperties.setProperty("mail.smtp.auth", String.valueOf(true));
         mailProperties.setProperty("mail.smtp.starttls.enable", String.valueOf(true));
         mailProperties.setProperty("mail.smtp.starttls.required", String.valueOf(true));
