@@ -33,7 +33,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostDto.Response create(Long threadId, PostDto.CreateRequest req, String username, String nickname) {
+    public PostDto.Response create(Long threadId, PostDto.CreateRequest req, String username) {
         if (threadId == null) throw new IllegalArgumentException("threadId는 필수입니다.");
         if (req.getTitle() == null || req.getContent() == null) {
             throw new IllegalArgumentException("title, content는 필수입니다.");
@@ -44,7 +44,7 @@ public class PostService {
             .title(req.getTitle())
             .content(req.getContent())
             .writerId(username)
-            .writerNickname(nickname != null ? nickname : username)
+            .writerNickname(req.getNickname())
             .viewCount(0)
             .isDeleted(false)
             .writtenAt(LocalDateTime.now())
@@ -65,6 +65,7 @@ public class PostService {
 
         if (req.getTitle() != null) post.setTitle(req.getTitle());
         if (req.getContent() != null) post.setContent(req.getContent());
+        
         return PostDto.Response.from(post);
     }
 

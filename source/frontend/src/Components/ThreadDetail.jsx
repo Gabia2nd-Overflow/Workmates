@@ -17,8 +17,7 @@ export default function ThreadDetail() {
   const [page, setPage] = useState(0);
   const [pageSize] = useState(10); // 한 화면에 보여줄 게시글 수
   const [threadName, setThreadName] = useState("");
-
-  
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user") || "{}")); 
 
   const fetchThreadName = async () => {
     try {
@@ -59,7 +58,7 @@ export default function ThreadDetail() {
       const { data } = await postAPI.create(workshopId, threadId, {
         title: postTitle,
         content: postContent,
-        category: "일반",
+        nickname: user?.nickname,
         threadId: Number(threadId),
       });
 

@@ -35,7 +35,7 @@ public class CommentService {
     }
 
     public CommentDto.Response create(Long wid, Long tid, Long pid,
-                                      String userId, String nickname, CommentDto.CreateRequest req) {
+                                      String userId, CommentDto.CreateRequest req) {
         ensurePathOrThrow(wid, tid, pid);
 
         Long rootId = null; int depth = 0;
@@ -50,7 +50,7 @@ public class CommentService {
             
         }
 
-        String nick = (nickname == null || nickname.isBlank()) ? userId : nickname;
+        String nick = req.getNickname();
 
         Comment saved = commentRepository.save(Comment.builder()
             .postId(pid)

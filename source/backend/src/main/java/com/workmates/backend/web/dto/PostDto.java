@@ -12,6 +12,7 @@ public class PostDto {
     public static class CreateRequest {
         private String title;
         private String content;
+        private String nickname;
     }
 
     @Getter @Setter

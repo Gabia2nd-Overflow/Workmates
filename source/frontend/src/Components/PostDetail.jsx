@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // src/pages/PostDetail.jsx
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -18,11 +19,10 @@ export default function PostDetail() {
   const [saving, setSaving] = useState(false);
   const titleRef = useRef(null);
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user") || "{}")); 
 
   useEffect(() => {
     if (!workshopId || !threadId || !postId) return;
-
     let mounted = true;
     setLoading(true);
 
@@ -60,7 +60,7 @@ export default function PostDetail() {
       setSaving(true);
       const payload = {
         title: formTitle.trim(),
-        content: formContent, // 개행 보존
+        content: formContent // 개행 보존
       };
       const res = await postAPI.update(workshopId, threadId, postId, payload);
       setPost(res.data);
