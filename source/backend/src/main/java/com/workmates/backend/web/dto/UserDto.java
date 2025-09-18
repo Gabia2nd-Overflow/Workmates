@@ -143,8 +143,7 @@ public class UserDto {
     @AllArgsConstructor
     public static class UpdateRequest {
         private String newNickname;
-        private String newEmailPassword;
-        private MultipartFile newImageFile;
+        private MultipartFile file;
     }
 
     // 마이 페이지 정보 수정 응답

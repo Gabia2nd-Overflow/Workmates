@@ -118,6 +118,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/block/**").permitAll()
                 .requestMatchers("/api/mail/**").permitAll()
                 .requestMatchers("/api/chatbot/**").permitAll()
+                .requestMatchers("/api/files/**").permitAll()
 
                 // 🔸 여기를 authenticated로 바꿔야 컨트롤러 전에 JWT 인증이 동작함
                 .requestMatchers("/api/workshops/**").authenticated()
