@@ -159,10 +159,10 @@ export default function PostDetail() {
       {/* 📌 작성자만 수정/삭제 */}
       {isOwner && !editing && (
         <div className="mb-4 flex gap-2">
-          <button onClick={startEdit} className="px-3 py-1 bg-yellow-400 text-white rounded">
+          <button onClick={startEdit} className="px-3 py-1 bg-blue-400 text-white rounded">
             수정
           </button>
-          <button onClick={handleDelete} className="px-3 py-1 bg-red-500 text-white rounded">
+          <button onClick={handleDelete} className="px-3 py-1 bg-blue-500 text-white rounded">
             삭제
           </button>
         </div>
