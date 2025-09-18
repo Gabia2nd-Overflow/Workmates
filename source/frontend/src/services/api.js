@@ -235,4 +235,20 @@ export const scheduleApi = {
   remove: (scheduleId) => api.delete(`/schedules/${scheduleId}`),
 };
 
+/* ===== Mail ===== */
+export const mailAPI = {
+  // 최초 연동(비밀번호 저장) — POST /api/user-info (body: { newEmailPassword })
+  updateEmailPassword: (newEmailPassword) => authAPI.updateMyInfo({ newEmailPassword }),
+  // 받은 메일함 — GET /api/mail?page&size
+  mailbox: ({ page = 0, size = 20 } = {}) => api.get(`/mail`, { params: { page, size } }),
+  // 단일 메일 읽기 — GET /api/mail/{mailId}
+  read: (mailId) => api.get(`/mail/${mailId}`),
+  // 보낸 메일함 — GET /api/mail/sent?page&size
+  sent: ({ page = 0, size = 20 } = {}) => api.get(`/mail/sent`, { params: { page, size } }),
+  // 메일 전송 — POST /api/mail
+  send: (payload) => api.post(`/mail`, payload),
+  // 메일함 새로고침(서버에서 메일 DB 갱신 트리거) — GET /api/mail/mailbox
+  refresh: () => api.get(`/mail/mailbox`),
+};
+
 export default api;
