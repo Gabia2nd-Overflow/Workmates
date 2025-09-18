@@ -1,13 +1,13 @@
 .settings-main {
-  --card-bg: #fff6f8;
+  --card-bg: #f6f7ff;
   --border: rgba(0, 0, 0, 0.08);
-  --text: #67222f; /* ★ 살짝 톤다운 */
+  --text: #242267; /* ★ 살짝 톤다운 */
   --muted: rgba(0, 0, 0, 0.52);
-  --primary: #e94b7d;       /* ★ 버튼/링 포인트 컬러 */
-  --primary-weak: #ffd3e2;  /* ★ 라이트 톤 */
+  --primary: #4e4be9;       /* ★ 버튼/링 포인트 컬러 */
+  --primary-weak: #d4d3ff;  /* ★ 라이트 톤 */
   --surface: #ffffff;
 
-  --avatar-outline-color: #FFB6C1; /* UserFooter와 동일 색 */
+  --avatar-outline-color: #bfb6ff; /* UserFooter와 동일 색 */
   --avatar-ring: 6px;              /* (사용 중) 그라데이션 링 두께 */
 
   padding: 24px 28px;
@@ -64,7 +64,7 @@
   background: var(--primary);
   box-shadow: 0 4px 16px rgba(233, 75, 125, 0.25);
 }
-.btn-primary:hover { background: #de3a71; }
+.btn-primary:hover { background: #453ade; }
 .btn-primary:active { transform: translateY(1px); }
 
 /* ---------- Feedback ---------- */
@@ -145,7 +145,7 @@
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .08em;
-  color: #8c3148;
+  color: #33318c;
   text-transform: uppercase;
 }
 
@@ -169,7 +169,7 @@
 
 .kv-label {
   font-weight: 700;
-  color: #b62547;
+  color: #2c25b6;
 }
 
 .kv-value {

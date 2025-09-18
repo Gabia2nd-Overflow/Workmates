@@ -94,7 +94,7 @@ export default function PostComments({ workshopId, threadId, postId }) {
                         const next = prompt("내용 수정", c.content ?? "");
                         if (next != null) onUpdate(c.id, next);
                       }}>수정</button>
-                      <button className="text-red-600" onClick={() => onDelete(c.id)}>삭제</button>
+                      <button className="text-blue-600" onClick={() => onDelete(c.id)}>삭제</button>
                     </div>
 
                     {/* 인라인 답글 입력창 */}

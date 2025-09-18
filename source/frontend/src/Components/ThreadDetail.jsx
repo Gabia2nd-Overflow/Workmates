@@ -113,9 +113,9 @@ export default function ThreadDetail() {
   return (
     <section className="flex-1 p-4">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-bold text-xl text-pink-400">{threadName||"로딩중.."}</h2>
+        <h2 className="font-bold text-xl text-blue-400">{threadName||"로딩중.."}</h2>
         <button
-          className="px-3 py-1 bg-pink-500 text-white rounded"
+          className="px-3 py-1 bg-blue-500 text-white rounded"
           onClick={() => setCreatingPost((v) => !v)}
         >
           + 새 글 작성
@@ -150,7 +150,7 @@ export default function ThreadDetail() {
       }}
     />
 
-    <button className="px-3 py-1 bg-pink-400 text-white rounded">작성</button>
+    <button className="px-3 py-1 bg-blue-400 text-white rounded">작성</button>
   </form>
 )}
 
@@ -183,7 +183,7 @@ export default function ThreadDetail() {
 
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="bg-pink-100 text-pink-600">
+          <tr className="bg-blue-100 text-blue-600">
             <th className="border px-3 py-2">번호</th>
             <th className="border px-3 py-2">제목</th>
             <th className="border px-3 py-2">작성자</th>
@@ -196,7 +196,7 @@ export default function ThreadDetail() {
           {currentPosts.map((post, idx) => (
             <tr
               key={post.id}
-              className="hover:bg-pink-50 cursor-pointer"
+              className="hover:bg-blue-50 cursor-pointer"
               onClick={() => handlePostClick(post.id)}
             >
               <td className="border px-3 py-2 text-center">{page * pageSize + idx + 1}</td>
@@ -219,7 +219,7 @@ export default function ThreadDetail() {
             key={i}
             onClick={() => setPage(i)}
             className={`px-3 py-1 border rounded ${
-              i === page ? "bg-pink-500 text-white" : "bg-white text-pink-500"
+              i === page ? "bg-blue-500 text-white" : "bg-white text-blue-500"
             }`}
           >
             {i + 1}

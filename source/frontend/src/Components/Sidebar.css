@@ -8,7 +8,7 @@
   height: auto;
   z-index: 40;
   overflow: hidden;          /* 내용 길어지면 스크롤 */
-  @apply bg-pink-50 border-r flex flex-col items-center py-4 gap-3;
+  @apply bg-blue-50 border-r flex flex-col items-center py-4 gap-3;
 
   /* 헤더 로고와 도형 맞춤 */
   --icon-size: 52px;         /* 아이콘 박스 크기 */
@@ -59,8 +59,8 @@
   font-size: 16px;
 }
 /* 상태 색상 */
-.ws-icon-btn--active { @apply bg-pink-500; }
-.ws-icon-btn--idle   { @apply bg-pink-300 hover:bg-pink-400; }
+.ws-icon-btn--active { @apply bg-blue-500; }
+.ws-icon-btn--idle   { @apply bg-blue-300 hover:bg-blue-400; }
 
 /* 생성(+) 버튼 — 동그라미 → 둥근사각형 */
 .ws-create-btn {
@@ -68,8 +68,8 @@
   height: var(--icon-size);
   flex: 0 0 var(--icon-size);  /* ✨ 52×52 고정, shrink 금지 */
   border-radius: var(--icon-radius);
-  border: 2px dashed #f472b6;
-  color: #ec4899;
+  border: 2px dashed #8a72f4;
+  color: #7148ec;
   background: transparent;
   display: flex;
   align-items: center;
@@ -78,7 +78,7 @@
   line-height: 1;
   transition: background-color .15s ease;
 }
-.ws-create-btn:hover { background: #ffe4ef; }
+.ws-create-btn:hover { background: #ece4ff; }
 
 /* ========= 모달 전용 =========== */
 
@@ -104,7 +104,7 @@
   margin: 4px 0 16px;
   font-size: 18px;
   font-weight: 800;
-  color: #7b2337;
+  color: #2f237b;
 }
 
 .ws-modal__form {
@@ -119,11 +119,11 @@
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 14px;
-  background: #fffaf8;
+  background: #faf8ff;
 }
 .ws-modal__field:focus {
   outline: none;
-  border-color: #b62547;
+  border-color: #4225b6;
   box-shadow: 0 0 0 3px rgba(182, 37, 71, 0.12);
 }
 
@@ -152,7 +152,7 @@
 }
 
 .ws-btn--primary {
-  background: #b62547;
+  background: #3d25b6;
   color: #ffffff;
 }
 .ws-btn--primary:disabled {

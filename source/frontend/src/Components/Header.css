@@ -8,7 +8,7 @@
     display: flex;
     align-items: center;
     padding: 0 3rem;             /* px-12 */
-    background-color: #b62547;
+    background-color: #3b25b6;
     box-shadow: 0 1px 2px rgba(0,0,0,0.08); /* Tailwind shadow 유사값 */
   }
 
@@ -46,7 +46,7 @@
     font-size: 50px;
     font-weight: 700;
     letter-spacing: 0.02em; /* tracking-wide 근사치 */
-    color: #ffb6c1;
+    color: #b7b6ff;
 
     /* 말줄임 처리 */
     white-space: nowrap;        /* 줄바꿈 안 함 */
@@ -68,11 +68,11 @@
   font-size: 22px;           /* 로고 박스 크기에 따라 조절 */
   line-height: 1;
   
-  background: var(--card-bg, #ffe2ea);
-  color: var(--panel-text, #b62547);
+  background: var(--card-bg, #e3e2ff);
+  color: var(--panel-text, #3125b6);
   user-select: none;
 }
 
 .header__title.header__title--workshop {
-  color: #ffe2ea;
+  color: #e2e7ff;
 }

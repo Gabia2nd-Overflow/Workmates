@@ -27,16 +27,16 @@ export default function ThreadSection({ workshopId, threads, setThreads }) {
   return (
     <div className="space-y-2 mt-4">
       {/* 스레드 헤더 */}
-      <div className="flex items-center justify-between bg-pink-200 px-3 py-2 rounded-lg">
+      <div className="flex items-center justify-between bg-blue-200 px-3 py-2 rounded-lg">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-pink-400 rounded flex items-center justify-center text-white text-xs">
+          <div className="w-4 h-4 bg-blue-400 rounded flex items-center justify-center text-white text-xs">
             📄
           </div>
-          <span className="font-bold text-pink-800">스레드</span>
+          <span className="font-bold text-blue-800">스레드</span>
         </div>
         <button
           onClick={() => setCreatingThread((v) => !v)}
-          className="text-pink-600 font-bold"
+          className="text-blue-600 font-bold"
         >
           +
         </button>

@@ -1,13 +1,13 @@
 /* 패널(카드 2칸) 기본 */
 .mw-panel {
   /* 기본 팔레트 */
-  --panel-bg: #fff0f4;                  /* 패널 배경 */
-  --panel-text: #b62547;              /* 기본 텍스트 */
+  --panel-bg: #f0f0ff;                  /* 패널 배경 */
+  --panel-text: #4025b6;              /* 기본 텍스트 */
   --panel-border: rgba(0,0,0,0.08);     /* 테두리 */
   --muted: rgba(0,0,0,0.45);            /* 보조 텍스트 */
-  --card-bg: #FDD7E5;
-  --icon-bg:#f9a8d4;
-  --accent: #e11d48;                    /* 포커스/호버 악센트 */
+  --card-bg: #e2d7fd;
+  --icon-bg:#b8a8f9;
+  --accent: #581de1;                    /* 포커스/호버 악센트 */
 
   --lift: 2px;
   --row-top-pad: 8px;       /* 리스트 시작 여유(헤더와 간격) */
@@ -72,10 +72,10 @@
 
   background:
     radial-gradient(120% 120% at -10% -10%, rgba(255,255,255,.92), rgba(255,255,255,0)) padding-box,
-    linear-gradient(180deg, #fffafb 0%, #fff0f5 100%) padding-box;
-  border: 1.5px solid rgba(182,37,71,.22);
+    linear-gradient(180deg, #fafaff 0%, #f3f0ff 100%) padding-box;
+  border: 1.5px solid rgba(49, 37, 182, 0.22);
   box-shadow:
-    0 8px 22px rgba(182,37,71,.10),
+    0 8px 22px rgba(56, 37, 182, 0.1),
     0 1px 0 rgba(255,255,255,.9) inset;
   transition: transform .08s ease, box-shadow .16s ease, border-color .16s ease, background .2s ease;
   
@@ -89,10 +89,10 @@
   transform: translateY(-2px);
   background:
     radial-gradient(120% 120% at -10% -10%, rgba(255,255,255,.98), rgba(255,255,255,0)) padding-box,
-    linear-gradient(180deg, #ffffff 0%, #fff4f8 100%) padding-box;
-  border-color: rgba(182,37,71,.28);
+    linear-gradient(180deg, #ffffff 0%, #f4f4ff 100%) padding-box;
+  border-color: rgba(73, 37, 182, 0.28);
   box-shadow:
-    0 12px 28px rgba(182,37,71,.16),
+    0 12px 28px rgba(71, 37, 182, 0.16),
     0 1px 0 rgba(255,255,255,1) inset;
 }
 .mw-card img {
@@ -111,10 +111,10 @@
   min-height: 40px;
   flex-shrink: 0;   /* 구겨짐 방지 */
   border-radius: 10px;
-  background: linear-gradient(180deg, #f8b4c9 0%, #ee8eac 100%);
-  border: 1px solid rgba(182,37,71,.28);
+  background: linear-gradient(180deg, #b9b4f8 0%, #918eee 100%);
+  border: 1px solid rgba(51, 37, 182, 0.28);
   box-shadow:
-    0 4px 12px rgba(182,37,71,.14),
+    0 4px 12px rgba(80, 37, 182, 0.14),
     inset 0 1px 0 rgba(255,255,255,.92);
 }
 
@@ -127,7 +127,7 @@
 }
 
 .mw-name {
-  color: #7b1f35;
+  color: #301f7b;
   letter-spacing: .1px;
   font-weight: 600;
   font-size: 17px;
