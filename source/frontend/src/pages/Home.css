@@ -11,12 +11,12 @@
 
   background: linear-gradient(
     to bottom right,
-    #f28aa5 0%,
-    #ffb6c1 25%,
-    #ffe0e6 50%,
+    #8c8af2 0%,
+    #b6bfff 25%,
+    #e0e3ff 50%,
     #ffffff 70%,
-    #ffe0e6 87%,
-    #ffc4cc 97%
+    #e0e0ff 87%,
+    #c4c7ff 97%
   );
 }
 

@@ -6,8 +6,8 @@
 
   background: linear-gradient(
     180deg,
-    #ffeaf0 0%,
-    var(--brand-light, #ffd1dc) 48%,
+    #edeaff 0%,
+    var(--brand-light, #d5d1ff) 48%,
     #ffffff 100% 
   );
 }
@@ -45,7 +45,7 @@
 
   border-right: 1px solid #e5e7eb;
   padding: 1rem;
-  background: #ffdfe4;
+  background: #dfe3ff;
 }
 
 /* 제목 */

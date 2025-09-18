@@ -18,8 +18,8 @@
   @apply text-center;
 }
 .workshop__welcome-title {
-  @apply text-2xl font-bold text-pink-600 mb-2;
+  @apply text-2xl font-bold text-blue-600 mb-2;
 }
 .workshop__welcome-text {
-  @apply text-pink-500;
+  @apply text-blue-500;
 }

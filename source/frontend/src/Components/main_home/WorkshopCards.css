@@ -23,7 +23,7 @@
   align-items: center;
 
   background: #fff6f1;
-  border: 4px solid #b62547;
+  border: 4px solid #3325b6;
   border-radius: 20px;
   padding: 25px;
   cursor: pointer;
@@ -43,7 +43,7 @@
   width: 95px;
   height: 95px;
   border-radius: 17px;
-  background: #fde2ea;
+  background: #e4e2fd;
   border: 1px solid rgba(0,0,0,0.06);
   position: relative;            /* ✅ 이미지 오버레이용 */
   overflow: hidden;              /* ✅ 가장자리 넘침 방지 */
@@ -75,14 +75,14 @@
 .wc-title {
   font-size: 28px;
   font-weight: 800;
-  color: #b62547;
+  color: #2f25b6;
   letter-spacing: 0.2px;
   margin-bottom: 12px;
 }
 
 .wc-desc {
   font-size: 17px;
-  color: #7b2337;
+  color: #27237b;
   opacity: 0.9;
 }
 
@@ -109,7 +109,7 @@
   margin: 4px 0 16px;
   font-size: 18px;
   font-weight: 800;
-  color: #7b2337;
+  color: #2a237b;
 }
 
 /* 폼 */
@@ -129,7 +129,7 @@
 }
 .wc-field:focus {
   outline: none;
-  border-color: #b62547;
+  border-color: #2f25b6;
   box-shadow: 0 0 0 3px rgba(182, 37, 71, 0.12);
 }
 
@@ -159,7 +159,7 @@
 }
 
 .wc-btn--primary {
-  background: #b62547;
+  background: #2f25b6;
   color: #ffffff;
 }
 .wc-btn--primary:disabled {

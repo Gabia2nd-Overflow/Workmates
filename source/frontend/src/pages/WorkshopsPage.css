@@ -9,12 +9,12 @@
   /* 다른 규칙이 덮어써도 이걸 우선 적용 */
   background-image: linear-gradient(
     to bottom right,
-    #f28aa5 0%,
-    #ffb6c1 25%,
-    #ffe0e6 50%,
+    #948af2 0%,
+    #bdb6ff 25%,
+    #e0e2ff 50%,
     #ffffff 70%,
-    #ffe0e6 87%,
-    #ffc4cc 97%
+    #e1e0ff 87%,
+    #cec4ff 97%
   ) !important;
   background-repeat: no-repeat;
   background-size: cover;
