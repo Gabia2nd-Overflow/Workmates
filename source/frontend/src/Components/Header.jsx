@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "../utils/cn";
 import "./Header.css";
+import "../style/font.css"
 import ScheduleButton from "./ScheduleButton";
 
 const Header = () => {
@@ -16,14 +17,14 @@ const Header = () => {
     <header className={cn("header")}>
       {/* 좌측: 로고 */}
       <div className="header__left">
-        <div className="header__logo-box" onClick={handleLogoClick}>
-          <img src="/img/logo.png" alt="로고" className="header__logo-img" />
-        </div>
+        {/* <div className="header__logo-box" onClick={handleLogoClick}> */}
+          {/* <img src="/img/logo.png" alt="로고" className="header__logo-img" /> */}
+        {/* </div> */}
       </div>
 
       {/* 중앙: Workmates */}
       <div className="header__center">
-        <span className="header__title">Workmates</span>
+        <span className="header__title">WorkMates</span>
       </div>
 
     </header>
