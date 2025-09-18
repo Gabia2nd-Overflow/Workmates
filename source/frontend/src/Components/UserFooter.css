@@ -8,7 +8,7 @@
   /* 바깥 여백 기준 */
   --xpad: 12px;
   padding: 8px var(--xpad);
-  background: #ffdfe4;
+  background: #66ccff;
   border: 1px solid rgba(0,0,0,0.08);
   box-sizing: border-box;
 
@@ -36,7 +36,7 @@
   height: 68px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #FFB6C1;
+  border: 3px solid #00aaff;
   background: #fff;
 }
 
@@ -126,7 +126,8 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  border: none;
+  border: 3px solid #00aaff;
+  border-radius: 4px;
   cursor: pointer;
   
   /* 가운데 정렬 */
@@ -134,16 +135,20 @@
   align-items: center;
   justify-content: center;
 
-  background: transparent;
+  background: #66ccff;
 }
 
-/* 실제 아이콘 이미지를 버튼 크기에 맞춰 리사이즈 */
-.uf-btn > img {
-  width: 100%;
-  height: auto;            /* 비율 유지 */
-  display: block;
+/* 배경 이미지를 쓰던 클래스가 있다면 텍스트에 방해되지 않도록 비활성화 */
+.user-footer .uf-bottomrow .uf-btn.uf-btn--settings,
+.user-footer .uf-bottomrow .uf-btn.uf-btn--mail,
+.user-footer .uf-bottomrow .uf-btn.uf-btn--friends {
+  background-image: none !important;
 }
 
-.uf-btn--settings { background-image: url("/img/btn_settings.png"); }
-.uf-btn--mail     { background-image: url("/img/btn_mail.png"); }
-.uf-btn--friends  { background-image: url("/img/btn_friends.png"); }
+/* 텍스트 가독성만 살짝 덮어쓰기 (레이아웃/크기에는 영향 X) */
+.user-footer .uf-bottomrow .uf-btn {
+  font-size: 13px;          /* ← 단위 꼭! 필요하면 12~14px로 조정 */
+  color: #111827;
+  white-space: nowrap;      /* '마이페이지'가 세로로 쪼개지지 않도록 */
+  letter-spacing: -0.2px;   /* 선택: 한글 라벨 시 약간 조밀하게 */
+}
