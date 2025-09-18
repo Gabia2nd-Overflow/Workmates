@@ -7,13 +7,14 @@ import AuthButtons from "./AuthButtons";
 import { cn } from "../utils/cn";
 
 const FALLBACK_AVATAR = "/img/simple_user.png";
+const PATH = "http://localhost:8080";
 
 /* 이미지 URL 안전 처리 */
 function resolveImageUrl(url) {
   if (!url) return FALLBACK_AVATAR;
   if (/^https?:\/\//i.test(url)) return url;
-  console.log(`${window.location.origin}/api/files${url}`);
-  return `${window.location.origin}/api/files${url}`;
+
+  return `${PATH}/api/files${url}`;
 }
 
 /* 값이 있을 때만 덮어쓰기 */
@@ -74,7 +75,6 @@ function saveCachedUser(userData) {
   try {
     localStorage.setItem("user", JSON.stringify(userData));
   } catch (error) {
-    console.warn("사용자 정보 저장 실패:", error);
   }
 }
 
@@ -127,7 +127,6 @@ export default function UserFooter() {
       
       lastUpdateRef.current = now;
     } catch (error) {
-      console.warn("사용자 정보 가져오기 실패:", error);
     } finally {
       isLoadingRef.current = false;
     }
@@ -166,7 +165,6 @@ export default function UserFooter() {
             return prev;
           });
         } catch (error) {
-          console.warn("localStorage 데이터 파싱 실패:", error);
         }
       }
     };
@@ -239,8 +237,6 @@ export default function UserFooter() {
           alt={altText}
           referrerPolicy="no-referrer"
           onError={(e) => {
-            console.log("user image url : " + user.profileImageUrl);
-            console.log("current src " + e.currentTarget.src);
             e.currentTarget.src = FALLBACK_AVATAR;
           }}
         />

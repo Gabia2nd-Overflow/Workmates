@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/files/uploads")
 public class FileController {
     
     private final Path PATH = Paths.get(System.getProperty("user.dir") + "/uploads");
@@ -22,7 +22,7 @@ public class FileController {
             Path file = PATH.resolve(filename).normalize();
 
             if (!file.startsWith(PATH)) {
-                return ResponseEntity.badRequest().build(); // 탐색 공격 차단
+                return ResponseEntity.badRequest().build();
             }
 
             Resource resource = new UrlResource(file.toUri());

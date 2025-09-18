@@ -27,20 +27,14 @@ function normalizeUserInfo(payload) {
   };
 }
 
-/** 이미지 URL 안전 처리 (프로필 미리보기용) */
+const PATH = "http://localhost:8080";
+
+/* 이미지 URL 안전 처리 */
 function resolveImageUrl(url) {
-  if (!url) return "";
-  
-  // 절대 URL인 경우 그대로 반환
+  if (!url) return FALLBACK_AVATAR;
   if (/^https?:\/\//i.test(url)) return url;
-  
-  // 상대 경로 처리
-  if (url.startsWith('/')) {
-    return `${window.location.origin}${url}`;
-  }
-  
-  // API 서버 기준 상대 경로
-  return `${window.location.origin}/api/files/${url}`;
+
+  return `${PATH}/api/files${url}`;
 }
 
 /** Authorization 헤더 (가능하면) */
@@ -61,8 +55,6 @@ function buildAuthHeaderFromLocalStorage() {
 /** 업로드 응답에서 이미지 URL 추출 */
 function extractImageUrl(data) {
   if (!data) return "";
-  
-  console.log("서버 응답 데이터:", data); // 디버깅용
   
   // 문자열인 경우
   if (typeof data === "string") return data;
@@ -150,7 +142,6 @@ export default function MySetting() {
   function uploadProfileImage(file) {
   if (!file) return;
   
-  console.log("업로드 시작:", file.name, file.type, file.size);
   setUploading(true);
 
   // FormData 생성
@@ -168,33 +159,24 @@ export default function MySetting() {
     body: formData
   })
   .then(async (response) => {
-    console.log("응답 상태:", response.status, response.statusText);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("업로드 실패:", response.status, errorText);
       throw new Error(`서버 오류 (${response.status}): ${errorText}`);
     }
     
     const contentType = response.headers.get("content-type");
-    console.log("응답 Content-Type:", contentType);
     
     if (contentType && contentType.includes("application/json")) {
       return response.json();
     } else {
       const text = await response.text();
-      console.log("응답 텍스트:", text);
       return text;
     }
   })
   .then((data) => {
-    console.log("파싱된 응답 데이터:", data);
-    
     const newUrl = extractImageUrl(data);
     const resolvedUrl = resolveImageUrl(newUrl);
-    
-    console.log("추출된 URL:", newUrl);
-    console.log("최종 URL:", resolvedUrl);
     
     if (!resolvedUrl) {
       throw new Error("서버에서 이미지 URL을 반환하지 않았습니다.");
@@ -203,7 +185,7 @@ export default function MySetting() {
     // 상태 업데이트
     setInfo((prev) => {
       const updated = { ...prev, imageUrl: resolvedUrl };
-      console.log("상태 업데이트:", updated);
+
       return updated;
     });
 
@@ -216,7 +198,6 @@ export default function MySetting() {
     alert("프로필 이미지가 성공적으로 변경되었습니다.");
   })
   .catch((error) => {
-    console.error("프로필 이미지 업로드 실패:", error);
     alert(`프로필 이미지 업로드에 실패했습니다: ${error.message}`);
   })
   .finally(() => {
@@ -232,10 +213,8 @@ function updateLocalStorage(imageUrl) {
       parsed.profileImageUrl = imageUrl;
       parsed.imageUrl = imageUrl;
       localStorage.setItem("user", JSON.stringify(parsed));
-      console.log("localStorage 업데이트 완료:", parsed);
     }
   } catch (error) {
-    console.warn("localStorage 업데이트 실패:", error);
   }
 }
 
