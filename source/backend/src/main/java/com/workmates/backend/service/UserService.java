@@ -228,12 +228,8 @@ public class UserService {
             }
             userEntity.setNickname(request.getNewNickname());
         }
-        if(request.getNewEmailPassword() != null) {
-            String encryptedEmailPassword = symmetricPasswordEncoder.encode(request.getNewEmailPassword());
-            userEntity.setEmailPassword(encryptedEmailPassword);
-        }
-        if(request.getNewImageFile() != null) {
-            String newUrl = fileUploadService.uploadFile(request.getNewImageFile(), id);
+        if(request.getFile() != null && !request.getFile().isEmpty()) {
+            String newUrl = fileUploadService.uploadFile(request.getFile(), id);
             userEntity.setImageUrl(newUrl);
         }
 
@@ -241,8 +237,6 @@ public class UserService {
                     .id(userEntity.getId())
                     .nickname(userEntity.getNickname())
                     .email(userEntity.getEmail())
-                    .emailPassword(
-                        userEntity.getEmailPassword() == null ? null : symmetricPasswordEncoder.decrypt(userEntity.getEmailPassword()))
                     .imageUrl(userEntity.getImageUrl())
                     .build();
     }

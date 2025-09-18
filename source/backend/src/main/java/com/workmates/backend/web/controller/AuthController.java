@@ -1,14 +1,17 @@
 // ✅ 기존 UserDTO 기준으로 변경된 AuthController
 package com.workmates.backend.web.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import com.workmates.backend.service.UserService;
 import com.workmates.backend.web.dto.UserDto;
@@ -57,13 +60,16 @@ public class AuthController {
         return ResponseEntity.ok(userService.getUserInfo(principal.getUsername()));
     }
 
-    // @PostMapping("/user-info/")
-
     @PostMapping("/user-info")
     public ResponseEntity<UserDto.UserResponse> updateUserInfo(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
-            @Valid @RequestBody UserDto.UpdateRequest request) {
-        return ResponseEntity.ok(userService.updateUserInfo(principal.getUsername(), request));
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "newNickname", required = false) String newNickname) {
+        return ResponseEntity.ok(userService.updateUserInfo(principal.getUsername(), 
+                    UserDto.UpdateRequest.builder()
+                                            .file(file)
+                                            .newNickname(newNickname)
+                                            .build()));
     }
 
     @PostMapping("/user-info/update-password")
