@@ -27,8 +27,12 @@ import DashboardPanel from "./Components/Dashboard/DashboardPanel";
 import ScheduleList from "./pages/ScheduleList";
 import ScheduleForm from "./pages/ScheduleForm";
 
-// 설정
+// 마이페이지
 import MySetting from "./pages/MySetting";
+
+// 메일
+import MailLogin from "./pages/MailLogin";
+import Mailbox from "./pages/Mailbox";
 
 export default function App() {
   return (
@@ -79,6 +83,12 @@ export default function App() {
           {/* 친구 기능 */}
           <Route path="/mates/list" element={<MateList />} />
           <Route path="/mates/blocked" element={<BlockList />} />
+
+          {/* 메일 */}
+          <Route path="/mail" element={<Mailbox />} />
+          <Route path="/mail/login" element={<MailLogin />} />
+          {/* (옵션) 과거 문서나 링크 호환용 별칭 */}
+          <Route path="/mailbox" element={<Mailbox />} />
 
           {/* 기타 */}
           <Route path="*" element={<Navigate to="/" replace />} />

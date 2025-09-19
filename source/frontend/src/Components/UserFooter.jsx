@@ -276,8 +276,10 @@ export default function UserFooter() {
             aria-label="메일"
             title="메일"
             onClick={() => {
-              const next = buildQueryPath("/mail", { from: buildFromQuery() });
-              navigate(next);
+              // 현재 경로를 from으로 넘겨서 워크샵 선택 시 우측 사이드바가 유지되도록
+              const { pathname } = location; // useLocation() 훅으로 얻은 값
+              const from = pathname ? `?from=${encodeURIComponent(pathname)}` : "";
+              navigate(`/mail${from}`);
             }}
           >
             메일
