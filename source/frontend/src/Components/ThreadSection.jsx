@@ -52,7 +52,7 @@ export default function ThreadSection({ workshopId, threads, setThreads }) {
             placeholder="스레드 이름"
             required
           />
-          <button className="px-2 py-1 bg-black text-white rounded">생성</button>
+          <button className="px-2 py-1 bg-blue-400 text-white rounded">생성</button>
         </form>
       )}
 

@@ -15,7 +15,7 @@
 /* hover */
 .schedule-btn:hover {
   background: #cecbf7 !important;
-  border: 2px solid var(--border) !important;
+  border: 2px #2549b6 !important;
   color: #2c25b6 !important;
   outline: none !important;
   box-shadow: none !important;
@@ -24,7 +24,7 @@
 /* 선택(현재 스케줄 경로일 때) */
 .schedule-btn[data-active="true"] {
   background: #b6bbff !important;
-  border: 2px solid var(--border) !important;
+  border: 2px #2549b6 !important;
   color: #2c25b6 !important;
   outline: none !important;
   box-shadow: none !important;

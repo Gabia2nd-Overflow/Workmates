@@ -33,10 +33,10 @@
   height: calc(100vh - var(--header-height));
   width: var(--sheet-width);
   background: #c2c0fa;
-  border-left: 1px solid var(--border);
+  border-left: 1px #8d8ada;
   transform: translateX(100%);
   transition: transform 260ms cubic-bezier(.22,.61,.36,1);
-  box-shadow: -8px 0 24px rgba(0,0,0,.35);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.35);
   color: var(--text);
   display: flex;
   flex-direction: column;
@@ -62,7 +62,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   padding: 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px #8d8ada;
 }
 
 .dashboard-bottom {
@@ -73,7 +73,7 @@
 
 .card {
   background: #d2d2fa;
-  border: 1px solid var(--border);
+  border: 1px #8d8ada;
   border-radius: 12px;
   padding: 16px;
 }
@@ -93,7 +93,7 @@
 }
 
 .metric {
-  border: 1px dashed var(--border);
+  border: 1px #8d8ada;
   border-radius: 10px;
   padding: 12px;
 }
@@ -109,7 +109,7 @@
   font-weight: 700;
   border-radius: 999px;
   font-size: 12px;
-  border: 1px solid var(--border);
+  border: 1px #8d8ada;
   width: var(--badge-width);
   text-align: center;
 }
@@ -138,7 +138,7 @@
   padding: 12px 14px;
   border-radius: 10px;
   background: rgba(255,255,255,0.02);
-  border: 1px solid var(--border);
+  border: 1px #8d8ada;
 }
 .list-item .title {
   font-weight: 600;
@@ -154,7 +154,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px #8d8ada;
 }
 .panel-title { font-size: 16px; font-weight: 700; }
 .panel-actions {
@@ -165,7 +165,7 @@
 .panel-close {
   background: #d6d6ef;
   color: var(--text);
-  border: 2.5px solid var(--border);
+  border: 2.5px solid #8d8ada;
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -219,7 +219,7 @@
 .header .header__right > button:last-child,
 .header .header__right > .btn:last-child {
   background: #d8d6ef !important;
-  border: 2px solid var(--border) !important;
+  border: 2px #2549b6 !important;
   color: #2549b6 !important;
 }
 
@@ -228,7 +228,7 @@
 .header .header__right > button:last-child:hover,
 .header .header__right > .btn:last-child:hover {
   background: #cbcff7 !important; /* #efe3d6와 #ffb6c1의 중간색 */
-  border: 2px solid var(--border) !important;
+  border: 2px #2549b6 !important;
   color: #3625b6 !important;
 }
 
@@ -238,6 +238,6 @@ html:has(.dashboard-overlay.open) .header .header__right > *:last-child,
 html:has(.dashboard-overlay.open) .header .header__right > button:last-child,
 html:has(.dashboard-overlay.open) .header .header__right > .btn:last-child {
   background: #b9b6ff !important;
-  border: 2px solid var(--border) !important;
+  border: 2px #2549b6 !important;
   color: #2c25b6 !important;
 }

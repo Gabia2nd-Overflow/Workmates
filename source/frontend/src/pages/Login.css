@@ -2,11 +2,11 @@
 
 /* 로그인 페이지 루트에서만 쓰는 색/간격 토큰 */
 .page.page--login {
-  --brand: #b62547;
-  --brand-light: #ffb6c1;
-  --card-border: #f3e5ea;
-  --field-bg: #fff5f8;
-  --field-border: #ffcfdb;
+  --brand: #3125b6;
+  --brand-light: #bcb6ff;
+  --card-border: #e6e5f3;
+  --field-bg: #f5f5ff;
+  --field-border: #d2cfff;
 
   --logo-size: 100px;      /* (현재 90px 고정 사용 중) */
   --head-gap-top: 20px;
@@ -107,7 +107,7 @@
 .login__actions { @apply mt-6; }
 .login__alt-link {
   @apply w-full flex justify-center py-2 px-4 rounded-md outline-none
-         focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
+         focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
          text-sm font-medium bg-white hover:bg-gray-50 border border-none shadow-none;
   color: var(--brand);
 }
