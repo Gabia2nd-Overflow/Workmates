@@ -1,16 +1,16 @@
-package com.workmates.backend.external_api.llamaindex_api;
+// package com.workmates.backend.external_api.llamaindex_api;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+// import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RestController;
 
-import lombok.RequiredArgsConstructor;
+// import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequiredArgsConstructor
-@RequestMapping("/api/chatbot")
-public class LlamaIndexController {
+// @RestController
+// @RequiredArgsConstructor
+// @RequestMapping("/api/chatbot")
+// public class LlamaIndexController {
     
-    private final LlamaindexService llamaindexService;
+//     private final LlamaindexService llamaindexService;
 
     
-}
+// }

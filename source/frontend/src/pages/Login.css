@@ -74,6 +74,7 @@
 /* 제목/부제 */
 .login__brand {
   @apply text-6xl font-bold text-gray-900 text-center;
+  font-family: 'DreamWorks';
   color: var(--brand);
 }
 .login__subtitle {

@@ -204,15 +204,15 @@ export default function SignUp() {
         <div className="signup__card">
           <div className="text-center">
             <h2 onClick={() => navigate("/")} className="signup__brand">
-              workmates
-              <img
+              WorkMates
+              {/* <img
                 src={BRAND_LOGO_SRC}
                 alt="Workmates brand logo"
                 className="signup__logo"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
                 }}
-              />
+              /> */}
             </h2>
             <p className="signup__subtitle">새로운 계정을 만드세요</p>
           </div>

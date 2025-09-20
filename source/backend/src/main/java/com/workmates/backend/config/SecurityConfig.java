@@ -34,10 +34,10 @@ import jakarta.servlet.http.HttpServletResponse; // ★ 추가
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${symmetric-encoder.master}")
+    @Value("${MASTER_KEY}")
     private String masterKey;
 
-    @Value("${symmetric-encoder.salt}")
+    @Value("${SALT}")
     private String salt;
 
     @Bean

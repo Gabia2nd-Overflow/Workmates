@@ -1,8 +1,8 @@
-package com.workmates.backend.external_api.llamaindex_api;
+// package com.workmates.backend.external_api.llamaindex_api;
 
-import org.springframework.stereotype.Service;
+// import org.springframework.stereotype.Service;
 
-@Service
-public class LlamaindexService {
+// @Service
+// public class LlamaindexService {
     
-}
+// }
