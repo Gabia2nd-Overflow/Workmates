@@ -2,7 +2,6 @@ package com.workmates.backend.external_api.openai_api;
 
 import java.net.URI;
 import java.net.http.*;
-import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -17,32 +16,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Service
 public class OpenAiApiService {
 
-    // application.yml에서 base64 인코딩된 키 주입
-    @Value("${open-ai-api.encrypted}")
-    private String encryptedApiKey;
-
-    private String decryptedApiKey = null;
+    @Value("${OPENAI_API_KEY}")
+    private String apiKey;
 
     @Value("${open-ai-api.chat.url}")
     private String chatApiUrl;
 
-    @Value("${open-ai-api.image-generate.url}")
-    private String imageGenerateApiUrl;
-
     @Value("${open-ai-api.chat.model}")
     private String chatModel;
 
+    @Value("${open-ai-api.image-generate.url}")
+    private String imageGenerateApiUrl;
+
     @Value("${open-ai-api.image-generate.model}")
     private String imageGenerateModel;
-
-    private String getDecryptedApiKey() {
-        if(decryptedApiKey != null) return decryptedApiKey;
-        
-        byte[] bytes = Base64.getDecoder().decode(encryptedApiKey);
-        decryptedApiKey = new String(bytes);
-
-        return decryptedApiKey;
-    }
 
     public CompletableFuture<String> translateAsync(String text, String targetLang) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
@@ -63,7 +50,7 @@ public class OpenAiApiService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(chatApiUrl))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + getDecryptedApiKey())
+                .header("Authorization", "Bearer " + apiKey)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
                 .build();
 
@@ -98,7 +85,7 @@ public class OpenAiApiService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(imageGenerateApiUrl))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + getDecryptedApiKey())
+                .header("Authorization", "Bearer " + apiKey)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
                 .build();
 
@@ -148,7 +135,7 @@ public class OpenAiApiService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(chatApiUrl))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + getDecryptedApiKey())
+                .header("Authorization", "Bearer " + apiKey)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(jsonBody)))
                 .build();
 

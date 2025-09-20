@@ -52,17 +52,15 @@ const Login = () => {
           <div className="login__card-head">
             <div className="login__brand-row">
             {/* 로고 슬롯(이미지 없으면 슬롯만 보임) */}
-            <h2 onClick={() => navigate("/")} className="login__brand">Workmates</h2>
-            <span className="login__logo-slot" aria-hidden="true">
+            <h2 onClick={() => navigate("/")} className="login__brand">WorkMates</h2>
+            {/* <span className="login__logo-slot" aria-hidden="true">
               <img 
                 src={BRAND_LOGO_SRC} 
                 alt="Workmates brand logo" 
                 className="login__logo-img" 
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               /> 
-            </span>
-          
-          
+            </span> */}
           </div>
         </div>
         {/* 폼 */}

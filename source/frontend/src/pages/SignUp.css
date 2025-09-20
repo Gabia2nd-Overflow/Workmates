@@ -8,7 +8,7 @@
   --field-border: #d9cfff;
 
   --page-gap-top: 1rem;          /* 화면 상단 ↔ 카드 상단 여백 */
-  --gap-title-subtitle: 0.35rem; /* 타이틀 ↔ 부제 */
+  --gap-title-subtitle: 0.3rem; /* 타이틀 ↔ 부제 */
   --gap-subtitle-form: 0.1rem;   /* 부제 ↔ 폼 */
 
   @apply min-h-screen flex flex-col justify-center sm:px-6 lg:px-8;
@@ -46,11 +46,13 @@
 /* 타이틀에 로고를 인라인으로 붙이기 */
 .signup__brand {
   @apply text-6xl font-bold text-center;
+  font-family: 'DreamWorks';
   color: var(--brand);
   display: inline-flex;
   gap: 12px;
   align-items: center;
   line-height: 1;
+  margin-top: 1.5rem;
   margin-bottom: var(--gap-title-subtitle);
 }
 

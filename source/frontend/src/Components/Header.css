@@ -45,7 +45,7 @@
   .header__title {
     font-family: 'DreamWorks';
     font-size: 45px;
-    font-weight: 500;
+    /* font-weight: ; */
     /* letter-spacing: 0.01em; tracking-wide 근사치 */
     color: #F2F2F2;
 
